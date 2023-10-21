@@ -1,0 +1,47 @@
+<!--<!DOCTYPE html>-->
+<!--<html xmlns:th="http://www.thymeleaf.org">-->
+<!--<head>-->
+<!--  <meta charset="ISO-8859-1">-->
+<!--  <title>User signup</title>-->
+
+<!--  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">-->
+
+<!--</head>-->
+<!--<body>-->
+
+
+<!--<br>-->
+<!--<br>-->
+<!--&lt;!&ndash; Create HTML registration form &ndash;&gt;-->
+<!--<div class="container">-->
+<!--  <div class="row justify-content-center">-->
+<!--    <div class="col-md-6 col-md-offset-3">-->
+
+<!--      &lt;!&ndash; success message &ndash;&gt;-->
+<!--      <div th:if="${param.success}">-->
+<!--        <div class="alert alert-info">You've successfully registered-->
+<!--          to our awesome app!</div>-->
+<!--      </div>-->
+
+<!--      <div class="text-center">-->
+<!--        <h1 class="mx-auto">OTP Sign Up</h1>-->
+<!--      </div>-->
+
+
+<!--      <form class="form-horizontal" th:action="@{/regist}" method="post">-->
+<!--        &lt;!&ndash;                    <label for="phoneNumber">Phone Number:</label>&ndash;&gt;-->
+<!--        <input type="text" class="form-control" id="phoneNumber" name="phoneNumber" required placeholder="Enter Phone number"/>-->
+<!--        <button type="submit"  class="btn btn-primary">Register</button>-->
+<!--      </form>-->
+<!--      <br>-->
+<!--      <form class="form-horizontal" th:action="@{/verif}" method="post">-->
+<!--        &lt;!&ndash;                    <label for="otp">Enter OTP :</label>&ndash;&gt;-->
+<!--        &lt;!&ndash;                    <input type="text" id="otp" name="otp" required/>&ndash;&gt;-->
+<!--        <input type="text" class="form-control" th:name="phoneNumber" th:value="${phoneNumber}" placeholder="Enter otp"/>-->
+<!--        <button type="submit" class="btn btn-primary">Verify</button>-->
+<!--      </form>-->
+<!--    </div>-->
+<!--  </div>-->
+<!--</div>-->
+<!--</body>-->
+<!--</html>-->

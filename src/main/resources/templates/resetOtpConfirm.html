@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Password Reset Confirmation</title>
+    <!-- Include Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        .container {
+            margin-top: 50px;
+        }
+
+        .card {
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .card-body {
+            text-align: center;
+        }
+
+        .otp-input {
+            text-align: center;
+        }
+
+        .center-form {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+    </style>
+</head>
+<body>
+<div class="center-form">
+    <div class="card">
+        <div class="card-body">
+            <h3 class="card-title"> Reset OTP Confirmation</h3>
+            <p class="card-text">Enter the 6-digit OTP.</p>
+            <div th:if="${error != null}" class="alert alert-danger" role="alert">
+                <p th:text="'Error: ' + ${error}"></p>
+            </div>
+            <form th:action="@{/ResetOtpVerification}" method="post">
+                <div class="form-group">
+                    <input type="text" name="otp" class="form-control otp-input" placeholder="Enter OTP" required pattern="[0-9]{6}" title="Please enter a 6-digit OTP">
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Submit</button>
+            </form>
+            <br>
+            <form th:action="@{/resendResetOtp}" method="get">
+                <button  type="submit" class="btn btn-primary btn-block">Resend</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Include Bootstrap JS (Optional) -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
