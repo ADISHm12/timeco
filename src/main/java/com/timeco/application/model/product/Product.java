@@ -32,6 +32,7 @@ public class Product {
     @Column(name="price",nullable = false)
     private Double price;
 
+    private boolean isBlocked;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ProductImage> productImages;
@@ -69,7 +70,7 @@ public class Product {
         this.productImages = new ArrayList<>();
     }
 
-    public Product(Long id, String productName, String current_state, String description, Integer quantity, Double price, List<ProductImage> productImages, Category category) {
+    public Product(Long id, String productName,boolean isBlocked, String current_state, String description, Integer quantity, Double price, List<ProductImage> productImages, Category category) {
         this.id = id;
         this.productName = productName;
         this.current_state = current_state;
@@ -78,6 +79,7 @@ public class Product {
         this.price = price;
         this.productImages = productImages;
         this.category = category;
+        this.isBlocked=isBlocked;
     }
 
     public Long getId() {
@@ -99,9 +101,9 @@ public class Product {
     public String getCurrent_state() {
         // Set the current_state based on the quantity
         if (quantity > 0) {
-            return "<span class='stock-in'>Stock In</span>";
+            return "Stock In";
         } else {
-            return "<span class='stock-out'>Stock Out</span>";
+            return "Stock Out";
         }
 
     }
@@ -148,5 +150,13 @@ public class Product {
 
     public void setSubcategory(Subcategory subcategory) {
         this.subcategory = subcategory;
+    }
+
+    public boolean isBlocked() {
+        return isBlocked;
+    }
+
+    public void setBlocked(boolean blocked) {
+        isBlocked = blocked;
     }
 }

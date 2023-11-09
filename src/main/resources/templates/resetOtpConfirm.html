@@ -41,14 +41,14 @@
             <div th:if="${error != null}" class="alert alert-danger" role="alert">
                 <p th:text="'Error: ' + ${error}"></p>
             </div>
-            <form th:action="@{/ResetOtpVerification}" method="post">
+            <form th:action="@{/main/ResetOtpVerification}" method="post">
                 <div class="form-group">
                     <input type="text" name="otp" class="form-control otp-input" placeholder="Enter OTP" required pattern="[0-9]{6}" title="Please enter a 6-digit OTP">
                 </div>
                 <button type="submit" class="btn btn-primary btn-block">Submit</button>
             </form>
             <br>
-            <form th:action="@{/resendResetOtp}" method="get">
+            <form th:action="@{/main/resendResetOtp}" method="get">
                 <button  type="submit" class="btn btn-primary btn-block">Resend</button>
             </form>
         </div>

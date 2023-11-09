@@ -6,6 +6,7 @@ import com.timeco.application.model.user.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
+import java.security.Principal;
 import java.util.List;
 
 @Service
@@ -23,7 +24,7 @@ public interface UserService extends UserDetailsService {
     List<User> getUsersByPartialEmailOrName(String searchTerm);
 
 
+    void updateUserDetails(User updatedUser, Principal principal);
 
-
-
+    int countCustomers();
 }

@@ -233,8 +233,8 @@
             <textarea class="form-control" id="exampleTextarea1" rows="4" th:field="*{description}"></textarea>
           </div>
           <div class="form-group">
-            <label for="imagePaths">Image Paths (Separate with commas)</label>
-            <input type="text" class="form-control" id="imagePaths" name="imagePaths" placeholder="Enter image paths, e.g., path1.jpg, path2.jpg">
+            <label for="images">Images</label>
+            <input type="file" class="form-control" id="images" name="images" multiple>
           </div>
           <button type="submit" class="btn btn-primary mr-2">Submit</button>
           <button class="btn btn-dark">Cancel</button>
@@ -332,34 +332,7 @@
 <!-- End custom js for this page -->
 
 
-<!--<script>-->
-<!--  // Function to update subcategories based on the selected category-->
-<!--  // Function to update subcategories based on the selected category-->
-<!--  function updateSubcategories() {-->
-<!--    var categoryId = $("#categorySelect").val(); // Get the selected category ID-->
-<!--    var subcategorySelect = $("#subcategorySelect"); // Subcategory select element-->
 
-<!--    // Clear existing options in the subcategory select-->
-<!--    subcategorySelect.empty();-->
-<!--    subcategorySelect.append('<option value="">Select a Subcategory</option>');-->
-
-<!--    // Check if a category is selected-->
-<!--    if (categoryId !== "") {-->
-<!--      // Perform an AJAX request to fetch subcategories based on the selected category-->
-<!--      $.get("/admin/admin/getSubcategories?categoryId=" + categoryId, function (data) {-->
-<!--        // Populate the subcategory select with fetched subcategories-->
-<!--        $.each(data, function (index, subcategory) {-->
-<!--          subcategorySelect.append('<option value="' + subcategory.id + '">' + subcategory.name + '</option>');-->
-<!--        });-->
-<!--      });-->
-<!--    }-->
-<!--  }-->
-
-<!--  // Attach the updateSubcategories function to the change event of the category select-->
-<!--  $(document).ready(function () {-->
-<!--    $("#categorySelect").on("change", updateSubcategories);-->
-<!--  });-->
-<!--</script>-->
 
 </body>
 </html>

@@ -64,4 +64,10 @@ public class CategoryServiceImpl implements CategoryService{
         return categoryRepository.findByNameContaining(searchTerm);
     }
 
+    @Override
+    public boolean categoryExists(String categoryName) {
+        Category existingCategory = categoryRepository.findByNameIgnoreCase(categoryName);
+        return existingCategory != null;
+    }
+
 }

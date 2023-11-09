@@ -55,6 +55,7 @@ public class UserRegistrationController {
     @PostMapping("/Register")
     public String register(@Valid @ModelAttribute("user") RegistrationDto registrationDto, BindingResult bindingResult, HttpSession session)
     {
+
         User verifyUser = userService.save(registrationDto);
 
         if (verifyUser == null) {

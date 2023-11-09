@@ -59,8 +59,38 @@ public class AddressServiceImpl implements AddressService {
        return addressRepository.save(userAddress);
     }
 
+//    @Override
+//    public List<UserAddress> getAllAddresses() {
+//        return addressRepository.findAll();
+//    }
+
     @Override
-    public List<UserAddress> getAllAddresses() {
-        return addressRepository.findAll();
+    public void updateUserAddress(Long addressId,UserAddress updatedAddress) {
+        UserAddress existingAddress = addressRepository.findById(addressId).orElse(null);
+
+        if (existingAddress != null) {
+            // Update the fields based on your requirements
+            existingAddress.setUserName(updatedAddress.getUserName());
+            existingAddress.setCity(updatedAddress.getCity());
+            existingAddress.setState(updatedAddress.getState());
+            existingAddress.setAddress(updatedAddress.getAddress());
+            existingAddress.setCountry(updatedAddress.getCountry());
+            existingAddress.setPinCode(updatedAddress.getPinCode());
+            existingAddress.setMobile(updatedAddress.getMobile());
+
+            // Save the updated address
+            addressRepository.save(existingAddress);
+        }
     }
+
+    @Override
+    public List<UserAddress> findByUserId(Long id) {
+
+        return addressRepository.findByUserId(id);
+    }
+
+//    @Override
+//    public List<UserAddress> getAddressByUser(User user) {
+//        return addressRepository.findByUser()
+//    }
 }

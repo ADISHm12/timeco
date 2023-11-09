@@ -40,44 +40,23 @@
                     <div class="main-menu d-none d-lg-block">
                         <nav>
                             <ul id="navigation">
-                                <li><a href="index.html">Home</a></li>
-                                <li><a href="shop.html">shop</a></li>
-                                <li><a href="about.html">about</a></li>
-                                <li class="hot"><a href="#">Latest</a>
-                                    <ul class="submenu">
-                                        <li><a href="shop.html"> Product list</a></li>
-                                        <li><a href="product_details.html"> Product Details</a></li>
-                                    </ul>
+                                <li><a th:href="@{/}">Home</a></li>
+                                <li><a th:href="@{/user/products}">shop</a></li>
+                                <li th:if="${not #authorization.expression('isAuthenticated()')}">
+                                    <a th:href="@{/login}">Login</a>
                                 </li>
-                                <li><a href="blog.html">Blog</a>
-                                    <ul class="submenu">
-                                        <li><a href="blog.html">Blog</a></li>
-                                        <li><a href="blog-details.html">Blog Details</a></li>
-                                    </ul>
-                                </li>
-                                <li><a href="#">Pages</a>
-                                    <ul class="submenu">
-                                        <li><a href="login.html">Login</a></li>
-                                        <li><a href="cart.html">Cart</a></li>
-                                        <li><a href="elements.html">Element</a></li>
-                                        <li><a href="confirmation.html">Confirmation</a></li>
-                                        <li><a href="checkout.html">Product Checkout</a></li>
-                                    </ul>
-                                </li>
-                                <li><a href="contact.html">Contact</a></li>
+                                <li><a th:href="@{/user/viewCart}">Cart</a></li>
+
+
+                                <!--                                <li><a href="contact.html">Contact</a></li>-->
                             </ul>
                         </nav>
                     </div>
                     <!-- Header Right -->
                     <div class="header-right">
                         <ul>
-                            <li>
-                                <div class="nav-search search-switch">
-                                    <span class="flaticon-search"></span>
-                                </div>
-                            </li>
-                            <li> <a href="login.html"><span class="flaticon-user"></span></a></li>
-                            <li><a href="cart.html"><span class="flaticon-shopping-cart"></span></a> </li>
+                            <li> <a th:href="@{/user/profile}"><span class="flaticon-user"></span></a></li>
+                            <li><a th:href="@{/user/viewCart}"><span class="flaticon-shopping-cart"></span></a> </li>
                         </ul>
                     </div>
                 </div>
@@ -109,6 +88,9 @@
     <section class="cart_area section_padding">
         <div class="container">
             <div class="cart_inner">
+                <div th:if="${error}" class="alert alert-danger">
+                    <p th:text="${error}"></p>
+                </div>
                 <div class="table-responsive">
                     <table class="table">
                         <thead>
@@ -124,7 +106,7 @@
                             <td>
                                 <div class="media">
                                     <div class="d-flex">
-                                        <img th:src="${cartItem.product.productImages[0].imageName}" th:alt="${cartItem.product.productName}" />
+                                        <img th:src="${'/assets'+cartItem.product.productImages[0].imageName}" th:alt="${cartItem.product.productName}" />
                                     </div>
                                     <div class="media-body">
                                         <p th:text="${cartItem.product.productName}"></p>
@@ -135,24 +117,7 @@
                                 <h5  th:id="'price' + ${cartItem.product.id}" th:text="${cartItem.product.price}"></h5>
 
                             </td>
-<!--                            <td>-->
-<!--                                <div class="product_count">-->
-<!--&lt;!&ndash;                                    <span class="input-number-decrement" id="decrement"> <i class="ti-minus"></i></span>&ndash;&gt;-->
-<!--&lt;!&ndash;                                    <input class="input-number" type="text" id="quantity" th:value="${cartItem.quantity}" min="0" max="10">&ndash;&gt;-->
-<!--&lt;!&ndash;                                    <span class="input-number-increment" id="increment"> <i class="ti-plus"></i></span>&ndash;&gt;-->
-<!--                                    <span class="input-number-decrement" th:attr="data-product-id=${cartItem.product.id}"> <i class="ti-minus"></i></span>-->
-<!--                                    <input class="input-number" type="text" th:value="${cartItem.quantity}" min="0" max="10" th:attr="data-product-id=${cartItem.product.id}">-->
-<!--                                    <span class="input-number-increment" th:attr="data-product-id=${cartItem.product.id}"> <i class="ti-plus"></i></span>-->
 
-<!--                                </div>-->
-<!--                            </td>-->
-<!--                            <td>-->
-<!--                                <h5 th:text="${' $' + (cartItem.product.price * cartItem.quantity)}"></h5>-->
-<!--                            </td>-->
-<!--                            <td>-->
-<!--                                <p th:text="${cartItem.product.id}"></p>-->
-<!--                                <h5 class="total" data-product-id="${cartItem.product.id}" data-product-price="${cartItem.product.price}"></h5>-->
-<!--                            </td>-->
                             <td>
                             <div class="input-group mb-3">
                                 <!--					             	<input type="text" name="quantity" class="quantity form-control input-number" value="1" min="1" max="100">-->
@@ -173,13 +138,21 @@
                             </div>
                             </td>
                             <td class="total" th:id="'Totalprice' + ${cartItem.product.id}" name="Total" th:text="${cartItem.quantity * cartItem.price}">$4.90</td>
+                            <td>
+<!--                                <button th:onclick="'removeCartItem(\'' + ${cartItem.product.id} + '\')'">Remove</button>-->
+<!--                                <button th:onclick="'removeCartItem(this, \'' + ${cartItem.product.id} + '\')'">Remove</button>-->
+<!--                                <a th:href="@{'/user/remove-from-cart/' + ${cartItem.cartItemId}}" class="btn-primary" >Remove</a>                           </td>-->
+                                <a th:href="@{'/user/remove-from-cart/' + ${cartItem.cartItemId}}"  >&#x2716</a>
+                            <td style="display: none;"> <!-- Hide this element, but it contains productQuantity -->
+                                <span th:id="'productQuantity'+${cartItem.product.id}" th:text="${cartItem.product.quantity}"></span>
+                            </td>
                         </tr>
 
 
 
                         <tr class="bottom_button">
                             <td>
-                                <a class="btn_1" href="#">Update Cart</a>
+<!--                                <a class="btn_1" href="#">Update Cart</a>-->
                             </td>
                             <td></td>
                             <td></td>
@@ -199,59 +172,19 @@
                                 <h5 id="totalSubAmount" th:text="${totalPrice}">$2160.00</h5>
                             </td>
                         </tr>
-                        <tr class="shipping_area">
-                            <td></td>
-                            <td></td>
-                            <td>
-                                <h5>Shipping</h5>
-                            </td>
-                            <td>
-                                <div class="shipping_box">
-                                    <ul class="list">
-                                        <li>
-                                            Flat Rate: $5.00
-                                            <input type="radio" aria-label="Radio button for following text input">
-                                        </li>
-                                        <li>
-                                            Free Shipping
-                                            <input type="radio" aria-label="Radio button for following text input">
-                                        </li>
-                                        <li>
-                                            Flat Rate: $10.00
-                                            <input type="radio" aria-label="Radio button for following text input">
-                                        </li>
-                                        <li class="active">
-                                            Local Delivery: $2.00
-                                            <input type="radio" aria-label="Radio button for following text input">
-                                        </li>
-                                    </ul>
-                                    <h6>
-                                        Calculate Shipping
-                                        <i class="fa fa-caret-down" aria-hidden="true"></i>
-                                    </h6>
-                                    <select class="shipping_select">
-                                        <option value="1">Bangladesh</option>
-                                        <option value="2">India</option>
-                                        <option value="4">Pakistan</option>
-                                    </select>
-                                    <select class="shipping_select section_bg">
-                                        <option value="1">Select a State</option>
-                                        <option value="2">Select a State</option>
-                                        <option value="4">Select a State</option>
-                                    </select>
-                                    <input class="post_code" type="text" placeholder="Postcode/Zipcode" />
-                                    <a class="btn_1" href="#">Update Details</a>
-                                </div>
-                            </td>
-                        </tr>
                         </tbody>
                     </table>
                     <div class="checkout_btn_inner float-right">
-                        <a class="btn_1" href="#">Continue Shopping</a>
-                        <a class="btn_1 checkout_btn_1" href="#">Proceed to checkout</a>
+                        <a class="btn_1" th:href="@{/user/products}">Continue Shopping</a>
+                        <a class="btn_1 checkout_btn_1" href="#" th:href="@{/checkout}">Proceed to checkout</a>
                     </div>
+<!--                    <div th:if="${#flash.error}">-->
+<!--                        <p th:text="${#flash.error}" class="error-message"></p>-->
+<!--                    </div>-->
+
                 </div>
             </div>
+        </div>
     </section>
     <!--================End Cart Area =================-->
 </main>>
@@ -265,7 +198,7 @@
                         <div class="single-footer-caption mb-30">
                             <!-- logo -->
                             <div class="footer-logo">
-                                <a href="index.html"><img src="assets/img/logo/logo2_footer.png" alt=""></a>
+                                <a href="index.html"><img src="/assets/img/logo/logo2_footer.png" alt=""></a>
                             </div>
                             <div class="footer-tittle">
                                 <div class="footer-pera">
@@ -392,7 +325,14 @@
         let TotalPrice = document.getElementById('Totalprice' + id);
         let OgPrice = parseFloat(document.getElementById('price' + id).innerHTML);
         let totalSubAmount = document.getElementById('totalSubAmount')
-        console.log(OgPrice+"ksdjvhfskdjhfvgbhujkads")
+        let productQuantity = document.getElementById('productQuantity' + id).innerHTML;
+
+
+        let currentQuantity = parseInt(quantityInput.value);
+        if (currentQuantity + 1 > productQuantity) {
+            Swal.fire('Quantity cannot exceed the available product quantity!')
+            return;
+        }
 
         $.ajax({
             url: '/user/updateQuantity',
@@ -411,8 +351,6 @@
             }
         });
     }
-
-
 
 
     function changeQtyM(id) {
@@ -438,7 +376,35 @@
             }
         });
     }
+
+
 </script>
+<script>
+    document.getElementById('checkoutButton').addEventListener('click', function() {
+        fetch('/checkout')
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    Swal.fire({
+                        title: 'Error',
+                        text: data.error,
+                        icon: 'error'
+                    }).then(function () {
+                        // Redirect to the cart page or an appropriate page
+                        window.location.href = '/cart';
+                    });
+                } else {
+                    // Proceed to checkout
+                    window.location.href = '/checkout'; // Or your checkout URL
+                }
+            })
+            .catch(error => {
+                // Handle any errors
+                console.error(error);
+            });
+    });
+</script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10.14.0/dist/sweetalert2.all.min.js"></script>
 
 </body>
 </html>

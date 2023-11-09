@@ -15,6 +15,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.security.Principal;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -36,10 +37,6 @@ public class UserServiceImpl implements UserService {
 
 
 
-
-
-
-
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         System.out.println("Email received in loadUserByUsername: " + email);
@@ -52,6 +49,7 @@ public class UserServiceImpl implements UserService {
         }
         System.out.println("User found: " + user.getEmail());
         return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), mapRolesToAuthorities(user.getRoles()));
+
 
     }
 
@@ -111,6 +109,43 @@ public class UserServiceImpl implements UserService {
 
 
     }
+
+    @Override
+    @Transactional
+    public void updateUserDetails(User updatedUser , Principal principal) {
+        // Here, you can perform the logic to update the user's details in the database
+        // First, you might want to fetch the existing user from the database
+        String username= principal.getName();
+        System.out.println(updatedUser.getFirstName()+"1111111111111111111111111111");
+        System.out.println(updatedUser.getEmail()+"1111111111111111111111111111");
+
+        User existingUser = userRepository.findByEmail(username);
+
+
+
+        if (existingUser != null) {
+            // Update the user's details based on the updatedUser object
+            existingUser.setFirstName(updatedUser.getFirstName());
+            existingUser.setLastName(updatedUser.getLastName());
+            existingUser.setEmail(updatedUser.getEmail());
+            existingUser.setPhoneNumber(updatedUser.getPhoneNumber());
+
+//             Save the updated user back to the database
+            userRepository.save(existingUser);
+
+
+        } else {
+            // Handle the case where the user doesn't exist
+            // You can throw an exception, return null, or handle it as needed
+
+        }
+    }
+
+    @Override
+    public int countCustomers() {
+        return userRepository.countByIsBlocked(false);
+    }
+
     public boolean isPasswordCorrect(User user, String currentPassword) {
         // Retrieve the stored password hash for the user
         String storedPassword = user.getPassword(); // Assuming you have a getPassword method in your User class
@@ -131,6 +166,8 @@ public class UserServiceImpl implements UserService {
             userRepository.save(currentUser);
         }
     }
+
+
 
 
 }

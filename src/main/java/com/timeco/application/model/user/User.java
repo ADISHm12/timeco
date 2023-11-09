@@ -1,14 +1,13 @@
 package com.timeco.application.model.user;
 
 import com.timeco.application.model.cart.Cart;
+import com.timeco.application.model.coupon.Coupon;
 import com.timeco.application.model.role.Role;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 
 @Entity
@@ -19,10 +18,10 @@ public class User  {
     @GeneratedValue(strategy =  GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "first_name")
+    @Column(name = "first_name",nullable = false)
     private String firstName;
 
-    @Column(name = "last_name")
+    @Column(name = "last_name",nullable = false)
     private String lastName;
 
     private String email;
@@ -49,6 +48,20 @@ public class User  {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<UserAddress> addresses = new ArrayList<>();
+
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinTable(name = "customer_coupon",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "coupon_id"))
+    private Set <Coupon> coupons = new HashSet<>();
+
+    public Set<Coupon> getCoupons() {
+        return coupons;
+    }
+
+    public void setCoupons(Set<Coupon> coupons) {
+        this.coupons = coupons;
+    }
 
     public User() {
 
@@ -166,5 +179,18 @@ public class User  {
         this.roles = roles;
         this.cart = new Cart();
         this.cart.setUser(this);
+    }
+
+    public User(String firstName, String lastName, String email, String phoneNumber, String password, boolean isBlocked, Collection<Role> roles, Cart cart, List<UserAddress> addresses, Set<Coupon> coupons) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.phoneNumber = phoneNumber;
+        this.password = password;
+        this.isBlocked = isBlocked;
+        this.roles = roles;
+        this.cart = cart;
+        this.addresses = addresses;
+        this.coupons = coupons;
     }
 }

@@ -81,4 +81,51 @@ public class CartItemsServiceImpl implements CartItemsService{
         }
             return totalPrice;
     }
+
+    @Override
+    @Transactional
+    public void removeFromCart(Long itemId) {
+        // Perform the logic to remove the item from the cart, e.g., by its ID
+            cartItemsRepository.deleteItemsBycartItemId(itemId);
+
+    }
+
+    @Override
+    public List<CartItems> findCartItems(User user) {
+
+        Cart cart = cartRepository.findCartByUser(user);
+        if (cart != null) {
+            // Assuming you have a method to find cart items by the associated cart
+            List<CartItems> cartItems = cartItemsRepository.findCartItemsByCart(cart);
+
+            return cartItems;
+        } else {
+            // Handle the case where the user doesn't have a cart, or the cart is empty
+            return null;
+        }    }
+
+    @Override
+    @Transactional
+    public void updateProductQuantity(Long productId, Integer newQuantity) {
+        // Retrieve the cart item by product ID
+        CartItems  cartItem = cartItemsRepository.findByProductId(productId);
+
+//        System.out.println(cartItem.getCartItemId()+"dshfvkagjfvkagjfvkagjfvkagjfvkagjfvkagjfvkagjfvkagjfvkagjfvkagjfvkagjfvkafgjvkagjfvkagjfvkagjfvkagjfvkagjfvkagjfvkagjfvkagjfvkagjfvkagjfvkagjfvkagjfvkagjfvkagjfvkagjfvkagjfvkagjfvkagjfvkagjfvkagjfvkagjfvkagjfvkagjfvkagjfvkagjfvkagjfvkagjfvkagjfvkagjfvkagjfvkagjfvkagjfvkagjfvkagjfvkagjfvkagjfvkagjfvkagjfvkagjfvkagjfvkagjfvkagjfvkagjfvkagjfvkagjfvkagj");
+
+        if (cartItem != null) {
+            // Update the quantity of the cart item
+
+            int currentQuantity = cartItem.getQuantity();
+            int updatedQuantity = currentQuantity + newQuantity;
+            cartItem.setQuantity(updatedQuantity);
+
+            System.out.println(cartItem.getQuantity());
+
+            // Save the updated cart item to the database
+            cartItemsRepository.save(cartItem);
+        } else {
+            // Handle the case where the product is not found in the cart
+            // You can throw an exception or handle it as needed
+        }
+    }
 }

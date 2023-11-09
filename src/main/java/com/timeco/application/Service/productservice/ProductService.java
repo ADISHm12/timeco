@@ -1,7 +1,9 @@
 package com.timeco.application.Service.productservice;
 
 import com.timeco.application.Dto.ProductDto;
+import com.timeco.application.model.category.Category;
 import com.timeco.application.model.product.Product;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,8 +26,19 @@ public interface ProductService {
 
     public Product getProductById(Long productId) ;
 
+    public int getTotalStock() ;
 
 
+    public List<Product> sortProductsByPriceLowToHigh() ;
+
+    public List<Product> sortProductsByPriceHighToLow() ;
+
+    List<Product> getProductsByCategory(Category category);
 
 
+    Page<Product> getProductsPage(int page, int size);
+
+    void lockProduct(Long id);
+
+    void unlockProduct(Long id);
 }

@@ -1,6 +1,7 @@
 package com.timeco.application.Configuration;
 
 import com.timeco.application.Service.userservice.UserService;
+import com.timeco.application.exception.BlockedUserAuthenticationFailureHandler;
 import com.timeco.application.model.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -26,6 +27,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder();
     }
 
+    @Autowired
+    private BlockedUserAuthenticationFailureHandler  blockedUserAuthenticationFailureHandler;
+
+
     @Bean
     public DaoAuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider auth = new DaoAuthenticationProvider();
@@ -50,11 +55,13 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                         "/css/**",
                         "/img/**"
                         ,"/"
+                        ,"/user/products"
+                        ,"/user//productDetails/{productId}"
                         ,"/video/**"
-                        , "/user/**"
                         , "/registration/**"
                         , "/verif"
                         , "/otpSignUp"
+                        ,"/main/**"
                         ,"/assets/**"
                         ,"/admin/**"
                 ).permitAll()
@@ -64,13 +71,12 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/user/**").hasRole(("USER"))
                 .anyRequest().authenticated()
                 .and()
-
                 .formLogin()
-                .loginPage("/login")
+                .loginPage("/main/login")
+                .failureUrl("/main/login?error")
+                .failureHandler(blockedUserAuthenticationFailureHandler)
                 .permitAll()
                 .successHandler((request, response, authentication) -> {
-//                    Long userId = ((User) authentication.getPrincipal()).getId();
-//                    request.getSession().setAttribute("userId", userId);
 
                     // Customize the redirection based on the user's role
                     if (authentication.getAuthorities().stream()
@@ -80,17 +86,23 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                         response.sendRedirect("/");
                     }
                 })
+//                .failureHandler((request, response, exception) -> {
+//                    // Customize the behavior for 401 Unauthorized
+//                    response.sendRedirect("/error/401"); // Redirect to your custom 401 error page
+//                })
                 .and()
                 .logout()
                 .invalidateHttpSession(true)
                 .clearAuthentication(true)
                 .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-                .logoutSuccessUrl("/login?logout")
+                .logoutSuccessUrl("/main/login?logout")
                 .permitAll()
                 .and()
-
-
-                .exceptionHandling().accessDeniedPage("/access-denied");
+                .rememberMe()
+                .userDetailsService(userService) // Replace with the name of your UserDetailsService bean
+                .key("rememberMe") // Set a secret key for the cookie
+                .tokenValiditySeconds(60 * 60 * 24 * 7);
+//                .exceptionHandling().accessDeniedPage("/main/access-denied");
     }
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() throws Exception{

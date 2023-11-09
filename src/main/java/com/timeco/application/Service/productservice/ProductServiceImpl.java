@@ -7,6 +7,9 @@ import com.timeco.application.model.category.Category;
 import com.timeco.application.model.product.Product;
 import com.timeco.application.model.product.ProductImage;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -14,12 +17,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class ProductServiceImpl implements ProductService{
+public class ProductServiceImpl implements ProductService {
     @Autowired
     private ProductRepository productRepository;
     @Autowired
     private CategoryRepository categoryRepository;
-
 
 
     @Override
@@ -29,7 +31,7 @@ public class ProductServiceImpl implements ProductService{
         return productRepository.save(product);
     }
 
-//    @Override
+    //    @Override
 //    @Transactional
 //    public void updateProductById( ProductDto products,Long id) {
 //        System.out.println(id + "99999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999");
@@ -59,42 +61,32 @@ public class ProductServiceImpl implements ProductService{
 //        // Save the updated Product
 //        productRepository.save(product);
 //    }
-@Override
-@Transactional
-public void updateProductById(ProductDto products, Long id) {
-    // Retrieve the existing Product from the database
-    Product product = productRepository.findById(id).orElse(null);
+    @Override
+    @Transactional
+    public void updateProductById(ProductDto products, Long id) {
+        // Retrieve the existing Product from the database
+        Product product = productRepository.findById(id).orElse(null);
 
-    if (product != null) {
-        System.out.println(id + "99999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999");
+        if (product != null) {
+            // Retrieve the Category based on categoryId from the ProductDto
+            Category category = categoryRepository.findById(products.getCategory().getId()).orElse(null);
 
-        // Retrieve the Category based on categoryId from the ProductDto
-        Category category = categoryRepository.findById(products.getCategory().getId()).orElse(null);
+            if (category != null) {
+                product.setProductName(products.getProductName());
+                product.setDescription(products.getDescription());
+                product.setPrice(products.getPrice());
+                product.setQuantity(products.getQuantity());
 
-        if (category != null) {
-            product.setProductName(products.getProductName());
-            product.setDescription(products.getDescription());
-            product.setPrice(products.getPrice());
-            product.setQuantity(products.getQuantity());
+                // Set the Category on the Product
+                product.setCategory(category);
 
-            // Set the Category on the Product
-            product.setCategory(category);
+                // Handle product images
+            }
 
-            // Handle product images
-//            List<ProductImage > newImages = new ArrayList<>() ;
-//            for (ProductImage imageName : products.getImageNames()) {
-//                ProductImage productImage = new ProductImage(imageName, product);
-//                newImages.add(productImage);
-//            }
-
-            // Update the product images collection
-//            product.setProductImages(newImages);
+            // Save the updated Product
+            productRepository.save(product);
         }
-
-        // Save the updated Product
-        productRepository.save(product);
     }
-}
 
     @Override
     public void deleteProductById(Long id) {
@@ -104,7 +96,7 @@ public void updateProductById(ProductDto products, Long id) {
     }
 
     @Override
-    public List<Product> getAllProducts(){
+    public List<Product> getAllProducts() {
 
         return productRepository.findAll();
     }
@@ -112,7 +104,7 @@ public void updateProductById(ProductDto products, Long id) {
     @Override
     public List<Product> searchProducts(String searchTerm) {
 
-       return productRepository.findByProductNameContaining(searchTerm);
+        return productRepository.findByProductNameContaining(searchTerm);
     }
 
     @Override
@@ -127,7 +119,59 @@ public void updateProductById(ProductDto products, Long id) {
         return productRepository.findById(productId).orElse(null);
     }
 
+    @Override
+    public int getTotalStock() {
+        int totalStock = 0;
 
+        List<Product> products = productRepository.findAll();
+        for (Product product : products) {
+            totalStock += product.getQuantity();
+        }
+
+        return totalStock;
+    }
+
+    @Override
+    public List<Product> sortProductsByPriceLowToHigh() {
+        // Fetch products from the database and sort by price in ascending order
+        return productRepository.findAll(Sort.by(Sort.Order.asc("price")));
+    }
+
+    @Override
+    public List<Product> sortProductsByPriceHighToLow() {
+        // Fetch products from the database and sort by price in descending order
+        return productRepository.findAll(Sort.by(Sort.Order.desc("price")));
+    }
+
+    @Override
+    public List<Product> getProductsByCategory(Category category) {
+
+        return productRepository.findByCategory(category);
+
+
+    }
+
+    @Override
+    public Page<Product> getProductsPage(int page, int size)
+
+    {
+        PageRequest pageRequest = PageRequest.of(page, size);
+        return productRepository.findAll(pageRequest); // Use the findAll(PageRequest) method to get a Page of products
+    }
+
+    @Override
+    public void lockProduct(Long id) {
+        Product product = productRepository.findById(id).get();
+        product.setBlocked(true);
+        productRepository.save(product);
+    }
+
+    @Override
+    public void unlockProduct(Long id) {
+        Product product = productRepository.findById(id).get();
+        product.setBlocked(false);
+        productRepository.save(product);
+    }
 
 
 }

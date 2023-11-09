@@ -7,11 +7,11 @@
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: #000; /* Black background color */
+      background: #fff; /* Black background color */
       color: #fff; /* Text color */
       display: flex;
       justify-content: center;
-      align-items: center;
+      /*align-items: center;*/
       height: 100vh;
       margin: 0;
     }
@@ -23,6 +23,17 @@
       animation: fadeIn 0.5s ease-in-out;
       border-radius: 10px;
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      height: 400px;
+      margin-bottom: 10px;
+      margin-top: 10px;
+    }
+    .login-container{
+      background-color: #fff; /* White background */
+      padding: 20px;
+      text-align: center;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      height: 50px;
     }
 
     @keyframes fadeIn {
@@ -63,6 +74,7 @@
       border-radius: 5px;
       color: #000; /* Black text color */
       outline: none;
+
     }
 
     .otp-input:focus {
@@ -71,13 +83,14 @@
 
 
     .submit-btn {
-      background-color: #000; /* Black button background color */
+      background-color: #00b1ff; /* Black button background color */
       color: #fff; /* Button text color */
       font-size: 16px;
       border: none;
       border-radius: 5px;
       padding: 10px 20px;
       cursor: pointer;
+      width: 200px;
       transition: background-color 0.3s ease-in-out;
     }
     /*.alert {*/
@@ -106,61 +119,78 @@
       font-size: 18px;
       color: #000; /* Timer text color */
     }
+    .timer{
+      margin-top: 30px;
+    }
   </style>
 </head>
 <body>
-<div class="otp-container">
-  <h2>OTP Verification</h2>
-  <p>Please enter the 6-digit OTP sent to your Email.</p>
-  <form th:action="@{/registration/otpRegistrationValidation}"  method="post">
+<div class="main-div" style="display: flex;flex-direction: column;">
+
+
+<div class="otp-container ">
+  <img src="/assets/img/confirmPhone.jpeg" width="80" height="80">
+  <h2>Just one more step</h2>
+  <p>Please enter the 6-digit code sent to your Email.</p>
+  <form th:action="@{/registration/otpRegistrationValidation}" method="post">
     <div th:if="${error}" class="alert alert-danger">
       <p th:text="${error}" class="alert alert-danger" ></p>
     </div>
-
     <div class="otp-field form-outline form-white mb-4">
       <input type="text" maxlength="6" class="form-control custom-input" name="otp" placeholder="Enter your otp" required/>
     </div>
     <button class="submit-btn" type="submit">
-      Verify OTP
+      Confirm
     </button>
   </form>
   <br>
-  <form th:action="@{/registration/resendOTP}" method="get">
+  <form th:action="@{/registration/resendOTP}" id="resend" method="get" style="display: none;">
     <button class="submit-btn" id="resendBtn">
       Resend OTP
     </button>
   </form>
-
+  <div class="timer"><span id="countdown"></span>
+  </div>
 </div>
-
+<div class="login-container  " style="color:#000000">
+  <h5>
+    Have an account?<a th:href="@{/main/login}">Log in</a>
+  </h5>
+</div>
+</div>
 <script>
-  // Countdown timer
-  var timer = document.getElementById('timer');
-  var timeLeft = 120; // 2 minutes in seconds
+  let timerInterval; // Declare a variable to hold the timer interval
 
-  function updateTimer() {
-    var minutes = Math.floor(timeLeft / 60);
-    var seconds = timeLeft % 60;
-    timer.textContent = (minutes < 10 ? '0' : '') + minutes + ':' + (seconds < 10 ? '0' : '') + seconds;
+  // Function to start the timer
+  function startTimer(duration, display) {
+    let timer = duration, minutes, seconds;
+    timerInterval = setInterval(function () {
+      minutes = parseInt(timer / 60, 10);
+      seconds = parseInt(timer % 60, 10);
 
-    if (timeLeft === 0) {
-      // Handle timeout, e.g., show a message or disable the submit button
-    } else {
-      timeLeft--;
-      setTimeout(updateTimer, 1000); // Update every second
-    }
-  }
+      minutes = minutes < 10 ? "0" + minutes : minutes;
+      seconds = seconds < 10 ? "0" + seconds : seconds;
 
-  function moveToNextInput(input, nextInputName) {
-    if (input.value.length === input.maxLength) {
-      var nextInput = document.getElementsByName(nextInputName)[0];
-      if (nextInput) {
-        nextInput.focus();
+      display.textContent = minutes + ":" + seconds;
+
+      if (--timer < 0) {
+        timer = duration;
+        display.textContent = "00:00"; // Display 00:00 when the timer expires
+        clearInterval(timerInterval); // Stop the timer
+        resend.style.display = "block"; // Show the resend button
       }
-    }
+    }, 1000);
   }
 
-  updateTimer(); // Start the timer
+  // Set the timer duration (in seconds)
+  const timerDuration = 30;
+
+  // Start the timer when the page loads
+  window.onload = function () {
+    const display = document.querySelector("#countdown");
+    startTimer(timerDuration, display);
+  };
 </script>
 </body>
+
 </html>

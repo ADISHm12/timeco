@@ -1,0 +1,87 @@
+@import url('https://fonts.googleapis.com/css?family=Oxygen');
+
+body{
+    margin: 0;
+    padding: 0;
+    font-family: 'Oxygen', sans-serif;
+    letter-spacing: 1px;
+}
+
+section{
+    width: 100%;
+    height: 100vh;
+    background:#222D3E;
+    background-size: cover;
+}
+
+
+.container{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    width: 700px;
+    height: 350px;
+    background:rgba(252,97,107,0.8);
+}
+
+.container .FormContents,
+.container .LoginForm{
+    position: relative;
+    width: 50%;
+    height: 350px;
+    float: left;
+    box-sizing: border-box;
+}
+
+
+.container .FormContents{
+    padding: 40px 30px;
+    color: #fff;
+
+}
+
+.container .FormContents a{
+    display: inline-block;
+    padding: 10px 20px;
+    color: #fff;
+    background: #222D3E;
+    border-radius: 25px;
+    text-decoration: none;
+    box-shadow: 0 5px 10px rgba(0,0,0,.2);
+
+}
+
+.container .LoginForm{
+    background: #fff;
+    height: 380px;
+    top: -15px;
+    box-shadow: -20px 0 15px rgba(0,0,0,0.3);
+    padding: 30px;
+}
+.container .LoginForm h1{
+    color: #FC616B;
+}
+.container .LoginForm a{
+    color: #FC616B;
+
+}
+.container .LoginForm input{
+    display: block;
+    width: 100%;
+    padding: 10px;
+    box-sizing: border-box;
+    margin-bottom: 20px;
+    border: 2px solid #ccc;
+    border-radius: 25px;
+    outline: none;
+}
+.container .LoginForm input:hover{
+    border: 1px solid #FC616B;
+}
+.container .LoginForm input[type="submit"]{
+    color: #fff;
+    background: #FC616B;
+    transition: .5s;
+}
+

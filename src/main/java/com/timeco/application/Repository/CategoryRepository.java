@@ -15,5 +15,5 @@ public interface CategoryRepository extends JpaRepository<Category,Long> {
     public List<Category> findByNameContaining(String searchTerm);
 
 
-
+    Category findByNameIgnoreCase(String categoryName);
 }

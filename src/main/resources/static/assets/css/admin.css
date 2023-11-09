@@ -7908,15 +7908,6 @@ pre code {
     .container, .container-sm, .container-md, .container-lg, .container-xl {
         max-width: 1140px; } }
 
-
-/*stock color*/
-.stock-in {
-    color: green;
-}
-
-.stock-out {
-    color: red;
-}
 .row {
     display: flex;
     flex-wrap: wrap;
@@ -15824,7 +15815,6 @@ code {
 
 .stretch-card {
     display: -webkit-flex;
-    width:1100px;
     display: flex;
     -webkit-align-items: stretch;
     align-items: stretch;
@@ -16584,7 +16574,6 @@ code {
     border-radius: 0.25rem; }
 .card .card-body {
     padding: 1.75rem 1.5625rem; }
-
 .card .card-body + .card-body {
     padding-top: 1rem; }
 .card .card-title {
@@ -19109,8 +19098,6 @@ body.avgrund-active {
 
 .jsgrid .jsgrid-grid-body {
     border-color: rgba(255, 255, 255, 0.1); }
-
-
 
 .jsgrid .jsgrid-table th {
     font-weight: initial;

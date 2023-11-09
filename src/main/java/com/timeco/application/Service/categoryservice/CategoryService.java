@@ -19,5 +19,6 @@ public interface CategoryService {
     Category getCategoryById(Long categoryId) ;
 
     List<Category> searchCategory(String searchTerm);
+    public boolean categoryExists(String categoryName);
 
 }

@@ -19,7 +19,6 @@
   <link rel="stylesheet" href="/assets/css/slick.css">
   <link rel="stylesheet" href="/assets/css/nice-select.css">
   <link rel="stylesheet" href="/assets/css/style.css">
-
   <style>
     .container {
       width: 100%;
@@ -160,75 +159,55 @@
 <main>
   <div class="main-add">
     <div class="container">
-    <h1 class="m-5">Add Address</h1>
+      <h1 class="m-5">Add Address</h1>
       <form th:action="@{/user/addAddress}" method="post" th:object="${address}">
         <div class="form-group row">
-          <div class="col-sm-9">
+          <div class="col-sm-12 col-md-6">
             <h5>Name:</h5>
             <input type="text" class="form-control" id="userName" th:field="*{userName}" name="userName" placeholder="Your name..">
           </div>
-        </div>
-
-        <div class="form-group row">
-          <div class="col-sm-9">
+          <div class="col-sm-12 col-md-6">
             <h5>Phone Number:</h5>
             <input type="text" class="form-control" id="mobile" th:field="*{mobile}" name="mobile" placeholder="Your phone number..">
-
           </div>
         </div>
 
         <div class="form-group row">
-          <div class="col-sm-9">
+          <div class="col-sm-12 col-md-6">
             <h5>City:</h5>
             <input type="text" class="form-control" id="city" th:field="*{city}" name="city" placeholder="Your city..">
-
           </div>
-        </div>
-
-        <div class="form-group row">
-          <div class="col-sm-9">
+          <div class="col-sm-12 col-md-6">
             <h5>Address:</h5>
             <input type="text" class="form-control" id="address" th:field="*{address}" name="address" placeholder="Your address..">
           </div>
         </div>
 
         <div class="form-group row">
-          <div class="col-sm-9">
+          <div class="col-sm-12 col-md-6">
             <h5>State:</h5>
             <input type="text" class="form-control" id="state" th:field="*{state}" name="state" placeholder="Your state..">
           </div>
-        </div>
-
-        <div class="form-group row">
-          <div class="col-sm-9">
+          <div class="col-sm-12 col-md-6">
             <h5>Country:</h5>
             <input type="text" class="form-control" id="country" th:field="*{country}" name="country" placeholder="Your country..">
           </div>
         </div>
 
         <div class="form-group row">
-          <div class="col-sm-9">
+          <div class="col-sm-12 col-md-6">
             <h5>Zip Code:</h5>
             <input type="text" class="form-control" id="pinCode" th:field="*{pinCode}" name="pinCode" placeholder="Your zip code..">
           </div>
+          <input type="hidden" name="source" th:value="${source}" />
         </div>
 
-        <div class="form-group row">
-          <!-- Additional fields if needed -->
-        </div>
-
-        <div class="btn btn-primary mt-4">
-          <button type="submit">Submit</button>
+        <div>
+          <button type="submit" class="btn btn-primary">Submit</button>
         </div>
       </form>
-
-
     </div>
-
-
-
   </div>
-
 
 
 

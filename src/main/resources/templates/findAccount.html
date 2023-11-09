@@ -6,7 +6,11 @@
     <title>Forgot Password</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
+        body{
+          background-color: #060003;
+        }
         .forgot-password-form {
+
             max-width: 400px;
             margin: 0 auto;
             padding: 20px;
@@ -23,10 +27,10 @@
 <br>
 <br>
 <br>
-<div class="container">
+<div class="container ">
     <div class="row justify-content-center">
-        <div class="col-md-6">
-            <form class="forgot-password-form" method="post" th:action="@{/forgotPassword}">
+        <div class="col-md-6" >
+            <form class="forgot-password-form" method="post" th:action="@{/main/forgotPassword}">
                 <h2 class="text-center">Find Your Account</h2>
                 <p class="text-muted text-center">Enter your email address to reset your password.</p>
                 <!-- Display error message if it exists -->
@@ -41,6 +45,9 @@
         </div>
     </div>
 </div>
+
+
+
 
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>

@@ -25,10 +25,7 @@ public class AdminUserController {
     private UserService userService;
 
 
-    @GetMapping("/adminHome")
-    public String home(){
-        return"adminHome";
-    }
+
 
 
 
@@ -36,7 +33,6 @@ public class AdminUserController {
     public String blockUser(@PathVariable Long id) {
 
         userService.lockUser(id);
-        System.out.println("8888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888");
 
         return "redirect:/admin/listUsers";
     }
@@ -45,9 +41,6 @@ public class AdminUserController {
     public String unblockUser(@PathVariable Long id) {
 
         userService.unlockUser(id);
-
-        System.out.println("8888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888");
-
         return "redirect:/admin/listUsers";
     }
     @GetMapping ("/listUsers")

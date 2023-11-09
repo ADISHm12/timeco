@@ -39,8 +39,9 @@ public class CartServiceImpl implements CartService{
 
         if (principal != null) {
             String username = principal.getName(); // Get the username of the authenticated user
+            System.out.println(username+"jh66666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666");
             User user = userService.findUserByUsername(username); // Assuming you have a repository method to find the user by username
-
+            System.out.println(user+"3333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333");
             if (user != null) {
                 Cart cart = user.getCart();
 
@@ -77,19 +78,25 @@ public List<CartItems> getCartItemsForUser(User user) {
     }
 }
 
-//    @Override
-//    @Transactional
-//    public List<CartItems> getCartItemsForUser(User user) {
-//
-//        System.out.println(user+"3333333333333333333333333333333333333333333333333333333333333333333333333333333333333333");
-//        Cart cart = cartRepository.findCartWithItemsEagerly(user.getId());
-//        System.out.println(cart+"22222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222");
-//
-//        if (cart != null) {
-//            return cart.getCartItems();
-//        } else {
-//            return Collections.emptyList();
-//        }
-//    }
+    @Override
+    public boolean isProductInCart(ProductDto productDTO, Principal principal) {
+        String username = principal.getName();
+        User user = userRepository.findByEmail(username);
+        Cart usercart = cartRepository.findCartByUser(user);
+
+        for (CartItems  cartItem : usercart.getCartItems()) {
+            // Assuming that cart items have a reference to the product
+            if (cartItem.getProduct().getId().equals(productDTO.getId())) {
+
+                System.out.println("9999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999");
+                return true; // Product is in the cart
+            }
+        }
+        System.out.println("-00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000");
+
+        return false;
+    }
+
+
 
 }

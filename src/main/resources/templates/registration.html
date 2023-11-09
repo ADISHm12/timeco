@@ -10,17 +10,17 @@
     <link rel="shortcut icon" type="image/x-icon" href="../assets/img/favicon.ico">
 
     <!-- CSS here -->
-    <link rel="stylesheet" href="../assets/css/bootstrap.min.css">
-    <link rel="stylesheet" href="../assets/css/owl.carousel.min.css">
-    <link rel="stylesheet" href="../assets/css/flaticon.css">
-    <link rel="stylesheet" href="../assets/css/slicknav.css">
-    <link rel="stylesheet" href="../assets/css/animate.min.css">
-    <link rel="stylesheet" href="../assets/css/magnific-popup.css">
-    <link rel="stylesheet" href="../assets/css/fontawesome-all.min.css">
-    <link rel="stylesheet" href="../assets/css/themify-icons.css">
-    <link rel="stylesheet" href="../assets/css/slick.css">
-    <link rel="stylesheet" href="../assets/css/nice-select.css">
-    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="/assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/assets/css/owl.carousel.min.css">
+    <link rel="stylesheet" href="/assets/css/flaticon.css">
+    <link rel="stylesheet" href="/assets/css/slicknav.css">
+    <link rel="stylesheet" href="/assets/css/animate.min.css">
+    <link rel="stylesheet" href="/assets/css/magnific-popup.css">
+    <link rel="stylesheet" href="/assets/css/fontawesome-all.min.css">
+    <link rel="stylesheet" href="/assets/css/themify-icons.css">
+    <link rel="stylesheet" href="/assets/css/slick.css">
+    <link rel="stylesheet" href="/assets/css/nice-select.css">
+    <link rel="stylesheet" href="/assets/css/style.css">
 </head>
 <body>
 <header>
@@ -37,44 +37,23 @@
                     <div class="main-menu d-none d-lg-block">
                         <nav>
                             <ul id="navigation">
-                                <li><a href="index.html">Home</a></li>
-                                <li><a href="shop.html">shop</a></li>
-                                <li><a href="about.html">about</a></li>
-                                <li class="hot"><a href="#">Latest</a>
-                                    <ul class="submenu">
-                                        <li><a href="shop.html"> Product list</a></li>
-                                        <li><a href="product_details.html"> Product Details</a></li>
-                                    </ul>
+                                <li><a th:href="@{/}">Home</a></li>
+                                <li><a th:href="@{/user/products}">shop</a></li>
+                                <li th:if="${not #authorization.expression('isAuthenticated()')}">
+                                    <a th:href="@{/login}">Login</a>
                                 </li>
-                                <li><a href="blog.html">Blog</a>
-                                    <ul class="submenu">
-                                        <li><a href="blog.html">Blog</a></li>
-                                        <li><a href="blog-details.html">Blog Details</a></li>
-                                    </ul>
-                                </li>
-                                <li><a href="#">Pages</a>
-                                    <ul class="submenu">
-                                        <li><a href="login.html">Login</a></li>
-                                        <li><a href="cart.html">Cart</a></li>
-                                        <li><a href="elements.html">Element</a></li>
-                                        <li><a href="confirmation.html">Confirmation</a></li>
-                                        <li><a href="checkout.html">Product Checkout</a></li>
-                                    </ul>
-                                </li>
-                                <li><a href="contact.html">Contact</a></li>
+<!--                                <li><a th:href="@{/user/viewCart}">Cart</a></li>-->
+
+
+                                <!--                                <li><a href="contact.html">Contact</a></li>-->
                             </ul>
                         </nav>
                     </div>
                     <!-- Header Right -->
                     <div class="header-right">
                         <ul>
-                            <li>
-                                <div class="nav-search search-switch">
-                                    <span class="flaticon-search"></span>
-                                </div>
-                            </li>
-                            <li> <a href="login.html"><span class="flaticon-user"></span></a></li>
-                            <li><a href="cart.html"><span class="flaticon-shopping-cart"></span></a> </li>
+                            <li> </li>
+                            <li> </li>
                         </ul>
                     </div>
                 </div>
@@ -122,51 +101,42 @@
                         <div class="login_part_form_iner">
                             <h3>Welcome Back ! <br>
                                 Please Sign in now</h3>
-                            <form class="row contact_form" th:action="@{/registration/Register}" method="post" th:object="${user}" novalidate="novalidate">
-                                <div th:if="${session.registrationError}" class="error-message" style="color: red;">
-                                    <span th:text="${session.registrationError}"></span>
-                                </div>
-
-
+                            <p class="text-danger" id="formError" style="display: none;">Please fill out all fields.</p>
+                            <div class="col-md-12 form-group">
+                                <span class="text-danger">
+                                    <!-- Add an error message placeholder -->
+                                    <div th:if="${session.registrationError}" th:text="${session.registrationError}"></div>
+                                </span>
+                            </div>
+                            <form class="row contact_form" th:action="@{/registration/Register}" method="post" th:object="${user}" novalidate="novalidate" onsubmit="return validateForm()">
                                 <div class="col-md-12 form-group p_star">
-                                    <input type="text" class="form-control" id="firstName" name="firstName" th:field="*{firstName}" th:errorclass="is-invalid"
-                                           placeholder="First Name">
-                                    <span class="text-danger" th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}"></span>
-                                </div>
-                                <div class="col-md-12 form-group p_star">
-                                    <input type="text" class="form-control" id="lastName" name="lastName" th:field="*{lastName}" th:errorclass="is-invalid"
-                                           placeholder="Last Name">
-                                    <span class="text-danger" th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}"></span>
-                                </div>
-
-                                <div class="col-md-12 form-group p_star">
-                                    <input type="email" class="form-control" id="email" name="email" th:field="*{email}" th:errorclass="is-invalid"
-                                           placeholder="Email">
-                                    <span class="text-danger" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span>
+                                    <input type="text" class="form-control" id="firstName" name="firstName" th:field="*{firstName}" pattern="[a-zA-Z0-9]{5,15}" title="First name must be alphanumeric and between 5-15 characters" placeholder="First Name" required>
+                                    <span class="text-danger" id="usernameFeedback"></span>
                                 </div>
                                 <div class="col-md-12 form-group p_star">
-                                    <input type="tel" class="form-control" id="phoneNumber" name="phoneNumber" th:field="*{phoneNumber}" th:errorclass="is-invalid"
-                                           placeholder="Phone Number">
-                                    <span class="text-danger" th:if="${#fields.hasErrors('phoneNumber')}" th:errors="*{phoneNumber}"></span>
+                                    <input type="text" class="form-control" id="lastName" name="lastName" th:field="*{lastName}" pattern="[a-zA-Z0-9]{5,15}" title="Last name must be alphanumeric and between 5-15 characters" placeholder="Last Name" required>
+                                    <span class="text-danger" id="lastnameFeedback"></span>
                                 </div>
                                 <div class="col-md-12 form-group p_star">
-                                    <input type="password" class="form-control" id="password" name="password" th:field="*{password}" th:errorclass="is-invalid"
-                                           placeholder="Password">
-                                    <span class="text-danger" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></span>
+                                    <input type="email" class="form-control" id="email" name="email" th:field="*{email}" pattern="[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,}$" title="Please enter a valid email address" placeholder="Email" required>
+                                    <span class="text-danger" id="emailFeedback"></span>
                                 </div>
-
+                                <div class="col-md-12 form-group p_star">
+                                    <input type="number" class="form-control" id="phoneNumber" name="phoneNumber" pattern="[0-9\\s\\-\\(\\)]{10,}" title="Please enter a valid phone number with at least 10 characters" placeholder="Phone Number" required maxlength="10">
+                                    <span class="text-danger" id="numberFeedback"></span>
+                                </div>
+                                <div class="col-md-12 form-group p_star">
+                                    <input type="password" class="form-control" id="password" name="password" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" title="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters" placeholder="Password" required>
+                                    <span class="text-danger" id="passwordFeedback"></span>
+                                </div>
                                 <div class="col-md-12 form-group">
                                     <div class="creat_account d-flex align-items-center">
-                                        <input type="checkbox" id="f-option" name="selector">
-                                        <label for="f-option">Remember me</label>
+
                                     </div>
-                                    <button type="submit" value="submit" class="btn_3">
-                                        SIGN UP
-                                    </button>
-                                    <a class="lost_pass" href="#">forgot password?</a>
+                                    <button type="submit" value="submit" class="btn_3">SIGN UP</button>
+
                                 </div>
                             </form>
-
                         </div>
                     </div>
                 </div>
@@ -272,6 +242,8 @@
 <!-- Search model end -->
 
 <!-- JS here -->
+
+<script src="/assets/js/regValidation.js"></script>
 
 <script src="../assets/js/vendor/modernizr-3.5.0.min.js"></script>
 <!-- Jquery, Popper, Bootstrap -->
