@@ -28,6 +28,7 @@ public class Coupon {
     private double couponAmount;
 
     private String minimumAmount;
+
     private String userLimit;
 
     private Integer usageCount=0;
@@ -37,11 +38,15 @@ public class Coupon {
     @OneToMany (mappedBy="coupon")
     private List <PurchaseOrder> ordersList;
 
+
     @ManyToMany(mappedBy = "coupons")
     private Set<User> users = new HashSet<>();
 
     public Coupon() {
 
+    }
+    public void incrementUsageCount() {
+        this.usageCount++;
     }
 
 

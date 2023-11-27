@@ -10,15 +10,26 @@ import java.util.List;
 public interface CategoryService {
 
     void addCategory(CategoryDto categoryDto);
+
     public void deleteCategoryById(Long id);
-    public void updateCategoryById(Long id,CategoryDto categoryDto);
 
-    public void lockCategory(Long id) ;
+    public boolean updateCategoryById(Long id, String name);
 
-    public void unlockCategory(Long id) ;
-    Category getCategoryById(Long categoryId) ;
+    public void lockCategory(Long id);
+
+    public void unlockCategory(Long id);
+
+    Category getCategoryById(Long categoryId);
 
     List<Category> searchCategory(String searchTerm);
+
     public boolean categoryExists(String categoryName);
 
-}
+    public void calculateAndUpdateDiscountsForCategory(Category category);
+
+    public double calculateDiscountedAmount(double price, Integer percentage);
+
+    public void resetDiscountedAmountsForCategoryProducts(Category category) ;
+
+
+    }

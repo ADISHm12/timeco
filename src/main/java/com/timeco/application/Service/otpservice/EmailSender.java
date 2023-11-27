@@ -1,6 +1,9 @@
 package com.timeco.application.Service.otpservice;
 
+import com.timeco.application.model.user.User;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -29,6 +32,13 @@ public class EmailSender {
     @Value("${spring.mail.password}")
     private String password;
 
+
+    private final JavaMailSender javaMailSender;
+
+    public EmailSender(JavaMailSender javaMailSender) {
+        this.javaMailSender = javaMailSender;
+    }
+
     @PostConstruct
     public void init() {
         Properties props = new Properties();
@@ -54,4 +64,23 @@ public class EmailSender {
 
         Transport.send(message);
     }
+
+
+    public String generateReferralLink(User referrer) {
+        String referralCode = referrer.getReferralCode();
+        return "http://localhost:8080/registration/RegForm?referralCode=" + referralCode;
+    }
+
+
+    public void sendReferralEmail(String recipientEmail, String referralLink) throws MessagingException {
+        MimeMessage message = javaMailSender.createMimeMessage();
+        MimeMessageHelper  helper = new MimeMessageHelper(message, true);
+
+        helper.setTo(recipientEmail);
+        helper.setSubject("Invitation to Join Our App!");
+        helper.setText("Hey there! Join our app using this referral link: " + referralLink);
+
+        javaMailSender.send(message);
+    }
+
 }

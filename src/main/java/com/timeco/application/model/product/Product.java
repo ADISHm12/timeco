@@ -7,7 +7,6 @@ import com.timeco.application.model.category.Subcategory;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
-
 @Entity
 @Table(name="product")
 public class Product {
@@ -32,7 +31,14 @@ public class Product {
     @Column(name="price",nullable = false)
     private Double price;
 
+
     private boolean isBlocked;
+
+
+    private Double discountedAmount;
+
+
+
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ProductImage> productImages;
@@ -70,7 +76,7 @@ public class Product {
         this.productImages = new ArrayList<>();
     }
 
-    public Product(Long id, String productName,boolean isBlocked, String current_state, String description, Integer quantity, Double price, List<ProductImage> productImages, Category category) {
+    public Product(Long id, String productName,boolean isBlocked, String current_state, String description, Integer quantity, Double price, List<ProductImage> productImages, Category category,Double discountedAmount) {
         this.id = id;
         this.productName = productName;
         this.current_state = current_state;
@@ -80,6 +86,15 @@ public class Product {
         this.productImages = productImages;
         this.category = category;
         this.isBlocked=isBlocked;
+        this.discountedAmount=discountedAmount;
+    }
+
+    public Double getDiscountedAmount() {
+        return discountedAmount;
+    }
+
+    public void setDiscountedAmount(Double discountedAmount) {
+        this.discountedAmount = discountedAmount;
     }
 
     public Long getId() {

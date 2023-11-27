@@ -64,11 +64,13 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                         ,"/main/**"
                         ,"/assets/**"
                         ,"/admin/**"
+                        ,"/main/ResetOtpVerification"
                 ).permitAll()
 //                .antMatchers("/").hasAnyRole("USER","ADMIN")
                 .antMatchers("/accessdenied").hasAnyRole("ROLE_USER", "ROLE_ADMIN")
                 .antMatchers("/admin/**").hasRole("ADMIN")
                 .antMatchers("/user/**").hasRole(("USER"))
+                .antMatchers("/pro/**").hasRole("USER")
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()

@@ -36,6 +36,13 @@
         margin-top: 3vh
     }
 
+     .hidden {
+         display: none;
+     }
+     .hidden1{
+         display: none;
+     }
+
     #progressbar li {
         list-style-type: none;
         font-size: .8rem;
@@ -334,8 +341,13 @@
     <div class="page-content pt-5 pb-60" >
         <div class="dashboard">
             <div class="container bg-white pl-5">
+                <div style="padding-top: 40px">
+                    <button onclick="generatePDF(this)" class="btn_3" th:data-orderItemId="${orderItem.orderItemId}" th:data-addressId="${address.addressId}">Download PDF</button>
+
+                </div>
                 <div class="d-flex pb-3" style="align-items: center; justify-content: center">
-                <h1 class=" pt-5">Your Order</h1>
+
+                    <h2 class=" pt-2">YOUR ORDER</h2>
                 </div>
                 <div class="row">
                     <div class="col-12 col-md-6">
@@ -350,8 +362,77 @@
                                 <p><strong>Country:</strong> <span th:text="${address.country}">Anytown</span></p>
                                 <p><strong>Mobile:</strong> <span th:text="${address.mobile}">CA</span></p>
                                 <p><strong>Zip Code:</strong> <span th:text="${address.address}">12345</span></p>
-                            </div>
 
+                            </div>
+                            <div id="returnFormContainer" class="hidden">
+
+                                <form id="returnForm" class="pl-5 dynamic-return-form" th:if="${orderItem.orderStatus == 'delivered' || orderItem.orderStatus == 'Order Placed'}" th:action="@{/pro/process}" method="post" onsubmit="return processReturn(event, 'return')">
+                                    <input type="hidden" id="orderItemId" name="orderId" th:value="${orderItem.orderItemId}" />
+                                    <input type="hidden" id="orderMethod" name="method" th:value="RETURN" >
+                                    <input type="hidden" id="orderAmount" name="refundedAmount" th:value="${orderItem.product.price * orderItem.getOrderItemCount()}">
+
+                                    <div >
+                                        <p>
+                                            Return reason:
+                                        </p>
+                                        <select id="returnReason" name="returnReason" style="width: 400px" required>
+                                            <option value="defective">Defective product</option>
+                                            <option value="wrongItem">Wrong item received</option>
+                                            <option value="notSatisfied">Not satisfied with the product</option>
+                                            <option value="notSatisfied">Other reason</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="mt-3 mb-4">
+                                        <p>
+                                            Return method:
+                                        </p>
+                                        <select id="refundMethod" name="refundMethod" required>
+                                            <option value="creditCard">Credit Card</option>
+                                            <option value="wallet">Wallet</option>
+                                            <!-- Add other refund methods as needed -->
+                                        </select>
+                                    </div>
+
+                                    <button type="submit" class="btn return-button py-3 px-4 my-4">Return Order</button>
+                                </form>
+                            </div>
+                            <div id="cancelFormContainer" class="hidden1">
+
+                                <form id="cancelForm" class="pl-5 dynamic-return-form" th:if="${orderItem.orderStatus == 'Order Placed'}" th:action="@{/pro/process}" method="post" onsubmit="return processReturn(event , 'cancel')">
+                                    <input type="hidden" id="orderItemId1" name="orderId" th:value="${orderItem.orderItemId}" />
+                                    <input type="hidden" id="orderMethod1" name="method" th:value="cancelled" >
+                                    <input type="hidden" id="orderAmount1" name="refundedAmount" th:value="${orderItem.product.price * orderItem.getOrderItemCount()}">
+
+                                    <div >
+                                        <p>
+                                            Return reason:
+                                        </p>
+                                        <select id="cancelReason" name="returnReason" style="width: 400px" required>
+                                            <option value="delayedDelivery">Delayed delivery</option>
+                                            <option value="changedMind">Changed my mind</option>
+                                            <option value="foundBetterPrice">Found a better price elsewhere</option>
+                                            <option value="duplicateOrder">Accidentally placed a duplicate order</option>
+                                            <option value="other">Other reason</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="mt-3 mb-4" th:if="${orderItem.order.paymentMethod.paymentMethodName != 'CASH ON DELIVERY'}">
+
+                                        <p>
+
+                                            Return method:
+                                        </p>
+                                        <select id="refundMethod1" name="refundMethod" required>
+                                            <option value="creditCard">Credit Card</option>
+                                            <option value="wallet">Wallet</option>
+                                            <!-- Add other refund methods as needed -->
+                                        </select>
+                                    </div>
+
+                                    <button type="submit" class="btn return-button py-3 px-4 my-4">Cancel Order</button>
+                                </form>
+                            </div>
                         </div>
                     </div>
                     <div class="col-12 col-md-6">
@@ -380,15 +461,22 @@
                                             </b></p><i class="fa-solid fa-file-invoice-dollar"></i>
                                             <p  th:text="${orderItem.order.paymentMethod.getPaymentMethodName()}"></p>
                                             </p>
-                                            <h5 class="card-title mb-2" th:text="'₹' + ${orderItem.product.price * orderItem.getOrderItemCount() }">₹ 5000
+                                            <h5 class="card-title mb-2" th:text="'₹' + ${orderItem.getOrderedPrice() * orderItem.getOrderItemCount() }">₹ 5000
                                             </h5>
-                                            Placed
+                                            <h6 th:text="${orderItem.orderStatus}" style="margin-top: 20px"></h6>
+
                                         </div>
                                     </div>
-                                    <form class="pl-5" th:if="${orderItem.orderStatus != 'delivered'}" th:unless="${orderItem.orderStatus == 'cancelled'}" th:action="@{'/user/cancel-order/' + ${orderItem.orderItemId}}" method="post" onsubmit="return showConfirmation(event)">
-                                        <button type="submit" class="btn delete-button py-3 px-4 my-4 ">Cancel Order</button>
-                                    </form>
-                                    <div class="progress-track" th:unless="${orderItem.orderStatus == 'cancelled'}">
+<!--                                    <form class="pl-5" th:if="${orderItem.orderStatus != 'delivered'}" th:unless="${orderItem.orderStatus == 'cancelled' or orderItem.orderStatus == 'RETURN'}" onclick="showReturnForm()" >-->
+<!--                                        <button type="button" class="btn delete-button py-3 px-4 my-4 ">Cancel Order</button>-->
+<!--&lt;!&ndash;                                        th:action="@{'/user/cancel-order/' + ${orderItem.orderItemId}}" method="post"&ndash;&gt;-->
+<!--                                    </form>-->
+                                    <div class="cancelButtonContainer" style="margin-left: 25px">
+                                        <form class="pl-5" th:if="${orderItem.orderStatus != 'delivered'}" th:unless="${orderItem.orderStatus == 'cancelled' or orderItem.orderStatus == 'RETURN'}" >
+                                            <button type="button" class="btn_3 return-button py-3 px-4 my-4" onclick="showCancelForm()">Cancel order</button>
+                                        </form>
+                                    </div>
+                                    <div class="progress-track" th:unless="${orderItem.orderStatus == 'cancelled' or orderItem.orderStatus == 'RETURN'}">
                                         <ul id="progressbar">
                                             <li style="font-size: 12px;" class="step0 active " id="step1"  >Order placed
                                             </li>
@@ -403,18 +491,23 @@
                                                 id="step3">Out for Delivery</li>
                                             <li style="font-size: 12px;"
                                                 class="step0 text-right " th:classappend="${orderItem.orderStatus == 'delivered'} ? 'active' : ''"
-                                                id="step4">Delivered</li>
+                                                id="step5">Delivered</li>
                                         </ul>
                                     </div>
                                     <div class="progress-track" th:if="${orderItem.orderStatus == 'cancelled'}">
                                         <h2 class="text-center text-danger">Order Cancelled</h2>
                                         <ul id="progressbarCancel">
-                                            <li style="font-size: 12px;" class="step0 active text-danger" id="step1" >Order placed
+                                            <li style="font-size: 12px;" class="step0 active text-danger" id="step7" >Order placed
                                             </li>
                                             <li style="font-size: 12px;"
                                                 class="step2 active text-danger text-right"
                                                 id="step4">Cancelled</li>
                                         </ul>
+                                    </div>
+                                    <div class="returnButtonContainer" style="margin-left: 25px">
+                                        <form class="pl-5" th:if="${orderItem.orderStatus == 'delivered'}" onclick="showReturnForm()">
+                                            <button type="button" class="btn_3 return-button py-3 px-4 my-4">Return Order</button>
+                                        </form>
                                     </div>
                                 </div>
                             </div>
@@ -524,61 +617,180 @@
 
 <!-- JS here -->
 
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="../assets/js/vendor/modernizr-3.5.0.min.js"></script>
 <!-- Jquery, Popper, Bootstrap -->
-<script src="../assets/js/vendor/jquery-1.12.4.min.js"></script>
 <script src="../assets/js/popper.min.js"></script>
 <script src="../assets/js/bootstrap.min.js"></script>
 <!-- Jquery Mobile Menu -->
 <script src="../assets/js/jquery.slicknav.min.js"></script>
-
-<!-- Jquery Slick , Owl-Carousel Plugins -->
+<!-- Jquery Slick, Owl-Carousel Plugins -->
 <script src="../assets/js/owl.carousel.min.js"></script>
 <script src="../assets/js/slick.min.js"></script>
-
 <!-- One Page, Animated-HeadLin -->
 <script src="../assets/js/wow.min.js"></script>
 <script src="../assets/js/animated.headline.js"></script>
 <script src="../assets/js/jquery.magnific-popup.js"></script>
-
 <!-- Scrollup, nice-select, sticky -->
 <script src="../assets/js/jquery.scrollUp.min.js"></script>
 <script src="../assets/js/jquery.nice-select.min.js"></script>
 <script src="../assets/js/jquery.sticky.js"></script>
-
 <!-- contact js -->
 <script src="./assets/js/contact.js"></script>
 <script src="./assets/js/jquery.form.js"></script>
 <script src="./assets/js/jquery.validate.min.js"></script>
 <script src="./assets/js/mail-script.js"></script>
 <script src="./assets/js/jquery.ajaxchimp.min.js"></script>
-
 <!-- Jquery Plugins, main Jquery -->
 <script src="./assets/js/plugins.js"></script>
 <script src="./assets/js/main.js"></script>
-<script>
-    function showConfirmation(event) {
-        event.preventDefault(); // Prevent the default form submission behavior
 
+<!--<script>-->
+<!--    function showConfirmation(event) {-->
+<!--        event.preventDefault(); // Prevent the default form submission behavior-->
+
+<!--        Swal.fire({-->
+<!--            title: 'Are you sure?',-->
+<!--            text: 'Do you want to cancel this order?',-->
+<!--            icon: 'warning',-->
+<!--            showCancelButton: true,-->
+<!--            confirmButtonText: 'Yes, cancel it!',-->
+<!--            cancelButtonText: 'No, keep it'-->
+<!--        }).then((result) => {-->
+<!--            if (result.isConfirmed) {-->
+<!--                // If the user confirms, manually submit the form-->
+<!--                event.target.submit(); // This submits the form-->
+<!--            }-->
+<!--        });-->
+
+<!--        return false; // Ensure the form doesn't submit by default-->
+<!--    }-->
+<!--</script>-->
+
+<script>
+    $(document).ready(function () {
+        function showReturnForm() {
+            // Show the return form dynamically
+            $('#returnFormContainer').removeClass('hidden');
+        }
+
+        $('.returnButtonContainer').on('click', 'button.return-button', function (event) {
+            event.preventDefault();
+            // Call the function to show the return form
+            showReturnForm();
+        });
+    });
+
+
+
+    function processReturn(event,method) {
+        event.preventDefault(); // Prevent the form from submitting the traditional way
+
+        // Display a confirmation alert using SweetAlert2
         Swal.fire({
             title: 'Are you sure?',
-            text: 'Do you want to cancel this order?',
+            text: `Do you want to ${method === 'cancel' ? 'cancel' : 'process the return and refund'}?`,
             icon: 'warning',
             showCancelButton: true,
-            confirmButtonText: 'Yes, cancel it!',
-            cancelButtonText: 'No, keep it'
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: `Yes, ${method === 'cancel' ? 'cancel it' : 'process it'}!`
         }).then((result) => {
             if (result.isConfirmed) {
-                // If the user confirms, manually submit the form
-                event.target.submit(); // This submits the form
+                // User clicked "Yes," proceed with the AJAX request
+
+                // Get form data
+                var formData = {
+                    orderId: method === 'cancel' ? $('#orderItemId1').val() : $('#orderItemId').val(),
+                    method: method === 'cancel' ? 'cancelled' : 'RETURN',
+                    // refundedAmount: method === 'cancel' ? $('#orderAmount1').val() : $('#orderAmount').val(),
+                    returnReason: method === 'cancel' ? $('#cancelReason').val() : $('#returnReason').val(),
+                    refundMethod: method === 'cancel' ? $('#refundMethod1').val() : $('#refundMethod').val()
+                };
+
+                // Make an AJAX request
+                $.ajax({
+                    type: 'POST',
+                    url: $('#returnForm').attr('action'),
+                    data: formData,
+                    success: function (data) {
+                        console.log('AJAX Success:', data);
+                        // Show success message
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Processed!',
+                            text: `${method === 'cancel' ? 'Order cancelled' : 'Return and refund processed successfully'}`,
+                        });
+
+                        // Reload the page without refreshing
+                        location.reload();
+                    },
+                    error: function (data) {
+                        // Show error message
+                        Swal.fire('Error!', 'Error processing return and refund', 'error');
+
+                        // Optionally, you can handle specific errors or display more detailed messages here
+                    }
+                });
             }
         });
 
-        return false; // Ensure the form doesn't submit by default
+        // Return false to prevent the form from submitting again
+        return false;
     }
 </script>
+<script>
+    $(document).ready(function () {
+        function showCancelForm() {
+            // Show the return form dynamically
+            $('#cancelFormContainer').removeClass('hidden1');
+        }
+
+        $('.cancelButtonContainer').on('click', 'button.return-button', function (event) {
+            event.preventDefault();
+
+            // Call the function to show the return form
+            showCancelForm();
+        });
+    });
+</script>
+
+
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+<script>
+    function generatePDF(button) {
+        const orderItemId = button.getAttribute('data-orderItemId');
+        const addressId = button.getAttribute('data-addressId');
+        console.log(orderItemId)
+        fetch(`/pro/generate-pdf?orderItemId=${orderItemId}&addressId=${addressId}`, {
+            method: 'POST',
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to generate PDF');
+                }
+                return response.blob();
+            })
+            .then(blob => {
+                // Create a blob URL and trigger the download
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'output.pdf';
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                // Handle error scenario here
+            });
+    }
+
+</script>
+<script src="/assets/js/checkBlocked.js"></script>
 
 </body>
 </html>

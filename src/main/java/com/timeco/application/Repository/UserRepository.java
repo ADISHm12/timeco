@@ -18,4 +18,8 @@ public interface UserRepository extends JpaRepository<User,Long> {
 
 
     int countByIsBlocked(boolean isBlocked);
+
+    User findByReferralCode(String referralCode);
+
+    User findUserByReferralCode(String referralCode);
 }

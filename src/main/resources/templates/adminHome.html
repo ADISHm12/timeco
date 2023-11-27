@@ -44,7 +44,7 @@
         <div class="profile-desc">
           <div class="profile-pic">
             <div class="count-indicator">
-              <img class="img-xs rounded-circle " src="/assets/productImages/profileforAdmin.jpeg" alt="">
+              <img class="img-xs rounded-circle " src="/assets/img/user.jpg" alt="">
               <span class="count bg-success"></span>
             </div>
             <div class="profile-name">
@@ -148,9 +148,24 @@
           <span class="menu-title">SALES REPORT</span>
         </a>
       </li>
+      <li class="nav-item menu-items">
+        <a class="nav-link" th:href="@{/admin/categoryOfferList}">
+              <span class="menu-icon">
+                <i class="mdi mdi-contacts"></i>
+              </span>
+          <span class="menu-title">OFFER </span>
+        </a>
+      </li>
+      <li class="nav-item menu-items">
+        <a class="nav-link" th:href="@{/admin/couponList}">
+              <span class="menu-icon">
+                <i class="mdi mdi-contacts"></i>
+              </span>
+          <span class="menu-title">COUPON </span>
+        </a>
+      </li>
     </ul>
   </nav>
-  <!-- partial -->
   <div class="container-fluid page-body-wrapper">
     <!-- partial:partials/_navbar.html -->
     <nav class="navbar p-0 fixed-top d-flex flex-row">
@@ -163,36 +178,20 @@
         </button>
 
         <ul class="navbar-nav navbar-nav-right">
-<!--          -->
-          <li class="nav-item nav-settings d-none d-lg-block">
-            <a class="nav-link" href="#">
-              <i class="mdi mdi-view-grid"></i>
+          <li class="nav-item dropdown">
+            <a class="nav-link" id="profileDropdown" href="#" data-toggle="dropdown">
+              <div class="navbar-profile">
+                <img class="img-xs rounded-circle" src="/assets/img/user.jpg" alt="">
+                <p class="mb-0 d-none d-sm-block navbar-profile-name">Henry Klein</p>
+                <i class="mdi mdi-menu-down d-none d-sm-block"></i>
+              </div>
             </a>
-          </li>
-          <form method="post" th:action="@{/logout}">
-            <button type="submit" class="btn btn-success">
-              Logout
-            </button>
-          </form>
-
-
-
-
             <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list" aria-labelledby="profileDropdown">
               <h6 class="p-3 mb-0">Profile</h6>
               <div class="dropdown-divider"></div>
-              <a class="dropdown-item preview-item">
-                <div class="preview-thumbnail">
-                  <div class="preview-icon bg-dark rounded-circle">
-                    <i class="mdi mdi-settings text-success"></i>
-                  </div>
-                </div>
-                <div class="preview-item-content">
-                  <p class="preview-subject mb-1">Settings</p>
-                </div>
-              </a>
+
               <div class="dropdown-divider"></div>
-              <a class="dropdown-item preview-item">
+              <a th:href="@{/logout}"  class="dropdown-item preview-item">
                 <div class="preview-thumbnail">
                   <div class="preview-icon bg-dark rounded-circle">
                     <i class="mdi mdi-logout text-danger"></i>
@@ -290,10 +289,11 @@
                 <canvas id="myChart" style="width: 300px ;height: 300px"></canvas>
                 <input id="codInput" th:value="${COD}" type="hidden">
                 <input  id="onlineInput" th:value="${ONLINE}" type="hidden">
+                <input id="walletInput" th:value="${WALLET}" type="hidden">
 
                 <div class="bg-gray-dark d-flex d-md-block d-xl-flex flex-row py-3 px-4 px-md-3 px-xl-4 rounded mt-3"  >
                   <div class="text-md-center text-xl-left">
-                    <h6 class="mb-1">Transfer to Paypal</h6>
+                    <h6 class="mb-1">ONLINE </h6>
                     <p class="text-muted mb-0">07 Jan 2019, 09:12AM</p>
                   </div>
                   <div class="align-self-center flex-grow text-right text-md-center text-xl-right py-md-2 py-xl-0">
@@ -302,11 +302,20 @@
                 </div>
                 <div class="bg-gray-dark d-flex d-md-block d-xl-flex flex-row py-3 px-4 px-md-3 px-xl-4 rounded mt-3">
                   <div class="text-md-center text-xl-left">
-                    <h6 class="mb-1">Tranfer to Stripe</h6>
+                    <h6 class="mb-1">Cash on Delivery</h6>
                     <p class="text-muted mb-0">07 Jan 2019, 09:12AM</p>
                   </div>
                   <div class="align-self-center flex-grow text-right text-md-center text-xl-right py-md-2 py-xl-0">
                     <h6 class="font-weight-bold mb-0" th:text="${totalCashOnDelivery}">$593</h6>
+                  </div>
+                </div>
+                <div class="bg-gray-dark d-flex d-md-block d-xl-flex flex-row py-3 px-4 px-md-3 px-xl-4 rounded mt-3"  >
+                  <div class="text-md-center text-xl-left">
+                    <h6 class="mb-1">WALLET</h6>
+                    <p class="text-muted mb-0">07 Jan 2019, 09:12AM</p>
+                  </div>
+                  <div class="align-self-center flex-grow text-right text-md-center text-xl-right py-md-2 py-xl-0">
+                    <h6 class="font-weight-bold mb-0"  th:text="${'$'+totalWalletPayment}"></h6>
                   </div>
                 </div>
               </div>
@@ -329,7 +338,7 @@
                         <div th:each="order : ${latestOrders}" class="preview-item border-bottom">
                           <div class="preview-thumbnail">
                             <div class="preview-icon bg-primary">
-                              <img th:src="${'/assets'+order.product.productImages[0].imageName}" alt="Product Image" />
+                              <img th:if="${order.product.productImages.size() > 0}" th:src="${'/assets'+order.product.productImages[0].imageName}" alt="Product Image" />
                             </div>
                           </div>
                           <div class="preview-item-content d-sm-flex flex-grow">
@@ -398,12 +407,12 @@
           <div class="col-sm-4 grid-margin">
             <div class="card">
               <div class="card-body">
-                <h5>Purchase</h5>
+                <h5>Cancel Order</h5>
                 <div class="row">
                   <div class="col-8 col-sm-12 col-xl-8 my-auto">
                     <div class="d-flex d-sm-block d-md-flex align-items-center">
-                      <h2 class="mb-0">$2039</h2>
-                      <p class="text-danger ml-2 mb-0 font-weight-medium">-2.1% </p>
+                      <h2 class="mb-0" th:text="${cancelOrder}">$2039</h2>
+                      <p class="text-danger ml-2 mb-0 font-weight-medium"> </p>
                     </div>
                     <h6 class="text-muted font-weight-normal">2.27% Since last month</h6>
                   </div>
@@ -459,23 +468,25 @@
 
 <script>
   document.addEventListener("DOMContentLoaded", function () {
-    var xValues = ["COD", "ONLINE"];
+    var xValues = ["COD", "ONLINE","WALLET"];
     var yValues = [];
 
     // Fetch values from hidden inputs
     var codInput = document.getElementById("codInput");
     var onlineInput = document.getElementById("onlineInput");
+    var walletInput = document.getElementById("walletInput");
     console.log(codInput.value)
     console.log(onlineInput.value)
 
     if (codInput && onlineInput) {
-      yValues = [parseInt(codInput.value), parseInt(onlineInput.value)];
+      yValues = [parseInt(codInput.value), parseInt(onlineInput.value) ,parseInt(walletInput.value)];
+
     } else {
       // Default values in case the hidden inputs are not found
-      yValues = [0, 0];
+      yValues = [0, 0,0];
     }
 
-    var barColors = ["#b91d47", "#00aba9"];
+    var barColors = ["#b91d47", "#00aba9","#c6fc58"];
 
     new Chart("myChart", {
       type: "doughnut",

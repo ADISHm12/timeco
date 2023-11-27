@@ -14,30 +14,31 @@
     <link rel="stylesheet" href="/assets/adminjs/vendors/flag-icon-css/css/flag-icon.min.css">
     <link rel="stylesheet" href="/assets/adminjs/vendors/owl-carousel-2/owl.carousel.min.css">
     <link rel="stylesheet" href="/assets/adminjs/vendors/owl-carousel-2/owl.theme.default.min.css">
-    <!-- End plugin css for this page -->
-    <!-- inject:css -->
-    <!-- endinject -->
-    <!-- Layout styles -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/AlertifyJS/1.13.1/css/alertify.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/AlertifyJS/1.13.1/css/themes/default.min.css" />
+
     <link rel="stylesheet" href="/assets/css/admin.css">
     <!-- End layout styles -->
     <link rel="shortcut icon" href="/assets/img/logo/logo.png" />
-    <script>
-        function toggleBlockUnblock(button) {
-            const confirmation = confirm('Are you sure you want to toggle the block/unblock for this user?');
-            if (confirmation) {
-                if (button.innerText === "Block") {
-                    button.innerText = "Unblock";
-                    button.classList.remove("btn-primary");
-                    button.classList.add("btn-danger");
-                } else {
-                    button.innerText = "Block";
-                    button.classList.remove("btn-danger");
-                    button.classList.add("btn-primary");
-                }
-            }
-            return false;
-        }
-    </script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<!--    <script>-->
+<!--        function toggleBlockUnblock(button) {-->
+<!--            const confirmation = confirm('Are you sure you want to toggle the block/unblock for this user?');-->
+<!--            if (confirmation) {-->
+<!--                if (button.innerText === "Block") {-->
+<!--                    button.innerText = "Unblock";-->
+<!--                    button.classList.remove("btn-primary");-->
+<!--                    button.classList.add("btn-danger");-->
+<!--                } else {-->
+<!--                    button.innerText = "Block";-->
+<!--                    button.classList.remove("btn-danger");-->
+<!--                    button.classList.add("btn-primary");-->
+<!--                }-->
+<!--            }-->
+<!--            return false;-->
+<!--        }-->
+<!--    </script>-->
 </head>
 <body>
 <div class="container-scroller">
@@ -156,6 +157,22 @@
                     <span class="menu-title">SALES REPORT</span>
                 </a>
             </li>
+            <li class="nav-item menu-items">
+                <a class="nav-link" th:href="@{/admin/categoryOfferList}">
+              <span class="menu-icon">
+                <i class="mdi mdi-contacts"></i>
+              </span>
+                    <span class="menu-title">OFFER </span>
+                </a>
+            </li>
+            <li class="nav-item menu-items">
+                <a class="nav-link" th:href="@{/admin/couponList}">
+              <span class="menu-icon">
+                <i class="mdi mdi-contacts"></i>
+              </span>
+                    <span class="menu-title">COUPON </span>
+                </a>
+            </li>
         </ul>
     </nav>
     <!-- partial -->
@@ -169,20 +186,6 @@
                 <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="minimize">
                     <span class="mdi mdi-menu"></span>
                 </button>
-                <ul class="navbar-nav w-100">
-                    <li class="nav-item w-100">
-                        <form class="form-inline" th:action="@{/admin/searchCategory}" method="get">
-                            <div class="row justify-content-end">
-                                <div class="col-md-12 col-lg-12 col-xl-12 d-flex">
-                                    <div class="form-group">
-                                        <input style="max-width: 300px;" id="searchTerm" type="text" name="searchTerm" required class="form-control form-control-dark text-bg-dark" placeholder="Enter category name">
-                                    </div>
-                                    <button type="submit" class="btn btn-primary">Search</button>
-                                </div>
-                            </div>
-                        </form>
-                    </li>
-                </ul>
                 <ul class="navbar-nav navbar-nav-right">
                     <li class="nav-item dropdown">
                         <a class="nav-link" id="profileDropdown" href="#" data-toggle="dropdown">
@@ -195,18 +198,9 @@
                         <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list" aria-labelledby="profileDropdown">
                             <h6 class="p-3 mb-0">Profile</h6>
                             <div class="dropdown-divider"></div>
-                            <a class="dropdown-item preview-item">
-                                <div class="preview-thumbnail">
-                                    <div class="preview-icon bg-dark rounded-circle">
-                                        <i class="mdi mdi-settings text-success"></i>
-                                    </div>
-                                </div>
-                                <div class="preview-item-content">
-                                    <p class="preview-subject mb-1">Settings</p>
-                                </div>
-                            </a>
+
                             <div class="dropdown-divider"></div>
-                            <a class="dropdown-item preview-item">
+                            <a th:href="@{/logout}"  class="dropdown-item preview-item">
                                 <div class="preview-thumbnail">
                                     <div class="preview-icon bg-dark rounded-circle">
                                         <i class="mdi mdi-logout text-danger"></i>
@@ -217,7 +211,6 @@
                                 </div>
                             </a>
                             <div class="dropdown-divider"></div>
-                            <p class="p-3 mb-0 text-center">Advanced settings</p>
                         </div>
                     </li>
                 </ul>
@@ -246,14 +239,15 @@
                                         <tr>
                                             <th style="width: 50px;">Row No</th>
                                             <th >
-                                                   Coupon Name
+                                                    Name
                                             </th>
-                                                <th>Coupon Code </th>
-                                            <th>Discount Amount </th>
+                                                <th>Code </th>
+                                            <th>Discount</th>
                                             <th>Users Limit</th>
                                             <th>Expiry Date </th>
                                             <th>Criteria Amount </th>
-                                            <th>Action</th>
+                                            <th>List</th>
+                                            <th>Edit</th>
 
                                         </tr>
                                         </thead>
@@ -281,21 +275,22 @@
                                             </td>
                                             <td>
                                                 <div>
-                                                    <form th:action="@{/admin/blockCoupon/{id}(id=${coupon.couponId})}" method="get">
+                                                    <form id="unblockForm" th:action="@{/admin/unblockCoupon/{id}(id=${coupon.couponId})}" method="get">
                                                         <input type="hidden" name="_method" value="put">
-                                                        <button type="submit" class="btn bg-gradient-warning btn-fw custom-small-button" id="hello"  th:if="${coupon.isActive()}">Unblock</button>
+                                                        <button type="button" class="btn bg-gradient-warning btn-fw custom-small-button" id="hello" th:if="${!coupon.isActive()}" onclick="confirmAction('unblock', this)">Unblock</button>
                                                     </form>
-                                                    <form th:action="@{/admin/unblockCoupon/{id}(id=${coupon.couponId})}" method="get">
+                                                    <form id="blockForm" th:action="@{/admin/blockCoupon/{id}(id=${coupon.couponId})}" method="get">
                                                         <input type="hidden" name="_method" value="put">
-                                                        <button type="submit" class="btn bg-gradient-danger btn-fw custom-small-button" id="hell" th:if="${!coupon.isActive()}">Lock</button>
+                                                        <button type="button" class="btn bg-gradient-danger btn-fw custom-small-button" id="hell" th:if="${coupon.isActive()}" onclick="confirmAction('block', this)">Lock</button>
                                                     </form>
                                                 </div>
                                             </td>
+
                                             <td>
-                                                <form>
-                                                    <a  class=" btn btn-primary  btn-fw custom-small-button " style="width: 10px" th:href="@{/admin/editCoupon/{id}(id=${coupon.couponId})}"  th:method="get">
+                                                <form th:action="@{/admin/editCoupon/{id}(id=${coupon.couponId})}" th:method="get">
+                                                    <button class="btn btn-primary btn-fw custom-small-button" style="width: 10px" type="submit">
                                                         Edit
-                                                    </a>
+                                                    </button>
                                                 </form>
                                             </td>
                                         </tr>
@@ -307,8 +302,6 @@
                         </div>
                     </div>
                 </div>
-
-
             </div>
             <!-- content-wrapper ends -->
             <!-- partial:partials/_footer.html -->
@@ -318,12 +311,11 @@
                     <span class="float-none float-sm-right d-block mt-1 mt-sm-0 text-center"> Free <a href="https://www.bootstrapdash.com/bootstrap-admin-template/" target="_blank">Bootstrap admin templates</a> from Bootstrapdash.com</span>
                 </div>
             </footer>
-            <!-- partial -->
+            <!--  -->
         </div>
-        <!-- main-panel ends -->
 
     </div>
-    <!-- page-body-wrapper ends -->
+
 </div>
 <!-- container-scroller -->/
 <!-- plugins:js -->
@@ -345,6 +337,36 @@
 <!-- endinject -->
 <!-- Custom js for this page -->
 <script src="/assets/adminjs/js/dashboard.js"></script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    function confirmAction(action, button) {
+        let message;
+        if (action === 'block') {
+            message = 'Are you sure you want to unblock this coupon?';
+        } else if (action === 'unblock') {
+            message = 'Are you sure you want to lock this coupon?';
+        }
+
+        alertify.confirm(message, function (result) {
+            if (result) {
+                performAction(action, button);
+            } else {
+                // Do something if canceled
+            }
+        }).set('labels', {ok:'Yes', cancel:'No'});
+    }
+
+    function performAction(action, button) {
+        const form = button.closest('form'); // Get the parent form of the clicked button
+
+        if (form) {
+            form.submit(); // Submit the form after the user confirms
+        }
+    }
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/AlertifyJS/1.13.1/alertify.min.js"></script>
 
 <!-- End custom js for this page -->
 </body>

@@ -3,6 +3,8 @@ package com.timeco.application.model.user;
 import com.timeco.application.model.cart.Cart;
 import com.timeco.application.model.coupon.Coupon;
 import com.timeco.application.model.role.Role;
+import com.timeco.application.model.wallet.Wallet;
+import com.timeco.application.model.wishlist.Wishlist;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -55,6 +57,46 @@ public class User  {
             inverseJoinColumns = @JoinColumn(name = "coupon_id"))
     private Set <Coupon> coupons = new HashSet<>();
 
+    @OneToOne(mappedBy = "user",cascade=CascadeType.ALL)
+    private Wishlist  wishlist = new Wishlist();
+
+
+    @ManyToOne
+    @JoinColumn(name = "referrer_id")
+    private User referrer;  // Referrer
+
+    @Column(name = "referral_code", unique = true)
+    private String referralCode;
+
+
+    @OneToOne(mappedBy = "user",cascade =CascadeType.ALL,fetch = FetchType.LAZY)
+    private Wallet  wallet;
+
+
+    public User getReferrer() {
+        return referrer;
+    }
+
+    public void setReferrer(User referrer) {
+        this.referrer = referrer;
+    }
+
+    public String getReferralCode() {
+        return referralCode;
+    }
+
+    public void setReferralCode(String referralCode) {
+        this.referralCode = referralCode;
+    }
+
+    public Wishlist getWishlist() {
+        return wishlist;
+    }
+
+    public void setWishlist(Wishlist wishlist) {
+        this.wishlist = wishlist;
+    }
+
     public Set<Coupon> getCoupons() {
         return coupons;
     }
@@ -77,6 +119,14 @@ public class User  {
         this.roles = roles;
 
 
+    }
+
+    public Wallet getWallet() {
+        return wallet;
+    }
+
+    public void setWallets(Wallet wallets) {
+        this.wallet = wallets;
     }
 
     public Cart getCart() {
@@ -181,7 +231,7 @@ public class User  {
         this.cart.setUser(this);
     }
 
-    public User(String firstName, String lastName, String email, String phoneNumber, String password, boolean isBlocked, Collection<Role> roles, Cart cart, List<UserAddress> addresses, Set<Coupon> coupons) {
+    public User(String firstName, String lastName, String email, String phoneNumber, String password, boolean isBlocked, Collection<Role> roles, Cart cart, List<UserAddress> addresses, Set<Coupon> coupons, Wishlist wishlist, User referrer, String referralCode, Wallet wallet) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -192,5 +242,9 @@ public class User  {
         this.cart = cart;
         this.addresses = addresses;
         this.coupons = coupons;
+        this.wishlist = wishlist;
+        this.referrer = referrer;
+        this.referralCode = referralCode;
+        this.wallet = wallet;
     }
 }

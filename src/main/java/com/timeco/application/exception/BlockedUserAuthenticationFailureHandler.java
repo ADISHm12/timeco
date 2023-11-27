@@ -14,8 +14,6 @@ public class BlockedUserAuthenticationFailureHandler implements AuthenticationFa
 
 
 
-
-
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
                                         org.springframework.security.core.AuthenticationException exception) throws IOException, ServletException {

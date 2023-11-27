@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+9<!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <!-- Required meta tags -->
@@ -18,6 +18,9 @@
     <!-- inject:css -->
     <!-- endinject -->
     <!-- Layout styles -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/AlertifyJS/1.13.1/css/alertify.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/AlertifyJS/1.13.1/css/themes/default.min.css" />
+
     <link rel="stylesheet" href="/assets/css/admin.css">
     <!-- End layout styles -->
     <link rel="shortcut icon" href="/assets/images/favicon.png" />
@@ -139,11 +142,29 @@
                     <span class="menu-title">SALES REPORT</span>
                 </a>
             </li>
+            <li class="nav-item menu-items">
+                <a class="nav-link" th:href="@{/admin/categoryOfferList}">
+              <span class="menu-icon">
+                <i class="mdi mdi-contacts"></i>
+              </span>
+                    <span class="menu-title">OFFER </span>
+                </a>
+            </li>
+            <li class="nav-item menu-items">
+                <a class="nav-link" th:href="@{/admin/couponList}">
+              <span class="menu-icon">
+                <i class="mdi mdi-contacts"></i>
+              </span>
+                    <span class="menu-title">COUPON </span>
+                </a>
+            </li>
+        </ul>
         </ul>
     </nav>
     <!-- partial -->
     <div class="container-fluid page-body-wrapper">
         <!-- partial:partials/_navbar.html -->
+
         <nav class="navbar p-0 fixed-top d-flex flex-row">
             <div class="navbar-brand-wrapper d-flex d-lg-none align-items-center justify-content-center">
                 <a class="navbar-brand brand-logo-mini" href="index.html"><img src="assets/images/logo-mini.svg" alt="logo" /></a>
@@ -167,140 +188,6 @@
                     </li>
                 </ul>
                 <ul class="navbar-nav navbar-nav-right">
-                    <li class="nav-item dropdown d-none d-lg-block">
-                        <a class="nav-link btn btn-success create-new-button" id="createbuttonDropdown" data-toggle="dropdown" aria-expanded="false" href="#">+ Create New Project</a>
-                        <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list" aria-labelledby="createbuttonDropdown">
-                            <h6 class="p-3 mb-0">Projects</h6>
-                            <div class="dropdown-divider"></div>
-                            <a class="dropdown-item preview-item">
-                                <div class="preview-thumbnail">
-                                    <div class="preview-icon bg-dark rounded-circle">
-                                        <i class="mdi mdi-file-outline text-primary"></i>
-                                    </div>
-                                </div>
-                                <div class="preview-item-content">
-                                    <p class="preview-subject ellipsis mb-1">Software Development</p>
-                                </div>
-                            </a>
-                            <div class="dropdown-divider"></div>
-                            <a class="dropdown-item preview-item">
-                                <div class="preview-thumbnail">
-                                    <div class="preview-icon bg-dark rounded-circle">
-                                        <i class="mdi mdi-web text-info"></i>
-                                    </div>
-                                </div>
-                                <div class="preview-item-content">
-                                    <p class="preview-subject ellipsis mb-1">UI Development</p>
-                                </div>
-                            </a>
-                            <div class="dropdown-divider"></div>
-                            <a class="dropdown-item preview-item">
-                                <div class="preview-thumbnail">
-                                    <div class="preview-icon bg-dark rounded-circle">
-                                        <i class="mdi mdi-layers text-danger"></i>
-                                    </div>
-                                </div>
-                                <div class="preview-item-content">
-                                    <p class="preview-subject ellipsis mb-1">Software Testing</p>
-                                </div>
-                            </a>
-                            <div class="dropdown-divider"></div>
-                            <p class="p-3 mb-0 text-center">See all projects</p>
-                        </div>
-                    </li>
-                    <li class="nav-item nav-settings d-none d-lg-block">
-                        <a class="nav-link" href="#">
-                            <i class="mdi mdi-view-grid"></i>
-                        </a>
-                    </li>
-                    <li class="nav-item dropdown border-left">
-                        <a class="nav-link count-indicator dropdown-toggle" id="messageDropdown" href="#" data-toggle="dropdown" aria-expanded="false">
-                            <i class="mdi mdi-email"></i>
-                            <span class="count bg-success"></span>
-                        </a>
-                        <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list" aria-labelledby="messageDropdown">
-                            <h6 class="p-3 mb-0">Messages</h6>
-                            <div class="dropdown-divider"></div>
-                            <a class="dropdown-item preview-item">
-                                <div class="preview-thumbnail">
-                                    <img src="assets/images/faces/face4.jpg" alt="image" class="rounded-circle profile-pic">
-                                </div>
-                                <div class="preview-item-content">
-                                    <p class="preview-subject ellipsis mb-1">Mark send you a message</p>
-                                    <p class="text-muted mb-0"> 1 Minutes ago </p>
-                                </div>
-                            </a>
-                            <div class="dropdown-divider"></div>
-                            <a class="dropdown-item preview-item">
-                                <div class="preview-thumbnail">
-                                    <img src="assets/images/faces/face2.jpg" alt="image" class="rounded-circle profile-pic">
-                                </div>
-                                <div class="preview-item-content">
-                                    <p class="preview-subject ellipsis mb-1">Cregh send you a message</p>
-                                    <p class="text-muted mb-0"> 15 Minutes ago </p>
-                                </div>
-                            </a>
-                            <div class="dropdown-divider"></div>
-                            <a class="dropdown-item preview-item">
-                                <div class="preview-thumbnail">
-                                    <img src="assets/images/faces/face3.jpg" alt="image" class="rounded-circle profile-pic">
-                                </div>
-                                <div class="preview-item-content">
-                                    <p class="preview-subject ellipsis mb-1">Profile picture updated</p>
-                                    <p class="text-muted mb-0"> 18 Minutes ago </p>
-                                </div>
-                            </a>
-                            <div class="dropdown-divider"></div>
-                            <p class="p-3 mb-0 text-center">4 new messages</p>
-                        </div>
-                    </li>
-                    <li class="nav-item dropdown border-left">
-                        <a class="nav-link count-indicator dropdown-toggle" id="notificationDropdown" href="#" data-toggle="dropdown">
-                            <i class="mdi mdi-bell"></i>
-                            <span class="count bg-danger"></span>
-                        </a>
-                        <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list" aria-labelledby="notificationDropdown">
-                            <h6 class="p-3 mb-0">Notifications</h6>
-                            <div class="dropdown-divider"></div>
-                            <a class="dropdown-item preview-item">
-                                <div class="preview-thumbnail">
-                                    <div class="preview-icon bg-dark rounded-circle">
-                                        <i class="mdi mdi-calendar text-success"></i>
-                                    </div>
-                                </div>
-                                <div class="preview-item-content">
-                                    <p class="preview-subject mb-1">Event today</p>
-                                    <p class="text-muted ellipsis mb-0"> Just a reminder that you have an event today </p>
-                                </div>
-                            </a>
-                            <div class="dropdown-divider"></div>
-                            <a class="dropdown-item preview-item">
-                                <div class="preview-thumbnail">
-                                    <div class="preview-icon bg-dark rounded-circle">
-                                        <i class="mdi mdi-settings text-danger"></i>
-                                    </div>
-                                </div>
-                                <div class="preview-item-content">
-                                    <p class="preview-subject mb-1">Settings</p>
-                                    <p class="text-muted ellipsis mb-0"> Update dashboard </p>
-                                </div>
-                            </a>
-                            <div class="dropdown-divider"></div>
-                            <a class="dropdown-item preview-item">
-                                <div class="preview-thumbnail">
-                                    <div class="preview-icon bg-dark rounded-circle">
-                                        <i class="mdi mdi-link-variant text-warning"></i>
-                                    </div>
-                                </div>
-                                <div class="preview-item-content">
-                                    <p class="preview-subject mb-1">Launch Admin</p>
-                                    <p class="text-muted ellipsis mb-0"> New admin wow! </p>
-                                </div>
-                            </a>
-                            <div class="dropdown-divider"></div>
-                            <p class="p-3 mb-0 text-center">See all notifications</p>
-                        </div>
-                    </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link" id="profileDropdown" href="#" data-toggle="dropdown">
                             <div class="navbar-profile">
@@ -312,18 +199,9 @@
                         <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list" aria-labelledby="profileDropdown">
                             <h6 class="p-3 mb-0">Profile</h6>
                             <div class="dropdown-divider"></div>
-                            <a class="dropdown-item preview-item">
-                                <div class="preview-thumbnail">
-                                    <div class="preview-icon bg-dark rounded-circle">
-                                        <i class="mdi mdi-settings text-success"></i>
-                                    </div>
-                                </div>
-                                <div class="preview-item-content">
-                                    <p class="preview-subject mb-1">Settings</p>
-                                </div>
-                            </a>
+
                             <div class="dropdown-divider"></div>
-                            <a class="dropdown-item preview-item">
+                            <a th:href="@{/logout}"  class="dropdown-item preview-item">
                                 <div class="preview-thumbnail">
                                     <div class="preview-icon bg-dark rounded-circle">
                                         <i class="mdi mdi-logout text-danger"></i>
@@ -334,7 +212,6 @@
                                 </div>
                             </a>
                             <div class="dropdown-divider"></div>
-                            <p class="p-3 mb-0 text-center">Advanced settings</p>
                         </div>
                     </li>
                 </ul>
@@ -351,9 +228,37 @@
                         <div class="card">
                             <div class="card-body">
 
-                                <div>
-                                    <h4 class="card-title">SUB CATEGORY MANAGEMENT</h4>
-                                    <a class="btn btn-primary" th:href="@{/admin/addSubCategory}">Add</a>
+<!--                                <div>-->
+<!--                                    <h4 class="card-title">SUB CATEGORY MANAGEMENT</h4>-->
+<!--                                    <a class="btn btn-primary" th:href="@{/admin/addSubCategory}">Add</a>-->
+<!--                                </div>-->
+                                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">
+                                    Add
+                                </button>
+
+                                <!-- Modal -->
+                                <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered" role="document" >
+                                        <form th:action="@{/admin/addSubCategory}" method="post" th:object="${subcategoryAdd}" onsubmit="return validateForm()">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="exampleModalLongTitle">Add subCategory</h5>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <input type="text" name="inputValue" th:field="*{name}" style="width: 100%;background: black;color: white" id="inputField">
+                                                    <p id="nameError" style="display: none;color: red" ></p>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                    <button type="submit" class="btn btn-primary">Save</button>
+                                                </div>
+                                            </div>
+                                        </form>
+
+                                    </div>
                                 </div>
 
                                 <div class="table-responsive">
@@ -378,35 +283,54 @@
                                             </td>
 
                                             <td class="action-buttons">
-                                                <div>
-                                                    <a th:href="@{/admin/updateSubCategory/{id}(id=${subcategory.id})}" type="button"
-                                                       class="btn btn-warning btn-fw custom-small-button" fdprocessedid="mq2w9o">Update</a>
-                                                </div>
+<!--                                                <div>-->
+<!--                                                    <a th:href="@{/admin/updateSubCategory/{id}(id=${subcategory.id})}" type="button"-->
+<!--                                                       class="btn btn-warning btn-fw custom-small-button" fdprocessedid="mq2w9o">Update</a>-->
+<!--                                                </div>-->
+                                                <button type="button" class="btn btn-warning btn-fw custom-small-button" data-toggle="modal" th:data-target="'#updateModal_' + ${subcategory.id}">
+                                                    Update
+                                                </button>
 
                                             </td>
+                                            <div class="modal fade" th:id="'updateModal_' + ${subcategory.id}" tabindex="-1" role="dialog" aria-labelledby="updateModalLabel" aria-hidden="true">
+                                                <div class="modal-dialog modal-dialog-centered" role="document">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title" id="updateModalLabel">Update Category</h5>
+                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                <span aria-hidden="true">&times;</span>
+                                                            </button>
+                                                        </div>
+                                                        <form th:action="@{/admin/updateSubCategory/{id}(id=${subcategory.id})}"  method="post">
+                                                            <div class="modal-body">
+                                                                <input type="text" class="form-control" name="name" th:value="${subcategory.name}" />
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                                <button type="submit" class="btn btn-primary">Save</button>
+                                                            </div>
+                                                        </form>
+                                                        <div id="alertContainer"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                             <td>
                                                 <div>
+
                                                     <form th:action="@{/admin/blockSubCategory/{id}(id=${subcategory.id})}" method="get">
                                                         <input type="hidden" name="_method" value="put">
-                                                        <button type="submit" class="btn bg-gradient-warning btn-fw custom-small-button"
-                                                                fdprocessedid="mq2w9o" th:if="${subcategory.isListed()}">Unblock</button>
+                                                        <button type="button" class="btn bg-gradient-warning btn-fw custom-small-button"
+                                                                fdprocessedid="mq2w9o" th:if="${subcategory.isListed()}" onclick="confirmAction('block', this)">Unblock</button>
                                                     </form>
                                                     <form th:action="@{/admin/unblockSubCategory/{id}(id=${subcategory.id})}" method="get">
                                                         <input type="hidden" name="_method" value="put">
-                                                        <button type="submit" class="btn bg-gradient-danger btn-fw custom-small-button"
-                                                                fdprocessedid="mq2w9o" th:if="${!subcategory.isListed()}">Lock</button>
+                                                        <button type="button" class="btn bg-gradient-danger btn-fw custom-small-button"
+                                                                fdprocessedid="mq2w9o" th:if="${!subcategory.isListed()}" onclick="confirmAction('unblock', this)">Lock</button>
                                                     </form>
+
                                                 </div>
                                             </td>
-<!--                                            <td>-->
-<!--                                                <div class="last">-->
-<!--                                                    <form th:action="@{/admin/deleteSubCategory/{id}(id=${subcategory.id})}" method="get">-->
-<!--                                                        <input type="hidden" name="_method" value="put">-->
-<!--                                                        <button type="submit" class="btn bg-gradient-danger btn-fw custom-small-button"-->
-<!--                                                                fdprocessedid="mq2w9o" >Delete</button>-->
-<!--                                                    </form>-->
-<!--                                                </div>-->
-<!--                                            </td>-->
+
                                         </tr>
                                         </tbody>
                                     </table>
@@ -454,6 +378,112 @@
 <!-- endinject -->
 <!-- Custom js for this page -->
 <script src="/assets/adminjs/js/dashboard.js"></script>
+<script>
+    var inputField = document.getElementById('inputField');
+    var nameError = document.getElementById('nameError');
+
+    inputField.addEventListener('input', function() {
+        validateForm();
+    });
+
+    function validateForm() {
+        if (inputField.value.trim() === '') {
+            nameError.innerHTML = 'subCategory Name is required';
+            nameError.style.display = 'block';
+            return false;
+        } else if (inputField.value.length < 4) {
+            nameError.innerHTML = 'subCategory Name should have at least 4 letters';
+            nameError.style.display = 'block';
+            return false;
+        }else if (/\d/.test(inputField.value)) {
+            nameError.innerHTML = 'subCategory Name should not contain numbers';
+            nameError.style.display = 'block';
+            return false;
+        } else {
+            nameError.style.display = 'none';
+            return true;
+        }
+    }
+</script>
+<script>
+    window.onload = function() {
+        if (window.location.href.indexOf('error=DuplicateSubcategory') !== -1) {
+            alertify
+                .alert("sub category already created", function(){
+                    alertify.message('OK');
+                });
+            const newURL = window.location.href.replace(/([&?]error=DuplicateSubcategory\b(?!=[^&]*&))(?:[?&]|$)/, '');
+            history.replaceState(null, null, newURL);
+        }
+    };
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/AlertifyJS/1.13.1/alertify.min.js"></script>
+<script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const successMessage = urlParams.get('success');
+    const errorMessage = urlParams.get('error');
+
+    document.addEventListener('DOMContentLoaded', function () {
+        if (successMessage) {
+            showAlert('success', successMessage);
+        } else if (errorMessage) {
+            showAlert('error', errorMessage);
+        }
+    });
+
+    function showAlert(type, message) {
+        if (type === 'success') {
+            alertify.success(message);
+        } else {
+            alertify.error(message);
+        }
+
+        // Remove the 'success' and 'error' parameters from the URL
+        const newURL = removeQueryParam('success');
+        const newerURL = removeQueryParam('error');
+        history.replaceState(null, null, newerURL);
+    }
+
+    function removeQueryParam(paramToRemove) {
+        const url = window.location.href;
+        const urlParts = url.split('?');
+        if (urlParts.length >= 2) {
+            const prefix = encodeURIComponent(paramToRemove) + '=';
+            const query = urlParts[1].split('&').filter(function(item) {
+                return !item.startsWith(prefix);
+            }).join('&');
+            return urlParts[0] + (query ? '?' + query : '');
+        }
+        return url;
+    }
+</script>
+<script>
+    function confirmAction(action, button) {
+        let message;
+        if (action === 'block') {
+            message = 'Are you sure you want to unblock this category?';
+        } else if (action === 'unblock') {
+            message = 'Are you sure you want to lock this category?';
+        }
+
+        alertify.confirm(message, function (result) {
+            if (result) {
+                performAction(action, button);
+            } else {
+                // Do something if canceled
+            }
+        }).set('labels', {ok:'Yes', cancel:'No'});
+    }
+
+    function performAction(action, button) {
+        const form = button.closest('form'); // Get the parent form of the clicked button
+
+        if (form) {
+            form.submit(); // Submit the form after the user confirms
+        }
+    }
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/AlertifyJS/1.13.1/alertify.min.js"></script>
 
 <!-- End custom js for this page -->
 </body>

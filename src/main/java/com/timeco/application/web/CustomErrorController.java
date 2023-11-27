@@ -20,11 +20,7 @@
 //    }
 //    @RequestMapping("/error/401")
 //    public String UnAutherised(){
-//        return "404";
+//        return "401";
 //    }
 //
-//    @RequestMapping("/blocked")
-//    public String UserBlocked(){
-//        return "userblocked";
-//    }
 //}

@@ -18,6 +18,9 @@
     <!-- inject:css -->
     <!-- endinject -->
     <!-- Layout styles -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/AlertifyJS/1.13.1/css/alertify.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/AlertifyJS/1.13.1/css/themes/default.min.css" />
+
     <link rel="stylesheet" href="/assets/css/admin.css">
     <!-- End layout styles -->
     <link rel="shortcut icon" href="/assets/img/logo/logo.png" />
@@ -156,6 +159,22 @@
                     <span class="menu-title">SALES REPORT</span>
                 </a>
             </li>
+            <li class="nav-item menu-items">
+                <a class="nav-link" th:href="@{/admin/categoryOfferList}">
+              <span class="menu-icon">
+                <i class="mdi mdi-contacts"></i>
+              </span>
+                    <span class="menu-title">OFFER </span>
+                </a>
+            </li>
+            <li class="nav-item menu-items">
+                <a class="nav-link" th:href="@{/admin/couponList}">
+              <span class="menu-icon">
+                <i class="mdi mdi-contacts"></i>
+              </span>
+                    <span class="menu-title">COUPON </span>
+                </a>
+            </li>
         </ul>
     </nav>
     <!-- partial -->
@@ -195,18 +214,9 @@
                         <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list" aria-labelledby="profileDropdown">
                             <h6 class="p-3 mb-0">Profile</h6>
                             <div class="dropdown-divider"></div>
-                            <a class="dropdown-item preview-item">
-                                <div class="preview-thumbnail">
-                                    <div class="preview-icon bg-dark rounded-circle">
-                                        <i class="mdi mdi-settings text-success"></i>
-                                    </div>
-                                </div>
-                                <div class="preview-item-content">
-                                    <p class="preview-subject mb-1">Settings</p>
-                                </div>
-                            </a>
+
                             <div class="dropdown-divider"></div>
-                            <a class="dropdown-item preview-item">
+                            <a th:href="@{/logout}"  class="dropdown-item preview-item">
                                 <div class="preview-thumbnail">
                                     <div class="preview-icon bg-dark rounded-circle">
                                         <i class="mdi mdi-logout text-danger"></i>
@@ -217,7 +227,6 @@
                                 </div>
                             </a>
                             <div class="dropdown-divider"></div>
-                            <p class="p-3 mb-0 text-center">Advanced settings</p>
                         </div>
                     </li>
                 </ul>
@@ -234,9 +243,37 @@
                         <div class="card">
                             <div class="card-body">
 
-                                <div>
-                                    <h4 class="card-title">CATEGORY MANAGEMENT</h4>
-                                    <a class="btn btn-primary" th:href="@{/admin/addCategory}">Add</a>
+<!--                                <div>-->
+<!--                                    <h4 class="card-title">CATEGORY MANAGEMENT</h4>-->
+<!--                                    <a class="btn btn-primary" th:href="@{/admin/addCategory}">Add</a>-->
+<!--                                </div>-->
+                                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">
+                                    Add
+                                </button>
+
+                                <!-- Modal -->
+                                <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered" role="document" >
+                                        <form th:action="@{/admin/addCategory/{id}(id=${categoryAdd.id})}" method="post" th:object="${categoryAdd}" onsubmit="return validateForm()">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="exampleModalLongTitle">Add Category</h5>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <input type="text" name="inputValue" th:field="*{name}" style="width: 100%;background: black;color: white" id="inputField">
+                                                    <p id="nameError" style="display: none;color: red" ></p>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                    <button type="submit" class="btn btn-primary">Save</button>
+                                                </div>
+                                            </div>
+                                        </form>
+
+                                    </div>
                                 </div>
                                 <div class="table-responsive">
                                     <table class="table table-striped">
@@ -259,22 +296,56 @@
                                                 <span th:text="${category.name}" class="py-1"></span>
                                             </td>
                                             <td class="action-buttons">
-                                                <div>
-                                                    <a th:href="@{/admin/updateCategory/{id}(id=${category.id})}" type="button" class="btn btn-warning btn-fw custom-small-button" fdprocessedid="mq2w9o">Update</a>
-                                                </div>
-
+<!--                                                <div>-->
+<!--                                                    <a th:href="@{/admin/updateCategory/{id}(id=${category.id})}" type="button" class="btn btn-warning btn-fw custom-small-button" fdprocessedid="mq2w9o">Update</a>-->
+<!--                                                </div>-->
+                                                <button type="button" class="btn btn-warning btn-fw custom-small-button" data-toggle="modal" th:data-target="'#updateModal_' + ${category.id}">
+                                                    Update
+                                                </button>
 
                                             </td>
+
+                                            <!-- Button trigger modal -->
+
+
+                                            <!-- Modal -->
+                                            <div class="modal fade" th:id="'updateModal_' + ${category.id}" tabindex="-1" role="dialog" aria-labelledby="updateModalLabel" aria-hidden="true">
+                                                <div class="modal-dialog modal-dialog-centered" role="document">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title" id="updateModalLabel">Update Category</h5>
+                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                <span aria-hidden="true">&times;</span>
+                                                            </button>
+                                                        </div>
+                                                        <form th:action="@{/admin/updateCategory/{id}(id=${category.id})}"  method="post">
+                                                            <div class="modal-body">
+                                                                <input type="text" class="form-control" name="name" th:value="${category.name}" />
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                                <button type="submit" class="btn btn-primary">Save</button>
+                                                            </div>
+                                                        </form>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+
+
                                             <td>
                                                 <div>
+
                                                     <form th:action="@{/admin/blockCategory/{id}(id=${category.id})}" method="get">
                                                         <input type="hidden" name="_method" value="put">
-                                                        <button type="submit" class="btn bg-gradient-warning btn-fw custom-small-button" fdprocessedid="mq2w9o"  th:if="${category.isListed()}">Unblock</button>
+                                                        <button type="button" class="btn bg-gradient-warning btn-fw custom-small-button blockBtn" fdprocessedid="mq2w9o" th:if="${category.isListed()}" onclick="confirmAction('block', this)">Unblock</button>
                                                     </form>
                                                     <form th:action="@{/admin/unblockCategory/{id}(id=${category.id})}" method="get">
                                                         <input type="hidden" name="_method" value="put">
-                                                        <button type="submit" class="btn bg-gradient-danger btn-fw custom-small-button" fdprocessedid="mq2w9o" th:if="${!category.isListed()}">Lock</button>
+                                                        <button type="button" class="btn bg-gradient-danger btn-fw custom-small-button unblockBtn" fdprocessedid="mq2w9o" th:if="${!category.isListed()}" onclick="confirmAction('unblock', this)">Lock</button>
                                                     </form>
+
+
                                                 </div>
                                             </td>
 
@@ -327,5 +398,137 @@
 <script src="/assets/adminjs/js/dashboard.js"></script>
 
 <!-- End custom js for this page -->
+<script>
+    var inputField = document.getElementById('inputField');
+    var nameError = document.getElementById('nameError');
+
+    inputField.addEventListener('input', function() {
+        validateForm();
+    });
+
+    function validateForm() {
+        if (inputField.value.trim() === '') {
+            nameError.innerHTML = 'Category Name is required';
+            nameError.style.display = 'block';
+            return false;
+        } else if (inputField.value.length < 4) {
+            nameError.innerHTML = 'Category Name should have at least 4 letters';
+            nameError.style.display = 'block';
+            return false;
+        }else if (/\d/.test(inputField.value)) {
+            nameError.innerHTML = 'Category Name should not contain numbers';
+            nameError.style.display = 'block';
+            return false;
+        } else {
+            nameError.style.display = 'none';
+            return true;
+        }
+    }
+</script>
+<script>
+    window.onload = function() {
+        if (window.location.href.indexOf('error=DuplicateCategory') !== -1) {
+            alertify
+                .alert("Category already created", function(){
+                    alertify.message('OK');
+                });
+            const newURL = window.location.href.replace(/([&?]error=DuplicateCategory\b(?!=[^&]*&))(?:[?&]|$)/, '');
+            history.replaceState(null, null, newURL);
+        }
+    };
+</script>
+<script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const successMessage = urlParams.get('success');
+    const errorMessage = urlParams.get('error');
+
+    document.addEventListener('DOMContentLoaded', function () {
+        if (successMessage) {
+            showAlert('success', successMessage);
+        } else if (errorMessage) {
+            showAlert('error', errorMessage);
+        }
+    });
+
+    function showAlert(type, message) {
+        if (type === 'success') {
+            alertify.success(message);
+        } else {
+            alertify.error(message);
+        }
+
+        // Remove the 'success' and 'error' parameters from the URL
+        const newURL = removeQueryParam('success');
+        const newerURL = removeQueryParam('error');
+        history.replaceState(null, null, newerURL);
+    }
+
+    function removeQueryParam(paramToRemove) {
+        const url = window.location.href;
+        const urlParts = url.split('?');
+        if (urlParts.length >= 2) {
+            const prefix = encodeURIComponent(paramToRemove) + '=';
+            const query = urlParts[1].split('&').filter(function(item) {
+                return !item.startsWith(prefix);
+            }).join('&');
+            return urlParts[0] + (query ? '?' + query : '');
+        }
+        return url;
+    }
+    function showAlert2(action) {
+        let message;
+        let formId;
+
+        if (action === 'Unblock') {
+            message = 'Category unblocked successfully!';
+            formId = 'unblockForm';
+        } else if (action === 'Lock') {
+            message = 'Category locked successfully!';
+            formId = 'blockForm';
+        }
+
+        // Configuring alertify settings for longer duration
+        alertify.confirm(message, function (confirmed) {
+            if (confirmed) {
+                alertify.success('OK');
+                // Manually trigger form submission after confirming the alert
+                document.getElementById(formId).submit();
+            } else {
+                alertify.error('Cancelled');
+            }
+        }).set('labels', {ok: 'OK', cancel: 'Cancel'});
+    }
+
+</script>
+<script>
+    function confirmAction(action, button) {
+        let message;
+        if (action === 'block') {
+            message = 'Are you sure you want to unblock this category?';
+        } else if (action === 'unblock') {
+            message = 'Are you sure you want to lock this category?';
+        }
+
+        alertify.confirm(message, function (result) {
+            if (result) {
+                performAction(action, button);
+            } else {
+                // Do something if canceled
+            }
+        }).set('labels', {ok:'Yes', cancel:'No'});
+    }
+
+    function performAction(action, button) {
+        const form = button.closest('form'); // Get the parent form of the clicked button
+
+        if (form) {
+            form.submit(); // Submit the form after the user confirms
+        }
+    }
+</script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/AlertifyJS/1.13.1/alertify.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 </body>
 </html>

@@ -73,9 +73,18 @@ public class CartItemsServiceImpl implements CartItemsService{
             Product product = cartItem.getProduct();
             Double productPrice = product.getPrice();
 
+            if (product.getCategory() != null && product.getCategory().getCategoryOffer() != null && !product.getCategory().getCategoryOffer().isActive()) {
+                System.out.println("checkingggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg");
+                // Use the discounted amount if an offer exists
+                productPrice = product.getDiscountedAmount();
+            } else {
+                // Use the regular price if no offer exists
+                productPrice = product.getPrice();
+            }
 
             Double subtotal = quantity * productPrice;
             totalPrice += subtotal;
+
 
 
         }
@@ -127,5 +136,10 @@ public class CartItemsServiceImpl implements CartItemsService{
             // Handle the case where the product is not found in the cart
             // You can throw an exception or handle it as needed
         }
+    }
+
+    @Override
+    public void deleteCartItems(List<CartItems> cartItems) {
+        cartItemsRepository.deleteAll(cartItems);
     }
 }

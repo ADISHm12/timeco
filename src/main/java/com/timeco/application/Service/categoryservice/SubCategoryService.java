@@ -17,7 +17,7 @@ public interface SubCategoryService {
     Subcategory getSubCategoryById(Long SubCategoryId) ;
 
     public void deleteSubCategoryById(Long id);
-    public void updateSubCategoryById(Long id, SubCategoryDto subCategoryDto);
+    public boolean  updateSubCategoryById(Long id, String name);
 
     public void lockSubCategory(Long id) ;
 

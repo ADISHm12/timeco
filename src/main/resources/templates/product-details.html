@@ -75,8 +75,7 @@ $(document).ready(function() {
             success: function(data) {
                 // Parse the JSON response
                 var response = JSON.parse(data);
-                console.log(response)
-                console.log("8888888888888888888888888888888888888888888888888888888888888888888888888")
+
                 if (response) {
                     // Product is already in the cart, so increase the quantity
                     updateCartQuantity(id, quantity);
@@ -112,7 +111,6 @@ $(document).ready(function() {
                         data: JSON.stringify({ id: id, quantity: quantity }),
                         contentType: "application/json",
                         success: function(data) {
-                            console.log("8888888888888888888888888888888888888888888888888888888888888888888888888");
 
                             Swal.fire({
                                 position: 'top-end',
@@ -158,6 +156,7 @@ $(document).ready(function() {
         });
     }
 
+
     function updateCartQuantity(id, quantity) {
         // Show a SweetAlert while the request is being processed
         Swal.fire({
@@ -196,6 +195,109 @@ $(document).ready(function() {
 });
 
     </script>
+    <script>
+        function checkProductInWishlist(productId) {
+            $.ajax({
+                type: "GET", // You may use GET or another suitable HTTP method
+                url: "/user/checkProductInWishlist?productId=" + productId,
+                success: function(data) {
+                    if (data.exists) {
+                        Swal.fire({
+                            position: 'top-end',
+                            icon: 'info',
+                            title: 'Product is already in the wishlist.',
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                    } else {
+                        // Product is not in the wishlist; you can proceed to add it.
+                        addToWishlist(productId);
+                    }
+                },
+                error: function() {
+                    Swal.fire({
+                        position: 'top-end',
+                        icon: 'error',
+                        title: 'Failed to check the product.',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                }
+            });
+        }
+    </script>
+    <script>
+        $(document).ready(function() {
+            $("#addToWishListButton").click(function(event) {
+                event.preventDefault();
+
+                var productId = $(this).data("id"); // Replace with the actual product ID
+
+                // Check if the product is already in the wishlist
+                checkProductInWishlist(productId);
+            });
+
+            // Function to check if the product is in the wishlist
+            function checkProductInWishlist(productId) {
+                $.ajax({
+                    type: "GET", // Use a suitable HTTP method to check the product
+                    url: "/user/checkProductInWishlist?productId=" + productId,
+                    success: function(data) {
+                        if (data.exists) {
+                            // Product is already in the wishlist
+                            Swal.fire({
+                                position: 'top-end',
+                                icon: 'info',
+                                title: 'Product is already in the wishlist.',
+                                showConfirmButton: false,
+                                timer: 1500
+                            });
+                        } else {
+                            // Product is not in the wishlist; add it
+                            addToWishlist(productId);
+                        }
+                    },
+                    error: function() {
+                        Swal.fire({
+                            position: 'top-end',
+                            icon: 'error',
+                            title: 'Failed to check the product.',
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                    }
+                });
+            }
+
+            // Function to add the product to the wishlist
+            function addToWishlist(productId) {
+                $.ajax({
+                    type: "POST", // You may use POST or another suitable HTTP method
+                    url: "/user/addToWishlist?productId=" + productId,
+                    success: function(data) {
+                        // Product was successfully added to the wishlist
+                        Swal.fire({
+                            position: 'top-end',
+                            icon: 'success',
+                            title: 'Added to wishlist!',
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                    },
+                    error: function() {
+                        Swal.fire({
+                            position: 'top-end',
+                            icon: 'error',
+                            title: 'Failed to add to wishlist',
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                    }
+                });
+            }
+        });
+    </script>
+
 
     <style>
         .column {
@@ -293,6 +395,17 @@ $(document).ready(function() {
         .text-red {
             color: red;
         }
+        .sticker {
+            background-color: #f44336; /* Red background color */
+            color: #fff; /* White text color */
+            padding: 4px 8px; /* Adjust padding as needed */
+            border-radius: 4px; /* Rounded corners for the sticker */
+            position: absolute; /* Position the sticker within the image */
+            top: 10px; /* Adjust the top position as needed */
+            left: 10px; /* Adjust the left position as needed */
+            z-index: 1; /* Ensure it appears on top of the image */
+            font-size: 12px; /* Adjust font size as needed */
+        }
 
 
     </style>
@@ -303,16 +416,16 @@ $(document).ready(function() {
 <body>
 
 <header>
-    <div id="preloader-active">
-        <div class="preloader d-flex align-items-center justify-content-center">
-            <div class="preloader-inner position-relative">
-                <div class="preloader-circle"></div>
-                <div class="preloader-img pere-text">
-                    <img src="/assets/img/logo/logo.png" alt="">
-                </div>
-            </div>
-        </div>
-    </div>
+<!--    <div id="preloader-active">-->
+<!--        <div class="preloader d-flex align-items-center justify-content-center">-->
+<!--            <div class="preloader-inner position-relative">-->
+<!--                <div class="preloader-circle"></div>-->
+<!--                <div class="preloader-img pere-text">-->
+<!--                    <img src="/assets/img/logo/logo.png" alt="">-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
     <!-- Header Start -->
     <div class="header-area">
         <div class="main-header header-sticky">
@@ -333,7 +446,7 @@ $(document).ready(function() {
                                     <a th:href="@{/login}">Login</a>
                                 </li>
                                 <li><a th:href="@{/user/viewCart}">Cart</a></li>
-
+                                <li><a th:href="@{/user/wishlist}">Wishlit</a></li>
 
                                 <!--                                <li><a href="contact.html">Contact</a></li>-->
                             </ul>
@@ -342,7 +455,7 @@ $(document).ready(function() {
                     <!-- Header Right -->
                     <div class="header-right">
                         <ul>
-                            <li> <a th:href="@{/login}"><span class="flaticon-user"></span></a></li>
+                            <li> <a th:href="@{/pro/profile}"><span class="flaticon-user"></span></a></li>
                             <li><a th:href="@{/user/viewCart}"><span class="flaticon-shopping-cart"></span></a> </li>
                         </ul>
                     </div>
@@ -357,7 +470,6 @@ $(document).ready(function() {
     <!-- Header End -->
 </header>
 
-<main>
 
 <!--    <div class="slider-area ">-->
 <!--        <div class="single-slider slider-height2 d-flex align-items-center">-->
@@ -372,10 +484,8 @@ $(document).ready(function() {
 <!--            </div>-->
 <!--        </div>-->
 <!--    </div>-->
-    <main>
-
-        <!--================Single Product Area =================-->
-
+<main>
+    <!--================Single Product Area =================-->
         <div class="container" id="productshow" style="margin-top: 50px; margin-bottom: 50px" th:each="product : ${product}">
             <div class="row" >
                 <div class="col-lg-6 left-padding">
@@ -383,6 +493,9 @@ $(document).ready(function() {
                                     <div class="carousel-inner">
                                         <div class="carousel-item active">
                                             <img  th:src="${'/assets' +product.productImages[0].imageName}" class="d-block w-100" alt="...">
+                                        </div>
+                                        <div class="carousel-item active">
+                                            <img  th:src="${'/assets' +product.productImages[1].imageName}" class="d-block w-100" alt="...">
                                         </div>
                                     </div>
                                     <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleAutoplaying" data-bs-slide="prev">
@@ -400,14 +513,15 @@ $(document).ready(function() {
                     <div class="column">
                         <h1  th:text="${product.productName}"></h1>
                         <hr class="divider">
-                        <h4 >
+
+                        <h4>
                             Price:
-                            <span  th:text="${' $ ' +product.price}"></span>
-
-
+                            <span th:if="${product.category.categoryOffer == null || product.category.categoryOffer.isActive()}" th:text="'$ ' + ${product.price}" ></span>
+                            <s th:if="${product.category.categoryOffer != null && product.category.categoryOffer.startDate.isBefore(T(java.time.LocalDate).now()) && product.category.categoryOffer.endDate.isAfter(T(java.time.LocalDate).now()) and not product.category.categoryOffer.isActive()}" th:text="'$ ' + ${product.price}" ></s>
+                            <span th:if="${product.category.categoryOffer != null && product.category.categoryOffer.startDate.isBefore(T(java.time.LocalDate).now()) && product.category.categoryOffer.endDate.isAfter(T(java.time.LocalDate).now()) and not product.category.categoryOffer.isActive()}" class="discounted-price" th:text="'$ ' + ${product.discountedAmount}"></span>
                         </h4>
                         <hr class="divider">
-                        <h4 >
+                        <h4>
                             Category:
                             <span th:text="${product.category.name}">
 
@@ -419,7 +533,6 @@ $(document).ready(function() {
                             Availability:
                             <span th:text="${product.current_state}" th:class="${product.current_state == 'Stock In' ? 'text-green' : 'text-red'}"></span>
 
-                        </span>
 
                         </h5>
                         <h5>
@@ -431,7 +544,7 @@ $(document).ready(function() {
                             <a href="#" class="btn_3" id="addToCartButton" th:if="${#authorization.expression('isAuthenticated()')}" th:attr="data-id=${product.id}">Add to Cart</a>
 
                             <a href="#" class="btn_3" th:unless="${#authorization.expression('isAuthenticated()')}" th:href="@{/main/login}">Add to Cart</a>
-                                <a href="" class="btn_3">Add to Wishlist</a>
+                                <a href="#" id="addToWishListButton" class="btn_3" th:attr="data-id=${product.id}">Add to Wishlist</a>
                         </div>
                     </div>
                 </div>
@@ -439,7 +552,7 @@ $(document).ready(function() {
         </div>
 
         <div class="section-top-border pl-5 pr-5" >
-            <h3 class="mb-30">Block Quotes</h3>
+            <h3 class="mb-30">Description</h3>
             <div class="row">
                 <div class="col-lg-12">
                     <blockquote class="generic-blockquote">
@@ -462,52 +575,8 @@ $(document).ready(function() {
                 </div>
             </div>
         </div>
-
-<!--        related products-->
-        <div class="popular-items section-padding30">
-            <div class="container">
-                <!-- Section tittle -->
-                <div class="row justify-content-center">
-                    <div class="col-xl-7 col-lg-8 col-md-10">
-                        <div class="section-tittle mb-70 text-center">
-                            <h2>Related Items</h2>
-                            <p>Consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Quis ipsum suspendisse ultrices gravida.</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-xl-4 col-lg-4 col-md-6 col-sm-6" th:each="products : ${allProductsExceptCurrent}">
-                        <div class="single-popular-items mb-50 text-center">
-                            <div class="popular-img">
-                                <a th:href="@{'/user/productDetails/' + ${products.id}}">
-                                    <img th:src="@{'/assets' + ${products.productImages[0].imageName}}" alt="Product Image" />
-                                </a>                                <div class="img-cap">
-                                    <span>Add to cart</span>
-                                </div>
-                                <div class="favorit-items">
-                                    <span class="flaticon-heart"></span>
-                                </div>
-
-                                <div th:if="${products.quantity == 0}" class="sticker">Out of Stock</div>
-
-                            </div>
-                            <div class="popular-caption">
-                                <h3><a th:href="@{'/product/' + ${products.id}}" th:text="${products.productName}"></a></h3>
-                                <span th:text="${' $ ' + products.price}"></span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- Button -->
-                <div class="row justify-content-center">
-                    <div class="room-btn pt-70">
-                        <a href="catagori.html" class="btn view-btn1">View More Products</a>
-                    </div>
-                </div>
-            </div>
-        </div>
         <!-- Popular Items End -->
-    </main>
+<main>
 
 <!--    <section class="subscribe_part section_padding">-->
 <!--        <div class="container">-->
@@ -526,7 +595,62 @@ $(document).ready(function() {
 <!--        </div>-->
 <!--    </section>-->
     <!-- subscribe part end -->
-</main>
+    <section>
+        <!--        related products-->
+        <div class="popular-items section-padding30">
+            <div class="container">
+                <!-- Section tittle -->
+                <div class="row justify-content-center">
+                    <div class="col-xl-7 col-lg-8 col-md-10">
+                        <div class="section-tittle mb-70 text-center">
+                            <h2>Related Items</h2>
+                            <p>Consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Quis ipsum suspendisse ultrices gravida.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xl-4 col-lg-4 col-md-6 col-sm-6" th:each="allProductsExceptCurrent : ${allProductsExceptCurrent}">
+                        <div class="single-popular-items mb-50 text-center">
+                            <div class="popular-img">
+                                <a th:href="@{'/user/productDetails/' + ${allProductsExceptCurrent.id}}">
+                                    <img th:if="${allProductsExceptCurrent != null
+                                                    and allProductsExceptCurrent.productImages != null
+                                                    and allProductsExceptCurrent.productImages.size() > 0}"
+                                         th:src="@{'/assets' + ${allProductsExceptCurrent.productImages[0].imageName}}"
+                                         alt="Product Image" />  </a>
+<!--                                <div class="img-cap">-->
+<!--                                <span>Add to cart</span>-->
+<!--                                 </div>-->
+<!--                                <div class="favorit-items">-->
+<!--                                    <span class="flaticon-heart"></span>-->
+<!--                                </div>-->
+
+                                <div th:if="${allProductsExceptCurrent.quantity == 0}" class="sticker">Out of Stock</div>
+                                <div th:if="${allProductsExceptCurrent.category.categoryOffer != null && allProductsExceptCurrent.category.categoryOffer.startDate.isBefore(T(java.time.LocalDate).now()) && allProductsExceptCurrent.category.categoryOffer.endDate.isAfter(T(java.time.LocalDate).now()) and not allProductsExceptCurrent.category.categoryOffer.isActive() && !(allProductsExceptCurrent.quantity == 0)}" class="offer-tag" style="position: absolute; top: 10px; left: 10px; background-color: #f44336; color: white; padding: 5px;">
+                                    <span th:text="${allProductsExceptCurrent.category.categoryOffer.percentage + '% off'}"></span>
+                                </div>
+                            </div>
+                            <div class="popular-caption" th:if="${allProductsExceptCurrent.category.categoryOffer != null && allProductsExceptCurrent.category.categoryOffer.startDate.isBefore(T(java.time.LocalDate).now()) && allProductsExceptCurrent.category.categoryOffer.endDate.isAfter(T(java.time.LocalDate).now()) and not allProductsExceptCurrent.category.categoryOffer.isActive()}">
+                                <h3><a th:href="@{'/product/' + ${allProductsExceptCurrent.id}}" th:text="${allProductsExceptCurrent.productName}"></a></h3>
+                                <s th:text="${'$ ' + allProductsExceptCurrent.price}"></s>
+                                <span  th:text="${' $ ' + allProductsExceptCurrent.discountedAmount}"></span>
+                            </div>
+                            <div class="popular-caption" th:if="${allProductsExceptCurrent.category.categoryOffer == null || allProductsExceptCurrent.category.categoryOffer.isActive()}">
+                                <h3><a th:href="@{'/product/' + ${allProductsExceptCurrent.id}}" th:text="${allProductsExceptCurrent.productName}"></a></h3>
+                                <span  th:text="${' $ ' + allProductsExceptCurrent.price}"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Button -->
+<!--                <div class="row justify-content-center">-->
+<!--                    <div class="room-btn pt-70">-->
+<!--                        <a href="catagori.html" class="btn view-btn1">View More Products</a>-->
+<!--                    </div>-->
+<!--                </div>-->
+            </div>
+        </div>
+    </section>
 
 
 <script src="{% static 'owlcarousel/owl.carousel.min.js' %}"></script>
@@ -678,7 +802,10 @@ $(document).ready(function() {
 <script src="/assets/js/mixitup.min.js"></script>
 <script src="/assets/js/jquery.counterup.min.js"></script>
 <script src="/assets/js/waypoints.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10.14.0/dist/sweetalert2.all.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10.14.0/dist/sweetalert2.all.min.js"></script>
+    <script src="/assets/js/checkBlocked.js"></script>
+
 </body>
 
 </html>

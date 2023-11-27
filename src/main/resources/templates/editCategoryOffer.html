@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Corona Admin</title>
+    <!-- plugins:css -->
+    <link rel="stylesheet" href="/assets/adminjs/vendors/mdi/css/materialdesignicons.min.css">
+    <link rel="stylesheet" href="/assets/adminjs/vendors/css/vendor.bundle.base.css">
+    <!-- endinject -->
+    <!-- Plugin css for this page -->
+    <link rel="stylesheet" href="/assets/adminjs/vendors/jvectormap/jquery-jvectormap.css">
+    <link rel="stylesheet" href="/assets/adminjs/vendors/flag-icon-css/css/flag-icon.min.css">
+    <link rel="stylesheet" href="/assets/adminjs/vendors/owl-carousel-2/owl.carousel.min.css">
+    <link rel="stylesheet" href="/assets/adminjs/vendors/owl-carousel-2/owl.theme.default.min.css">
+    <!-- End plugin css for this page -->
+    <!-- inject:css -->
+    <!-- endinject -->
+    <!-- Layout styles -->
+    <link rel="stylesheet" href="/assets/css/admin.css">
+    <!-- End layout styles -->
+    <link rel="shortcut icon" href="/assets/img/favicon.png" />
+    <!--  <link href="/https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">-->
+    <script>
+        function toggleBlockUnblock(button) {
+            const confirmation = confirm('Are you sure you want to toggle the block/unblock for this user?');
+            if (confirmation) {
+                if (button.innerText === "Block") {
+                    button.innerText = "Unblock";
+                    button.classList.remove("btn-primary");
+                    button.classList.add("btn-danger");
+                } else {
+                    button.innerText = "Block";
+                    button.classList.remove("btn-danger");
+                    button.classList.add("btn-primary");
+                }
+            }
+            return false;
+        }
+    </script>
+    <style>
+
+        /* Style form labels */
+        .form-label {
+            font-weight: bold;
+        }
+        #form{
+            width: 60%;
+        }
+
+        /* Style form inputs */
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            font-size: 16px;
+        }
+
+        /* Style the submit button */
+        .btn-primary {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        .form1 {
+            width: 600px;
+        }
+
+        /* Hover effect for the submit button */
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+
+
+
+    </style>
+
+
+</head>
+<body>
+<div class="container-scroller">
+    <!-- partial:partials/_sidebar.html -->
+    <nav class="sidebar sidebar-offcanvas" id="sidebar">
+        <div class="sidebar-brand-wrapper d-none d-lg-flex align-items-center justify-content-center fixed-top">
+            <a class="sidebar-brand brand-logo" href="index.html"><img src="/assets/img/logo/logo.png" alt="logo" /></a>
+            <a class="sidebar-brand brand-logo-mini" href="index.html"><img src="assets/images/logo-mini.svg" alt="logo" /></a>
+        </div>
+        <ul class="nav">
+            <li class="nav-item profile">
+                <div class="profile-desc">
+                    <div class="profile-pic">
+                        <div class="count-indicator">
+                            <img class="img-xs rounded-circle " src="/assets/productImages/profileforAdmin.jpeg" alt="">
+                            <span class="count bg-success"></span>
+                        </div>
+                        <div class="profile-name">
+                            <h5 class="mb-0 font-weight-normal">Henry Klein</h5>
+                            <span>Gold Member</span>
+                        </div>
+                    </div>
+                    <a href="#" id="profile-dropdown" data-toggle="dropdown"><i class="mdi mdi-dots-vertical"></i></a>
+                    <div class="dropdown-menu dropdown-menu-right sidebar-dropdown preview-list" aria-labelledby="profile-dropdown">
+                        <a href="#" class="dropdown-item preview-item">
+                            <div class="preview-thumbnail">
+                                <div class="preview-icon bg-dark rounded-circle">
+                                    <i class="mdi mdi-settings text-primary"></i>
+                                </div>
+                            </div>
+                            <div class="preview-item-content">
+                                <p class="preview-subject ellipsis mb-1 text-small">Account settings</p>
+                            </div>
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a href="#" class="dropdown-item preview-item">
+                            <div class="preview-thumbnail">
+                                <div class="preview-icon bg-dark rounded-circle">
+                                    <i class="mdi mdi-onepassword  text-info"></i>
+                                </div>
+                            </div>
+                            <div class="preview-item-content">
+                                <p class="preview-subject ellipsis mb-1 text-small">Change Password</p>
+                            </div>
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a href="#" class="dropdown-item preview-item">
+                            <div class="preview-thumbnail">
+                                <div class="preview-icon bg-dark rounded-circle">
+                                    <i class="mdi mdi-calendar-today text-success"></i>
+                                </div>
+                            </div>
+                            <div class="preview-item-content">
+                                <p class="preview-subject ellipsis mb-1 text-small">To-do list</p>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </li>
+            <li class="nav-item nav-category">
+                <span class="nav-link">Navigation</span>
+            </li>
+            <li class="nav-item menu-items">
+                <a class="nav-link" th:href="@{/admin/adminHome}">
+              <span class="menu-icon">
+                <i class="mdi mdi-speedometer"></i>
+              </span>
+                    <span class="menu-title">Dashboard</span>
+                </a>
+            </li>
+            <li class="nav-item menu-items">
+                <a class="nav-link" th:href="@{/admin/listUsers}" >
+              <span class="menu-icon">
+                <i class="mdi mdi-playlist-play"></i>
+              </span>
+                    <span class="menu-title">USER </span>
+                </a>
+            </li>
+            <li class="nav-item menu-items">
+                <a class="nav-link" th:href="@{/admin/listProducts}" >
+              <span class="menu-icon">
+                <i class="mdi mdi-playlist-play"></i>
+              </span>
+                    <span class="menu-title">PRODUCT </span>
+                </a>
+            </li>
+            <li class="nav-item menu-items">
+                <a class="nav-link" th:href="@{/admin/category-list}">
+              <span class="menu-icon">
+                <i class="mdi mdi-table-large"></i>
+              </span>
+                    <span class="menu-title">CATEGORY</span>
+                </a>
+            </li>
+            <li class="nav-item menu-items">
+                <a class="nav-link" th:href="@{/admin/SubCategory-list}">
+              <span class="menu-icon">
+                <i class="mdi mdi-chart-bar"></i>
+              </span>
+                    <span class="menu-title">SUBCATEGORY</span>
+                </a>
+            </li>
+            <li class="nav-item menu-items">
+                <a class="nav-link" th:href="@{/admin/orderList}">
+              <span class="menu-icon">
+                <i class="mdi mdi-contacts"></i>
+              </span>
+                    <span class="menu-title">ORDERS</span>
+                </a>
+            </li>
+            <li class="nav-item menu-items">
+                <a class="nav-link" th:href="@{/admin/sales-report}">
+              <span class="menu-icon">
+                <i class="mdi mdi-contacts"></i>
+              </span>
+                    <span class="menu-title">SALES REPORT</span>
+                </a>
+            </li>
+            <li class="nav-item menu-items">
+                <a class="nav-link" th:href="@{/admin/categoryOfferList}">
+              <span class="menu-icon">
+                <i class="mdi mdi-contacts"></i>
+              </span>
+                    <span class="menu-title">OFFER </span>
+                </a>
+            </li>
+            <li class="nav-item menu-items">
+                <a class="nav-link" th:href="@{/admin/couponList}">
+              <span class="menu-icon">
+                <i class="mdi mdi-contacts"></i>
+              </span>
+                    <span class="menu-title">COUPON </span>
+                </a>
+            </li>
+        </ul>
+        </ul>
+    </nav>
+    <!-- // enctype="multipart/form-data"-->
+    <div class="form1">
+        <div class="card-body">
+            <h4 class="card-title">Basic form elements</h4>
+            <p class="card-description"> Basic form elements </p>
+            <form class="forms-sample" th:action="@{/admin/editCategoryOffer/{id}(id=${categoryOffer.categoryOfferId})}" method="post" th:object="${categoryOffer}" >
+                <div class="form-group">
+                    <label for="exampleInputName1">Offer Code</label>
+                    <input type="text" class="form-control" id="exampleInputName1" placeholder="Offer Code" th:value="${categoryOffer.categoryOfferCode}"  th:field="*{categoryOfferCode}">
+                    <p id="offerCodeError" style="color: red"></p>
+
+                </div>
+                <div class="form-group">
+                    <label for="exampleInputName1">Offer percentage</label>
+                    <input type="text" class="form-control" id="exampleInputPercentage1" placeholder="Offer percentage" th:value="${categoryOffer.percentage}"  th:field="*{percentage}">
+                    <p id="percentageError" style="color: red"></p>
+
+                </div>
+                <div class="form-group">
+                    <label for="startDate">Start Date</label>
+                    <input type="date" class="form-control" id="startDate" th:value="${categoryOffer.startDate}" th:field="*{startDate}" onchange="validateDate()">
+                    <p id="startDateError" style="color: red"></p>
+
+                </div>
+                <div class="form-group">
+                    <label for="endDate">End Date</label>
+                    <input type="date" class="form-control" id="endDate" th:value="${categoryOffer.endDate}" th:field="*{endDate}" onchange="validateDate2()">
+                    <p id="endDateError" style="color: red"></p>
+
+                </div>
+                <button type="submit" class="btn btn-primary mr-2">Submit</button>
+                <button class="btn btn-dark">Cancel</button>
+            </form>
+
+
+        </div>
+    </div>
+
+
+</div>
+<!-- partial -->
+<div class="container-fluid page-body-wrapper">
+    <!-- partial:partials/_navbar.html -->
+    <nav class="navbar p-0 fixed-top d-flex flex-row">
+        <div class="navbar-brand-wrapper d-flex d-lg-none align-items-center justify-content-center">
+            <a class="navbar-brand brand-logo-mini" href="index.html"><img src="/assets/img/logo-mini.svg" alt="logo" /></a>
+        </div>
+        <div class="navbar-menu-wrapper flex-grow d-flex align-items-stretch">
+            <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="minimize">
+                <span class="mdi mdi-menu"></span>
+            </button>
+
+            <ul class="navbar-nav navbar-nav-right">
+
+                <li class="nav-item nav-settings d-none d-lg-block">
+                    <a class="nav-link" href="#">
+                        <i class="mdi mdi-view-grid"></i>
+                    </a>
+                </li>
+
+                <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list" aria-labelledby="profileDropdown">
+                    <h6 class="p-3 mb-0">Profile</h6>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item preview-item">
+                        <div class="preview-thumbnail">
+                            <div class="preview-icon bg-dark rounded-circle">
+                                <i class="mdi mdi-settings text-success"></i>
+                            </div>
+                        </div>
+                        <div class="preview-item-content">
+                            <p class="preview-subject mb-1">Settings</p>
+                        </div>
+                    </a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item preview-item">
+                        <div class="preview-thumbnail">
+                            <div class="preview-icon bg-dark rounded-circle">
+                                <i class="mdi mdi-logout text-danger"></i>
+                            </div>
+                        </div>
+                        <div class="preview-item-content">
+                            <p class="preview-subject mb-1">Log out</p>
+                        </div>
+                    </a>
+                    <div class="dropdown-divider"></div>
+                    <p class="p-3 mb-0 text-center">Advanced settings</p>
+                </div>
+                </li>
+            </ul>
+            <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button" data-toggle="offcanvas">
+                <span class="mdi mdi-format-line-spacing"></span>
+            </button>
+        </div>
+    </nav>
+
+</div>
+<!-- page-body-wrapper ends -->
+</div>
+<!-- container-scroller -->
+<!-- plugins:js -->
+<script src="/assets/adminjs/vendors/js/vendor.bundle.base.js"></script>
+<!-- endinject -->
+<!-- Plugin js for this page -->
+<script src="/assets/adminjs/vendors/chart.js/Chart.min.js"></script>
+<script src="/assets/adminjs/vendors/progressbar.js/progressbar.min.js"></script>
+<script src="/assets/adminjs/vendors/jvectormap/jquery-jvectormap.min.js"></script>
+<script src="/assets/adminjs/vendors/jvectormap/jquery-jvectormap-world-mill-en.js"></script>
+<script src="/assets/adminjs/vendors/owl-carousel-2/owl.carousel.min.js"></script>
+<!-- End plugin js for this page -->
+<!-- inject:js -->
+<script src="/assets/adminjs/js/off-canvas.js"></script>
+<script src="/assets/adminjs/js/hoverable-collapse.js"></script>
+<script src="/assets/adminjs/js/misc.js"></script>
+<script src="/assets/adminjs/js/settings.js"></script>
+<script src="/assets/adminjs/js/todolist.js"></script>
+<!-- endinject -->
+<!-- Custom js for this page -->
+<script src="/assets/adminjs/js/dashboard.js"></script>
+<!-- End custom js for this page -->
+
+<script>
+    function validateDate() {
+        let selectedDate = new Date(document.getElementById('startDate').value);
+        let currentDate = new Date();
+
+        if (selectedDate < currentDate) {
+            const Toast = Swal.mixin({
+                toast: true,
+                position: "top-end",
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.onmouseenter = Swal.stopTimer;
+                    toast.onmouseleave = Swal.resumeTimer;
+                }
+            });
+            Toast.fire({
+                icon: "error",
+                title: "cannot select date before current date"
+            });
+            document.getElementById('startDate').value = '';
+        }
+    }
+    function validateDate2() {
+        let selectedDate = new Date(document.getElementById('endDate').value);
+        let currentDate = new Date();
+
+        if (selectedDate < currentDate) {
+            const Toast = Swal.mixin({
+                toast: true,
+                position: "top-end",
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.onmouseenter = Swal.stopTimer;
+                    toast.onmouseleave = Swal.resumeTimer;
+                }
+            });
+            Toast.fire({
+                icon: "error",
+                title: "cannot select date before current date"
+            });
+            document.getElementById('endDate').value = '';
+        }
+    }
+</script>
+<script>
+    $(document).ready(function() {
+        $('#exampleInputName1').on('input', function() {
+            const offerCode = $(this).val().trim();
+
+            if (!offerCode) {
+                $('#offerCodeError').text('Offer code cannot be empty.');
+            } else if (offerCode.length < 4) {
+                $('#offerCodeError').text('Offer code should have at least 4 characters.');
+            } else {
+                $('#offerCodeError').text('');
+            }
+        });
+
+        $('#exampleInputPercentage1').on('input', function() {
+            const offerPercentage = $(this).val().trim();
+
+            if (!offerPercentage) {
+                $('#percentageError').text('Offer percentage cannot be empty.');
+            } else {
+                const parsedPercentage = parseInt(offerPercentage);
+                if (isNaN(parsedPercentage) || parsedPercentage > 100) {
+                    $('#percentageError').text('Offer percentage should be a number less than or equal to 100.');
+                } else if (offerPercentage.length > 3) {
+                    $('#percentageError').text('Offer percentage should not exceed 3 digits.');
+                } else {
+                    $('#percentageError').text('');
+                }
+            }
+        });
+
+        $('#startDate').on('change', function() {
+            const startDate = $(this).val().trim();
+
+            if (!startDate) {
+                $('#startDateError').text('Start date cannot be empty.');
+            } else {
+                $('#startDateError').text('');
+            }
+        });
+
+        $('#endDate').on('change', function() {
+            const endDate = $(this).val().trim();
+
+            if (!endDate) {
+                $('#endDateError').text('End date cannot be empty.');
+            } else {
+                $('#endDateError').text('');
+            }
+        });
+
+
+        $('form').submit(function(event) {
+            event.preventDefault();
+
+            let isValid = true;
+
+            const offerCode = $('#exampleInputName1').val().trim();
+            const offerPercentage = $('#exampleInputPercentage1').val().trim();
+
+            if (!offerCode) {
+                $('#offerCodeError').text('Offer code cannot be empty.');
+                isValid = false;
+            } else if (offerCode.length < 4) {
+                $('#offerCodeError').text('Offer code should have at least 4 characters.');
+                isValid = false;
+            } else {
+                $('#offerCodeError').text('');
+            }
+
+            if (!offerPercentage) {
+                $('#percentageError').text('Offer percentage cannot be empty.');
+                isValid = false;
+            } else {
+                const parsedPercentage = parseInt(offerPercentage);
+                if (isNaN(parsedPercentage)) {
+                    $('#percentageError').text('Offer percentage should be a number.');
+                    isValid = false;
+                } else {
+                    $('#percentageError').text('');
+                }
+            }
+
+
+            const startDate = $('#startDate').val().trim();
+            const endDate = $('#endDate').val().trim();
+
+            if (!startDate) {
+                $('#startDateError').text('Start date cannot be empty.');
+                isValid = false;
+            } else {
+                $('#startDateError').text('');
+            }
+
+            if (!endDate) {
+                $('#endDateError').text('End date cannot be empty.');
+                isValid = false;
+            } else {
+                $('#endDateError').text('');
+            }
+
+            if (isValid) {
+                this.submit();
+            }
+        });
+    });
+
+
+</script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+</body>
+</html>

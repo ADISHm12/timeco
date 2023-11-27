@@ -7,14 +7,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Corona Admin</title>
     <!-- plugins:css -->
-    <link rel="stylesheet" href="/assets/vendors/mdi/css/materialdesignicons.min.css">
-    <link rel="stylesheet" href="/assets/vendors/css/vendor.bundle.base.css">
+    <link rel="stylesheet" href="/assets/adminjs/vendors/mdi/css/materialdesignicons.min.css">
+    <link rel="stylesheet" href="/assets/adminjs/vendors/css/vendor.bundle.base.css">
     <!-- endinject -->
     <!-- Plugin css for this page -->
-    <link rel="stylesheet" href="/assets/vendors/jvectormap/jquery-jvectormap.css">
-    <link rel="stylesheet" href="/assets/vendors/flag-icon-css/css/flag-icon.min.css">
-    <link rel="stylesheet" href="/assets/vendors/owl-carousel-2/owl.carousel.min.css">
-    <link rel="stylesheet" href="/assets/vendors/owl-carousel-2/owl.theme.default.min.css">
+    <link rel="stylesheet" href="/assets/adminjs/vendors/jvectormap/jquery-jvectormap.css">
+    <link rel="stylesheet" href="/assets/adminjs/vendors/flag-icon-css/css/flag-icon.min.css">
+    <link rel="stylesheet" href="/assets/adminjs/vendors/owl-carousel-2/owl.carousel.min.css">
+    <link rel="stylesheet" href="/assets/adminjs/vendors/owl-carousel-2/owl.theme.default.min.css">
     <!-- End plugin css for this page -->
     <!-- inject:css -->
     <!-- endinject -->
@@ -93,147 +93,178 @@
             <a class="sidebar-brand brand-logo-mini" href="index.html"><img src="/assets/img/logo-mini.svg" alt="logo" /></a>
         </div>
         <ul class="nav">
-            <li class="nav-item profile">
-                <div class="profile-desc">
-                    <div class="profile-pic">
-                        <div class="count-indicator">
-                            <img class="img-xs rounded-circle " src="/assets/img/faces/face15.jpg" alt="">
-                            <span class="count bg-success"></span>
-                        </div>
-                        <div class="profile-name">
-                            <h5 class="mb-0 font-weight-normal">Henry Klein</h5>
-                            <span>Gold Member</span>
-                        </div>
+        <li class="nav-item profile">
+            <div class="profile-desc">
+                <div class="profile-pic">
+                    <div class="count-indicator">
+                        <img class="img-xs rounded-circle " src="/assets/productImages/profileforAdmin.jpeg" alt="">
+                        <span class="count bg-success"></span>
                     </div>
-                    <a href="#" id="profile-dropdown" data-toggle="dropdown"><i class="mdi mdi-dots-vertical"></i></a>
-                    <div class="dropdown-menu dropdown-menu-right sidebar-dropdown preview-list" aria-labelledby="profile-dropdown">
-                        <a href="#" class="dropdown-item preview-item">
-                            <div class="preview-thumbnail">
-                                <div class="preview-icon bg-dark rounded-circle">
-                                    <i class="mdi mdi-settings text-primary"></i>
-                                </div>
-                            </div>
-                            <div class="preview-item-content">
-                                <p class="preview-subject ellipsis mb-1 text-small">Account settings</p>
-                            </div>
-                        </a>
-                        <div class="dropdown-divider"></div>
-                        <a href="#" class="dropdown-item preview-item">
-                            <div class="preview-thumbnail">
-                                <div class="preview-icon bg-dark rounded-circle">
-                                    <i class="mdi mdi-onepassword  text-info"></i>
-                                </div>
-                            </div>
-                            <div class="preview-item-content">
-                                <p class="preview-subject ellipsis mb-1 text-small">Change Password</p>
-                            </div>
-                        </a>
-                        <div class="dropdown-divider"></div>
-                        <a href="#" class="dropdown-item preview-item">
-                            <div class="preview-thumbnail">
-                                <div class="preview-icon bg-dark rounded-circle">
-                                    <i class="mdi mdi-calendar-today text-success"></i>
-                                </div>
-                            </div>
-                            <div class="preview-item-content">
-                                <p class="preview-subject ellipsis mb-1 text-small">To-do list</p>
-                            </div>
-                        </a>
+                    <div class="profile-name">
+                        <h5 class="mb-0 font-weight-normal">Henry Klein</h5>
+                        <span>Gold Member</span>
                     </div>
                 </div>
-            </li>
-            <li class="nav-item nav-category">
-                <span class="nav-link">Navigation</span>
-            </li>
-            <li class="nav-item menu-items">
-                <a class="nav-link"  th:href="@{/admin/adminHome}">
+                <a href="#" id="profile-dropdown" data-toggle="dropdown"><i class="mdi mdi-dots-vertical"></i></a>
+                <div class="dropdown-menu dropdown-menu-right sidebar-dropdown preview-list" aria-labelledby="profile-dropdown">
+                    <a href="#" class="dropdown-item preview-item">
+                        <div class="preview-thumbnail">
+                            <div class="preview-icon bg-dark rounded-circle">
+                                <i class="mdi mdi-settings text-primary"></i>
+                            </div>
+                        </div>
+                        <div class="preview-item-content">
+                            <p class="preview-subject ellipsis mb-1 text-small">Account settings</p>
+                        </div>
+                    </a>
+                    <div class="dropdown-divider"></div>
+                    <a href="#" class="dropdown-item preview-item">
+                        <div class="preview-thumbnail">
+                            <div class="preview-icon bg-dark rounded-circle">
+                                <i class="mdi mdi-onepassword  text-info"></i>
+                            </div>
+                        </div>
+                        <div class="preview-item-content">
+                            <p class="preview-subject ellipsis mb-1 text-small">Change Password</p>
+                        </div>
+                    </a>
+                    <div class="dropdown-divider"></div>
+                    <a href="#" class="dropdown-item preview-item">
+                        <div class="preview-thumbnail">
+                            <div class="preview-icon bg-dark rounded-circle">
+                                <i class="mdi mdi-calendar-today text-success"></i>
+                            </div>
+                        </div>
+                        <div class="preview-item-content">
+                            <p class="preview-subject ellipsis mb-1 text-small">To-do list</p>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </li>
+        <li class="nav-item nav-category">
+            <span class="nav-link">Navigation</span>
+        </li>
+        <li class="nav-item menu-items">
+            <a class="nav-link" th:href="@{/admin/adminHome}">
               <span class="menu-icon">
                 <i class="mdi mdi-speedometer"></i>
               </span>
-                    <span class="menu-title">Dashboard</span>
-                </a>
-            </li>
-            <li class="nav-item menu-items">
-                <a class="nav-link" data-toggle="collapse"  th:href="@{/admin/listUsers}" aria-expanded="false" aria-controls="ui-basic">
-              <span class="menu-icon">
-                <i class="mdi mdi-laptop"></i>
-              </span>
-                    <span class="menu-title"> UserManagement</span>
-                    <i class="menu-arrow"></i>
-                </a>
-            </li>
-            <li class="nav-item menu-items">
-                <a class="nav-link"  th:href="@{/admin/listUsers}">
+                <span class="menu-title">Dashboard</span>
+            </a>
+        </li>
+        <li class="nav-item menu-items">
+            <a class="nav-link" th:href="@{/admin/listUsers}" >
               <span class="menu-icon">
                 <i class="mdi mdi-playlist-play"></i>
               </span>
-                    <span class="menu-title">ProductManagement</span>
-                </a>
-            </li>
-            <li class="nav-item menu-items">
-                <a class="nav-link" href="/pages/tables/basic-table.html">
+                <span class="menu-title">USER </span>
+            </a>
+        </li>
+        <li class="nav-item menu-items">
+            <a class="nav-link" th:href="@{/admin/listProducts}" >
+              <span class="menu-icon">
+                <i class="mdi mdi-playlist-play"></i>
+              </span>
+                <span class="menu-title">PRODUCT </span>
+            </a>
+        </li>
+        <li class="nav-item menu-items">
+            <a class="nav-link" th:href="@{/admin/category-list}">
               <span class="menu-icon">
                 <i class="mdi mdi-table-large"></i>
               </span>
-                    <span class="menu-title">CategroyManagement</span>
-                </a>
-            </li>
-
-            <div class="collapse" id="auth">
-                <ul class="nav flex-column sub-menu">
-                    <li class="nav-item"> <a class="nav-link" href="pages/samples/blank-page.html"> Blank Page </a></li>
-                    <li class="nav-item"> <a class="nav-link" href="pages/samples/error-404.html"> 404 </a></li>
-                    <li class="nav-item"> <a class="nav-link" href="pages/samples/error-500.html"> 500 </a></li>
-                    <li class="nav-item"> <a class="nav-link" href="pages/samples/login.html"> Login </a></li>
-                    <li class="nav-item"> <a class="nav-link" href="pages/samples/register.html"> Register </a></li>
-                </ul>
-            </div>
-            </li>
-        </ul>
+                <span class="menu-title">CATEGORY</span>
+            </a>
+        </li>
+        <li class="nav-item menu-items">
+            <a class="nav-link" th:href="@{/admin/SubCategory-list}">
+              <span class="menu-icon">
+                <i class="mdi mdi-chart-bar"></i>
+              </span>
+                <span class="menu-title">SUBCATEGORY</span>
+            </a>
+        </li>
+        <li class="nav-item menu-items">
+            <a class="nav-link" th:href="@{/admin/orderList}">
+              <span class="menu-icon">
+                <i class="mdi mdi-contacts"></i>
+              </span>
+                <span class="menu-title">ORDERS</span>
+            </a>
+        </li>
+        <li class="nav-item menu-items">
+            <a class="nav-link" th:href="@{/admin/sales-report}">
+              <span class="menu-icon">
+                <i class="mdi mdi-contacts"></i>
+              </span>
+                <span class="menu-title">SALES REPORT</span>
+            </a>
+        </li>
+        <li class="nav-item menu-items">
+            <a class="nav-link" th:href="@{/admin/categoryOfferList}">
+              <span class="menu-icon">
+                <i class="mdi mdi-contacts"></i>
+              </span>
+                <span class="menu-title">OFFER </span>
+            </a>
+        </li>
+        <li class="nav-item menu-items">
+            <a class="nav-link" th:href="@{/admin/couponList}">
+              <span class="menu-icon">
+                <i class="mdi mdi-contacts"></i>
+              </span>
+                <span class="menu-title">COUPON </span>
+            </a>
+        </li>
+    </ul>
     </nav>
-
     <!-- // enctype="multipart/form-data"-->
     <div class="form1">
         <div class="card-body">
             <h4 class="card-title">Basic form elements</h4>
             <p class="card-description"> Basic form elements </p>
-            <form class="forms-sample" th:action="@{/admin/editCoupon/{id}(id=${coupon.couponId})}" method="post" th:object="${coupon}"  >
+            <form class="forms-sample" th:action="@{/admin/editCoupon/{id}(id=${coupon.couponId})}" method="post" th:object="${coupon}" id="couponForm"  onsubmit="return validateForm()" >
                 <div class="form-group">
                     <label for="exampleInputName">couponName</label>
                     <input type="text" class="form-control" id="exampleInputName" placeholder="couponName" th:field="*{couponName}">
+                    <span id="nameError"  style="color: rgba(255,0,24,0.73)"></span>
                 </div>
                 <div class="form-group">
                     <label for="exampleInputName1">couponCode</label>
                     <input type="text" class="form-control" id="exampleInputName1" placeholder="couponCode" th:field="*{couponCode}">
+                    <span id="codeError"  style="color: rgba(255,0,24,0.73)"></span>
                 </div>
                 <div class="form-group">
                     <label for="exampleInputexpireDate">expireDate</label>
-                    <input type="text" class="form-control" id="exampleInputexpireDate" placeholder="expireDate" th:field="*{expireDate}">
+                    <input type="date" class="form-control" id="exampleInputexpireDate" placeholder="expireDate" th:field="*{expireDate}" onchange="validateDate2()">
+                    <span id="errorDate"  style="color: rgba(255,0,24,0.73)"></span>
                 </div>
                 <div class="form-group">
                     <label for="exampleInputcouponAmount">Discount amount</label>
                     <input type="text" class="form-control" id="exampleInputcouponAmount" placeholder="couponAmount" th:field="*{couponAmount}">
+                    <span id="couponAmountError"  style="color: rgba(255,0,24,0.73)"></span>
                 </div>
                 <div class="form-group">
                     <label for="exampleInputminimumAmount">Minimum Amount</label>
                     <input type="text" class="form-control" id="exampleInputminimumAmount" placeholder="minimumAmount" th:field="*{minimumAmount}">
+                    <span id="minimumAmountError"  style="color: rgba(255,0,24,0.73)"></span>
                 </div>
                 <div class="form-group">
                     <label for="exampleInputUserLimit">User Limit</label>
                     <input type="text" class="form-control" id="exampleInputUserLimit" placeholder="couponAmount" th:field="*{userLimit}">
+                    <span id="userLimitError"  style="color: rgba(255,0,24,0.73)"></span>
                 </div>
                 <div class="form-group">
                     <label for="exampleTextarea1">Description</label>
                     <textarea class="form-control" id="exampleTextarea1" rows="4" th:field="*{description}"></textarea>
+                    <span id="desError"  style="color: rgba(255,0,24,0.73)"></span>
                 </div>
                 <button type="submit" class="btn btn-primary mr-2">Submit</button>
                 <button class="btn btn-dark">Cancel</button>
             </form>
-
         </div>
     </div>
-
-
 </div>
 <!-- partial -->
 <div class="container-fluid page-body-wrapper">
@@ -246,13 +277,7 @@
             <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="minimize">
                 <span class="mdi mdi-menu"></span>
             </button>
-            <ul class="navbar-nav w-100">
-                <li class="nav-item w-100">
-                    <form class="nav-link mt-2 mt-md-0 d-none d-lg-flex search">
-                        <input type="text" class="form-control" placeholder="Search products">
-                    </form>
-                </li>
-            </ul>
+
             <ul class="navbar-nav navbar-nav-right">
 
                 <li class="nav-item nav-settings d-none d-lg-block">
@@ -321,6 +346,122 @@
 <script src="/assets/js/dashboard.js"></script>
 <!-- End custom js for this page -->
 
+<script>
+    $(document).ready(function () {
+        $('#couponForm').on('submit', function (event) {
+            var isValid = true;
+
+            // Name validation
+            var name = $('#exampleInputName').val().trim();
+            if (name.length === 0) {
+                $('#nameError').text('Name is required').show();
+                isValid = false;
+            } else {
+                $('#nameError').hide();
+            }
+
+            // Code validation
+            var code = $('#exampleInputName1').val().trim();
+            if (code.length === 0) {
+                $('#codeError').text('Code is required').show();
+                isValid = false;
+            } else {
+                $('#codeError').hide();
+            }
+
+            // Expire Date validation
+            var expireDate = $('#exampleInputexpireDate').val().trim();
+            if (expireDate.length === 0) {
+                $('#errorDate').text('Expire Date is required').show();
+                isValid = false;
+            } else {
+                $('#errorDate').hide();
+            }
+
+            // Coupon Amount validation
+            var couponAmount = $('#exampleInputcouponAmount').val().trim();
+            if (couponAmount.length === 0) {
+                $('#couponAmountError').text('Coupon amount is required').show();
+                isValid = false;
+            } else if (isNaN(couponAmount) || parseFloat(couponAmount) <= 0) {
+                $('#couponAmountError').text('Enter a valid discount amount').show();
+                isValid = false;
+            } else {
+                $('#couponAmountError').hide();
+            }
+
+            // Minimum Amount validation
+            var minimumAmount = $('#exampleInputminimumAmount').val().trim();
+            if (minimumAmount.length === 0) {
+                $('#minimumAmountError').text('Minimum amount is required').show();
+                isValid = false;
+            } else if (isNaN(minimumAmount) || parseFloat(minimumAmount) <= 0) {
+                $('#minimumAmountError').text('Enter a valid minimum amount').show();
+                isValid = false;
+            } else if (parseFloat(minimumAmount) < 10) { // Adjust the minimum value here
+                $('#minimumAmountError').text('Minimum amount should be at least 10').show();
+                isValid = false;
+            } else {
+                $('#minimumAmountError').hide();
+            }
+            var description = $('#exampleTextarea1').val().trim();
+            if (description.length === 0) {
+                $('#desError').text('Description is required').show();
+                isValid = false;
+            } else {
+                $('#desError').hide();
+            }
+
+            // User Limit validation (assuming it's a numeric input field)
+            var userLimit = $('#exampleInputUserLimit').val().trim();
+            if (userLimit.length === 0) {
+                $('#userLimitError').text('User Limit is required').show();
+                isValid = false;
+            } else if (isNaN(userLimit) || parseInt(userLimit) < 0) {
+                $('#userLimitError').text('Enter a valid user limit').show();
+                isValid = false;
+            } else {
+                $('#userLimitError').hide();
+            }
+
+            if (!isValid) {
+                event.preventDefault();
+            }
+        });
+    });
+</script>
+
+<script>
+    function validateDate2() {
+        let selectedDate = new Date(document.getElementById('exampleInputexpireDate').value);
+        let currentDate = new Date();
+
+        if (selectedDate <= currentDate) {
+            const Toast = Swal.mixin({
+                toast: true,
+                position: "top-end",
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.onmouseenter = Swal.stopTimer;
+                    toast.onmouseleave = Swal.resumeTimer;
+                }
+            });
+            Toast.fire({
+                icon: "error",
+                title: "cannot select date before current date"
+            });
+            document.getElementById('exampleInputexpireDate').value = '';
+        }
+    }
+</script>
+
+<!-- jQuery library from a CDN (Content Delivery Network) -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<!-- jQuery CDN - Latest version -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 
 

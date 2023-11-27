@@ -34,7 +34,10 @@ public class AdminCategoryController {
     public String categoryList(Model model) {
         List<Category> category = categoryRepository.findAll();
         model.addAttribute("category", category);
-
+        Category categoryAdd = new Category();
+        model.addAttribute("categoryAdd", categoryAdd);
+        CategoryDto categoryDto = new CategoryDto();
+        model.addAttribute("categoryUp",categoryDto);
         return "categoryList";
     }
 
@@ -51,7 +54,7 @@ public class AdminCategoryController {
 
         if (categoryService.categoryExists(categoryDto.getName())){
             redirectAttributes.addAttribute("error", "DuplicateCategory");
-            return "redirect:/admin/addCategory";
+            return "redirect:/admin/category-list";
 
         }
         categoryService.addCategory(categoryDto);
@@ -82,10 +85,16 @@ public class AdminCategoryController {
     }
 
     @PostMapping("/updateCategory/{id}")
-    public String editCategory(@PathVariable("id") Long categoryId, @ModelAttribute("category") CategoryDto categoryDto) {
-        categoryService.updateCategoryById(categoryId, categoryDto);
+    public String editCategory(@PathVariable("id") Long categoryId, @RequestParam String name, RedirectAttributes attributes) {
+        boolean isUpdated = categoryService.updateCategoryById(categoryId, name);
+        if (isUpdated) {
+            attributes.addAttribute("success", " updated successfully.");
+        } else {
+            attributes.addAttribute("error", " already exists.");
+        }
         return "redirect:/admin/category-list";
     }
+
 
 
     @GetMapping("/blockCategory/{id}")
@@ -106,7 +115,6 @@ public class AdminCategoryController {
 
     @GetMapping("/searchCategory")
     public String searchProducts(@RequestParam("searchTerm") String searchTerm, Model model) {
-        System.out.println(searchTerm + "77777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777");
         List<Category> category = categoryService.searchCategory(searchTerm);
         model.addAttribute("category", category);
         return "categoryList";
@@ -118,29 +126,34 @@ public class AdminCategoryController {
 
     @GetMapping("/SubCategory-list")
     public String subcategoryList(Model model) {
-        List<Subcategory> subcategories = subCategoryRepository.findAll(); // Retrieve all subcategories
+        List<Subcategory> subcategories = subCategoryRepository.findAll();
 
-        model.addAttribute("subcategories", subcategories); // Subcategories
-
+        model.addAttribute("subcategories", subcategories);
+        Subcategory subcategoryAdd = new Subcategory();
+        model.addAttribute("subcategoryAdd", subcategoryAdd);
         return "subcategoryList";
     }
 
 
     @GetMapping("/addSubCategory")
     public String showAddSubCategoryForm(Model model) {
-        List<Category> categories = categoryRepository.findAll(); // Retrieve all categories
+        List<Category> categories = categoryRepository.findAll();
 
         Subcategory subcategory = new Subcategory();
         model.addAttribute("subcategory", subcategory);
+
         return "addSubCategory";
     }
     @PostMapping("/addSubCategory")
-    public String addSubCategory(@ModelAttribute("subcategory") SubCategoryDto subcategoryDto, Model model) {
-        // Create a Subcategory object from the DTO
+    public String addSubCategory(@ModelAttribute("subcategory") SubCategoryDto subcategoryDto, RedirectAttributes attributes) {
+        if (subCategoryRepository.existsByNameIgnoreCase(subcategoryDto.getName())) {
+            attributes.addAttribute("error", "DuplicateSubcategory");
+            return "redirect:/admin/SubCategory-list";
+        }
         Subcategory subcategory = new Subcategory();
         subcategory.setName(subcategoryDto.getName());
 
-        subCategoryRepository.save(subcategory); // Save the subcategory
+        subCategoryRepository.save(subcategory);
 
         return "redirect:/admin/SubCategory-list";
     }
@@ -152,7 +165,6 @@ public class AdminCategoryController {
     public String editSubCategory(@PathVariable(value = "id") Long subCategoryId, Model model) {
         Optional<Subcategory> optionalSubCategory = subCategoryRepository.findById(subCategoryId);
 
-        System.out.println("hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh");
         if (optionalSubCategory.isPresent()) {
             Subcategory subcategory = optionalSubCategory.get();
             model.addAttribute("subcategory", subcategory);
@@ -168,9 +180,15 @@ public class AdminCategoryController {
     @PostMapping("/updateSubCategory/{id}")
     public String editSubCategory(
             @PathVariable("id") Long subcategoryId,
-            @ModelAttribute("subcategory") SubCategoryDto subcategory
+            @RequestParam String name,
+            RedirectAttributes attributes
     ) {
-        subCategoryService.updateSubCategoryById(subcategoryId, subcategory);
+        boolean isUpdated = subCategoryService.updateSubCategoryById(subcategoryId, name);
+        if (isUpdated) {
+            attributes.addAttribute("success", "added!");
+        } else {
+            attributes.addAttribute("error", "already created.");
+        }
         return "redirect:/admin/SubCategory-list";
     }
 

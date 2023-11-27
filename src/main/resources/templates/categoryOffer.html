@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Corona Admin</title>
+    <!-- plugins:css -->
+    <link rel="stylesheet" href="/assets/adminjs/vendors/mdi/css/materialdesignicons.min.css">
+    <link rel="stylesheet" href="/assets/adminjs/vendors/css/vendor.bundle.base.css">
+    <!-- endinject -->
+    <!-- Plugin css for this page -->
+    <link rel="stylesheet" href="/assets/adminjs/vendors/jvectormap/jquery-jvectormap.css">
+    <link rel="stylesheet" href="/assets/adminjs/vendors/flag-icon-css/css/flag-icon.min.css">
+    <link rel="stylesheet" href="/assets/adminjs/vendors/owl-carousel-2/owl.carousel.min.css">
+    <link rel="stylesheet" href="/assets/adminjs/vendors/owl-carousel-2/owl.theme.default.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/AlertifyJS/1.13.1/css/alertify.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/AlertifyJS/1.13.1/css/themes/default.min.css" />
+
+    <link rel="stylesheet" href="/assets/css/admin.css">
+    <!-- End layout styles -->
+    <link rel="shortcut icon" href="/assets/images/favicon.png" />
+    <style>
+
+        .custom-swal-popup {
+            display: flex;
+            align-items: center;
+            /*padding-top: 4%;*/
+            width:35%; /* Change width as needed */
+            height: 10%; /* Change height as needed */
+        }
+    </style>
+</head>
+<body>
+<!--<div style="text-align: right;">-->
+<!--    <a th:href="@{/admin/addCategoryOffer}" class="btn btn-primary">Add</a>-->
+<!--</div>-->
+<!--<div th:if="${addOfferSuccess}" class="alert alert-success" id="successAlert">-->
+<!--    <strong>Success!</strong> <span th:text="${addOfferSuccess}"></span>-->
+<!--</div>-->
+<div class="container-scroller">
+    <!-- partial:partials/_sidebar.html -->
+    <nav class="sidebar sidebar-offcanvas" id="sidebar">
+        <div class="sidebar-brand-wrapper d-none d-lg-flex align-items-center justify-content-center fixed-top">
+            <a class="sidebar-brand brand-logo" href="index.html"><img src="/assets/img/logo/logo.png" alt="logo" /></a>
+            <a class="sidebar-brand brand-logo-mini" href="index.html"><img src="assets/images/logo-mini.svg" alt="logo" /></a>
+        </div>
+
+        <ul class="nav">
+
+            <li class="nav-item profile">
+                <div class="profile-desc">
+                    <div class="profile-pic">
+                        <div class="count-indicator">
+                            <img class="img-xs rounded-circle " src="/assets/productImages/profileforAdmin.jpeg" alt="">
+                            <span class="count bg-success"></span>
+                        </div>
+                        <div class="profile-name">
+                            <h5 class="mb-0 font-weight-normal">Henry Klein</h5>
+                            <span>Gold Member</span>
+                        </div>
+                    </div>
+                    <a href="#" id="profile-dropdown" data-toggle="dropdown"><i class="mdi mdi-dots-vertical"></i></a>
+                    <div class="dropdown-menu dropdown-menu-right sidebar-dropdown preview-list" aria-labelledby="profile-dropdown">
+                        <a href="#" class="dropdown-item preview-item">
+                            <div class="preview-thumbnail">
+                                <div class="preview-icon bg-dark rounded-circle">
+                                    <i class="mdi mdi-settings text-primary"></i>
+                                </div>
+                            </div>
+                            <div class="preview-item-content">
+                                <p class="preview-subject ellipsis mb-1 text-small">Account settings</p>
+                            </div>
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a href="#" class="dropdown-item preview-item">
+                            <div class="preview-thumbnail">
+                                <div class="preview-icon bg-dark rounded-circle">
+                                    <i class="mdi mdi-onepassword  text-info"></i>
+                                </div>
+                            </div>
+                            <div class="preview-item-content">
+                                <p class="preview-subject ellipsis mb-1 text-small">Change Password</p>
+                            </div>
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a href="#" class="dropdown-item preview-item">
+                            <div class="preview-thumbnail">
+                                <div class="preview-icon bg-dark rounded-circle">
+                                    <i class="mdi mdi-calendar-today text-success"></i>
+                                </div>
+                            </div>
+                            <div class="preview-item-content">
+                                <p class="preview-subject ellipsis mb-1 text-small">To-do list</p>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </li>
+            <li class="nav-item nav-category">
+                <span class="nav-link">Navigation</span>
+            </li>
+            <li class="nav-item menu-items">
+                <a class="nav-link" th:href="@{/admin/adminHome}">
+              <span class="menu-icon">
+                <i class="mdi mdi-speedometer"></i>
+              </span>
+                    <span class="menu-title">Dashboard</span>
+                </a>
+            </li>
+            <li class="nav-item menu-items">
+                <a class="nav-link" th:href="@{/admin/listUsers}" >
+              <span class="menu-icon">
+                <i class="mdi mdi-playlist-play"></i>
+              </span>
+                    <span class="menu-title">USER </span>
+                </a>
+            </li>
+            <li class="nav-item menu-items">
+                <a class="nav-link" th:href="@{/admin/listProducts}" >
+              <span class="menu-icon">
+                <i class="mdi mdi-playlist-play"></i>
+              </span>
+                    <span class="menu-title">PRODUCT </span>
+                </a>
+            </li>
+            <li class="nav-item menu-items">
+                <a class="nav-link" th:href="@{/admin/category-list}">
+              <span class="menu-icon">
+                <i class="mdi mdi-table-large"></i>
+              </span>
+                    <span class="menu-title">CATEGORY</span>
+                </a>
+            </li>
+            <li class="nav-item menu-items">
+                <a class="nav-link" th:href="@{/admin/SubCategory-list}">
+              <span class="menu-icon">
+                <i class="mdi mdi-chart-bar"></i>
+              </span>
+                    <span class="menu-title">SUBCATEGORY</span>
+                </a>
+            </li>
+            <li class="nav-item menu-items">
+                <a class="nav-link" th:href="@{/admin/orderList}">
+              <span class="menu-icon">
+                <i class="mdi mdi-contacts"></i>
+              </span>
+                    <span class="menu-title">ORDERS</span>
+                </a>
+            </li>
+            <li class="nav-item menu-items">
+                <a class="nav-link" th:href="@{/admin/sales-report}">
+              <span class="menu-icon">
+                <i class="mdi mdi-contacts"></i>
+              </span>
+                    <span class="menu-title">SALES REPORT</span>
+                </a>
+            </li>
+            <li class="nav-item menu-items">
+                <a class="nav-link" th:href="@{/admin/categoryOfferList}">
+              <span class="menu-icon">
+                <i class="mdi mdi-contacts"></i>
+              </span>
+                    <span class="menu-title">OFFER </span>
+                </a>
+            </li>
+            <li class="nav-item menu-items">
+                <a class="nav-link" th:href="@{/admin/couponList}">
+              <span class="menu-icon">
+                <i class="mdi mdi-contacts"></i>
+              </span>
+                    <span class="menu-title">COUPON </span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <!-- partial -->
+    <div class="container-fluid page-body-wrapper">
+        <!-- partial:partials/_navbar.html -->
+        <nav class="navbar p-0 fixed-top d-flex flex-row">
+            <div class="navbar-brand-wrapper d-flex d-lg-none align-items-center justify-content-center">
+                <a class="navbar-brand brand-logo-mini" href="index.html"><img src="assets/images/logo-mini.svg" alt="logo" /></a>
+            </div>
+            <div class="navbar-menu-wrapper flex-grow d-flex align-items-stretch">
+                <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="minimize">
+                    <span class="mdi mdi-menu"></span>
+                </button>
+                <ul class="navbar-nav navbar-nav-right">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link" id="profileDropdown" href="#" data-toggle="dropdown">
+                            <div class="navbar-profile">
+                                <img class="img-xs rounded-circle" src="/assets/productImages/profileforAdmin.jpeg" alt="">
+                                <p class="mb-0 d-none d-sm-block navbar-profile-name">Henry Klein</p>
+                                <i class="mdi mdi-menu-down d-none d-sm-block"></i>
+                            </div>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list" aria-labelledby="profileDropdown">
+                            <h6 class="p-3 mb-0">Profile</h6>
+                            <div class="dropdown-divider"></div>
+
+                            <div class="dropdown-divider"></div>
+                            <a th:href="@{/logout}"  class="dropdown-item preview-item">
+                                <div class="preview-thumbnail">
+                                    <div class="preview-icon bg-dark rounded-circle">
+                                        <i class="mdi mdi-logout text-danger"></i>
+                                    </div>
+                                </div>
+                                <div class="preview-item-content">
+                                    <p class="preview-subject mb-1">Log out</p>
+                                </div>
+                            </a>
+                            <div class="dropdown-divider"></div>
+                        </div>
+                    </li>
+                </ul>
+                <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button" data-toggle="offcanvas">
+                    <span class="mdi mdi-format-line-spacing"></span>
+                </button>
+            </div>
+        </nav>
+        <!-- partial -->
+        <div class="main-panel">
+            <div class="content-wrapper">
+                <div class="row">
+                    <div class="col-lg-12 grid-margin stretch-card">
+                        <div class="card">
+                            <div class="card-body">
+
+                                </p>
+
+
+                                <!-- Alert div for error message -->
+                                <div th:if="${addOfferFail}" class="alert alert-danger" id="errorAlert">
+                                    <strong>Error!</strong> <span th:text="${addOfferFail}"></span>
+                                </div>
+                                <div class="table-responsive">
+                                    <a class="btn btn-primary" type="button" th:href="@{/admin/addCategoryOffer}">Add</a>
+                                    <table class="table table-striped">
+                                        <thead>
+                                        <tr>
+                                            <th>No</th> <!-- Add row number column -->
+                                            <th>
+                                                <a th:href="@{'/page/' + ${currentPage} + '?sortField=productName&sortDir=' + ${reverseSortDir}}">
+                                                    Name
+                                                </a>
+                                            </th>
+                                            <th>
+                                                <a th:href="@{'/page/' + ${currentPage} + '?sortField=category.name&sortDir=' + ${reverseSortDir}}">
+                                                    Starting Date
+                                                </a>
+                                            </th>
+                                            <th>
+                                                <a th:href="@{'/page/' + ${currentPage} + '?sortField=current_state&sortDir=' + ${reverseSortDir}}">
+                                                    Expiry Date
+                                                </a>
+                                            </th>
+                                            <th>
+                                                <a th:href="@{'/page/' + ${currentPage} + '?sortField=quantity&sortDir=' + ${reverseSortDir}}">
+                                                    Offer %
+                                                </a>
+                                            </th>
+                                            <th>
+                                                <a th:href="@{'/page/' + ${currentPage} + '?sortField=price&sortDir=' + ${reverseSortDir}}">
+                                                    Add Category
+                                                </a>
+                                            </th>
+                                            <th>
+                                                <a th:href="@{'/page/' + ${currentPage} + '?sortField=price&sortDir=' + ${reverseSortDir}}">
+                                                    Category
+                                                </a>
+                                            </th>
+                                            <th>block</th>
+                                            <th>Edit</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr th:each="categoryOffer, rowStat : ${categoryOffers}">
+                                            <td th:text="${rowStat.index + 1}">1</td>
+                                            <td th:text="${categoryOffer.categoryOfferCode}">Offer Code</td>
+                                            <td th:text="${categoryOffer.startDate}">Start Date</td>
+                                            <td th:text="${categoryOffer.endDate}">End Date</td>
+                                            <td th:text="${categoryOffer.percentage}">Offer Percentage</td>
+                                            <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" th:attr="data-bs-target='#modal__' + ${categoryOffer.categoryOfferId}">
+                                                Add category
+                                            </button></td>
+<!--                                            <td>  <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal"-->
+<!--                                                          th:data-offerId="${categoryOffer.categoryOfferId}"  onclick="fetchCategories(${categoryOffer.categoryOfferId})">-->
+<!--                                                View-->
+<!--                                            </button></td>-->
+                                            <td>
+                                                <button type="button"  class="btn btn-inverse-success"  data-bs-toggle="modal" th:attr="data-bs-target='#modal_' + ${categoryOffer.categoryOfferId}"
+                                                >View
+                                                    </button>
+                                            </td>
+
+
+
+                                            <!-- Add edit and delete buttons with appropriate functionality -->
+<!--                                            <td><a th:href="@{'/editCategoryOffer/' + ${categoryOffer.categoryOfferId}}" class="btn btn-primary">Edit</a></td>-->
+                                            <td>
+                                                <div>
+                                                    <form id="unblockForm" th:action="@{/admin/unblockCategoryOffer/{id}(id=${categoryOffer.categoryOfferId})}" th:if="${categoryOffer.isActive()}" method="get">
+                                                        <input type="hidden" name="_method" value="put">
+                                                        <button type="button" class="btn bg-gradient-warning btn-fw custom-small-button" fdprocessedid="mq2w9o" onclick="confirmAction('unblock', this)" >Unblock</button>
+                                                    </form>
+                                                    <form id="blockForm" th:action="@{/admin/blockCategoryOffer/{id}(id=${categoryOffer.categoryOfferId})}"   th:if="${!categoryOffer.isActive()}" method="get">
+                                                        <input type="hidden" name="_method" value="put">
+                                                        <button type="button" class="btn bg-gradient-danger btn-fw custom-small-button" fdprocessedid="mq2w9o" onclick="confirmAction('block', this)">Lock</button>
+                                                    </form>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <a th:href="@{/admin/editCategoryOffer/{id}(id=${categoryOffer.categoryOfferId})}" class="btn btn-warning">
+                                                    Edit
+                                                </a>
+                                            </td>
+<!--                                            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" th:object="${categoryOffer}">-->
+                                            <div class="modal fade"  th:id="'modal_' + ${categoryOffer.categoryOfferId}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h3 class="modal-title fs-5" id="exampleModalLabel">Categories</h3>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <div >
+                                                                <div th:each="category: ${categoryOffer.categories}" class="mb-3">
+                                                                   <div class="card" th:id="'categoryCard-' + ${category.id}">
+                                                                       <div class="card-body" style="display: flex;flex-direction: row;justify-content: space-between">
+                                                                           <div>
+
+                                                                           <h4 th:text="${category.name}"></h4>
+                                                                           </div>
+                                                                           <div>
+                                                                               <button type="button" class="btn btn-danger" th:attr="onclick='removeCategoryFromOffer(\'' + ${categoryOffer.categoryOfferId} + '\', \'' + ${category.id} + '\')'">Remove</button>
+
+                                                                           </div>
+                                                                       </div>
+                                                                   </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="modal fade" th:id="'modal__' + ${categoryOffer.categoryOfferId}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" >
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h3 class="modal-title fs-5" id="staticBackdropLabel">Add categories to offer</h3>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                        </div>
+                                                        <div class="modal-body mb-3" >
+                                                            <div class="card" th:each="category : ${categories}" style="display: flex;flex-direction: row;justify-content: space-between;align-items: center">
+                                                                <div class="card-body">
+                                                                    <h5 class="card-title" th:text="${category.name}"></h5>
+
+                                                                </div>
+                                                                <div class="pr-4">
+                                                                    <button type="button" class="btn btn-primary" th:attr="onclick='addCategoryToOffer(\'' + ${categoryOffer.categoryOfferId} + '\', \'' + ${category.id} + '\')'" >Add</button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </tr>
+
+                                        </tbody>
+                                    </table>
+
+                                    <!-- Modal -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+            <!-- content-wrapper ends -->
+            <!-- partial:partials/_footer.html -->
+            <footer class="footer">
+                <div class="d-sm-flex justify-content-center justify-content-sm-between">
+                    <span class="text-muted d-block text-center text-sm-left d-sm-inline-block">Copyright © bootstrapdash.com 2020</span>
+                    <span class="float-none float-sm-right d-block mt-1 mt-sm-0 text-center"> Free <a href="https://www.bootstrapdash.com/bootstrap-admin-template/" target="_blank">Bootstrap admin templates</a> from Bootstrapdash.com</span>
+                </div>
+            </footer>
+            <!-- partial -->
+        </div>
+        <!-- main-panel ends -->
+
+    </div>
+    <!-- page-body-wrapper ends -->
+</div>
+<!-- container-scroller -->/
+<!-- plugins:js -->
+<script src="/assets/adminjs/vendors/js/vendor.bundle.base.js"></script>
+<!-- endinject -->
+<!-- Plugin js for this page -->
+<script src="/assets/adminjs/vendors/chart.js/Chart.min.js"></script>
+<script src="/assets/adminjs/vendors/progressbar.js/progressbar.min.js"></script>
+<script src="/assets/adminjs/vendors/jvectormap/jquery-jvectormap.min.js"></script>
+<script src="/assets/adminjs/vendors/jvectormap/jquery-jvectormap-world-mill-en.js"></script>
+<script src="/assets/adminjs/vendors/owl-carousel-2/owl.carousel.min.js"></script>
+<!-- End plugin js for this page -->
+<!-- inject:js -->
+<script src="/assets/adminjs/js/off-canvas.js"></script>
+<script src="/assets/adminjs/js/hoverable-collapse.js"></script>
+<script src="/assets/adminjs/js/misc.js"></script>
+<script src="/assets/adminjs/js/settings.js"></script>
+<script src="/assets/adminjs/js/todolist.js"></script>
+<!-- endinject -->
+<!-- Custom js for this page -->
+<script src="/assets/adminjs/js/dashboard.js"></script>
+<script>
+    // Select the Block and Unblock buttons by their IDs
+    var blockButton = document.getElementById("blockButton");
+    var unblockButton = document.getElementById("unblockButton");
+
+    // Add click event listeners to the buttons
+    blockButton.addEventListener("click", function(event) {
+        // Show a confirmation dialog and proceed if the user clicks OK
+        if (!confirm("Are you sure you want to block this user?")) {
+            event.preventDefault(); // Prevent the default action if the user clicks Cancel
+        }
+    });
+
+    unblockButton.addEventListener("click", function(event) {
+        // Show a confirmation dialog and proceed if the user clicks OK
+        if (!confirm("Are you sure you want to unblock this user?")) {
+            event.preventDefault(); // Prevent the default action if the user clicks Cancel
+        }
+    });
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+
+<script>
+    // Function to confirm action and submit form
+    function confirmAction(formId) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: 'You are about to perform this action.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes',
+            customClass: {
+                popup: 'custom-swal-popup' // Apply the custom class to this specific SweetAlert
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // If user confirms, submit the form
+                $(formId)[0].submit();
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Action successful',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+            }
+        });
+    }
+</script>
+<script>
+    function addCategoryToOffer(offerId, categoryId) {
+        console.log(offerId);
+        $.ajax({
+            type: 'POST',
+            url: '/admin/addCategoryToOffer',
+            data: {
+                categoryId: categoryId,
+                offerId: offerId
+            },
+            success: function(response) {
+
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.onmouseenter = Swal.stopTimer;
+                        toast.onmouseleave = Swal.resumeTimer;
+                    }
+                });
+                Toast.fire({
+                    icon: 'success',
+                    title: 'Category added successfully'
+                });
+            },
+            error: function(xhr) {
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 1500,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.onmouseenter = Swal.stopTimer;
+                        toast.onmouseleave = Swal.resumeTimer;
+                    }
+                });
+                Toast.fire({
+                    icon: 'error',
+                    title: 'Already added this  category'
+                });
+            }
+        });
+    }
+</script>
+
+<script>
+    function removeCategoryCard(categoryId) {
+        console.log('Removing category card with ID:', categoryId);
+        $('#categoryCard-' + categoryId).remove();
+    }
+    function removeCategoryFromOffer(offerId, categoryId) {
+        $.ajax({
+            type: 'POST',
+            url: '/admin/removeCategoryFromOffer', // Replace with your controller URL
+            data: { offerId: offerId, categoryId: categoryId },
+            success: function (response) {
+
+                removeCategoryCard(categoryId);
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 1000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.onmouseenter = Swal.stopTimer;
+                        toast.onmouseleave = Swal.resumeTimer;
+                    }
+                });
+                Toast.fire({
+                    icon: 'success',
+                    title: 'removed successfully'
+                });
+
+            },
+            error: function(xhr) {
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 1500,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.onmouseenter = Swal.stopTimer;
+                        toast.onmouseleave = Swal.resumeTimer;
+                    }
+                });
+                Toast.fire({
+                    icon: 'error',
+                    title: 'Cant remove this  category'
+                });
+            }
+        });
+    }
+
+
+</script>
+<!-- SweetAlert CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+
+<!-- jQuery (if not included already) -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<!-- SweetAlert JS -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script >
+
+    setTimeout(function() {
+        var successAlert = document.getElementById('successAlert');
+        if (successAlert) {
+            successAlert.remove();
+        }
+
+        var errorAlert = document.getElementById('errorAlert');
+        if (errorAlert) {
+            errorAlert.remove();
+        }
+    }, 4000);
+</script>
+<script>
+    function confirmAction(action, button) {
+        let message;
+        if (action === 'block') {
+            message = 'Are you sure you want to unblock this category offer?';
+        } else if (action === 'unblock') {
+            message = 'Are you sure you want to lock this category offer?';
+        }
+
+        alertify.confirm(message, function (result) {
+            if (result) {
+                performAction(action, button);
+            } else {
+                // Do something if canceled
+            }
+        }).set('labels', {ok:'Yes', cancel:'No'});
+    }
+
+    function performAction(action, button) {
+        const form = button.closest('form'); // Get the parent form of the clicked button
+
+        if (form) {
+            form.submit(); // Submit the form after the user confirms
+        }
+    }
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/AlertifyJS/1.13.1/alertify.min.js"></script>
+<!-- End custom js for this page -->
+</body>
+</html>

@@ -22,13 +22,14 @@ public class RegistrationDto {
 
     private String password;
 
+    private String referralCode;
     private String errorMessage;
 
     public RegistrationDto() {
 
     }
 
-    public RegistrationDto(String firstName, String lastName, String email,String phoneNumber, String password,String errorMessage) {
+    public RegistrationDto(String firstName, String lastName, String email,String phoneNumber, String password,String errorMessage,String referralCode) {
         super();
         this.firstName = firstName;
         this.lastName = lastName;
@@ -36,6 +37,15 @@ public class RegistrationDto {
         this.phoneNumber=phoneNumber;
         this.password = password;
         this.errorMessage=errorMessage;
+        this.referralCode = referralCode;
+    }
+
+    public String getReferralCode() {
+        return referralCode;
+    }
+
+    public void setReferralCode(String referralCode) {
+        this.referralCode = referralCode;
     }
 
     public String getFirstName() {

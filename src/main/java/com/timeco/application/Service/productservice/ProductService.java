@@ -17,9 +17,9 @@ public interface ProductService {
     public void updateProductById(ProductDto product,Long id);
 
     public void deleteProductById(Long id);
-    public List<Product> getAllProducts();
+    public Page<Product> getAllProducts();
 
-    List<Product> searchProducts(String searchTerm);
+    Page<Product> searchProducts(String searchTerm);
 
 //    List<ProductImageDto> getAllProductsWithImages();
    public List<Product> getAllProductsWithImages() ;
@@ -41,4 +41,19 @@ public interface ProductService {
     void lockProduct(Long id);
 
     void unlockProduct(Long id);
+
+    Page<Product> getAllProducts(int page, int pageSize);
+
+
+
+    Page<Product> searchProductsAsPage(String searchTerm, int page, int pageSize);
+
+    Page<Product> findAllProducts(int page, int pageSize);
+
+    Page<Product> findByProductNameContaining(String searchTerm, int page, int pageSize);
+
+
+    Page<Product> getProductsByCategoryAndPriceRange(Category category, double minPrice, double maxPrice, int page, int pageSize);
+
+    Page<Product> getProductsByCategoryPage(Category category, int page, int pageSize);
 }

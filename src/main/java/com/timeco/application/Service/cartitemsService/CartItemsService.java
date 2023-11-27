@@ -21,4 +21,6 @@ public interface CartItemsService {
     List<CartItems> findCartItems(User user);
 
     public void updateProductQuantity(Long productId, Integer newQuantity);
+
+    void deleteCartItems(List<CartItems> userCartItems);
 }

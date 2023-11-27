@@ -46,7 +46,7 @@
                                     <a th:href="@{/login}">Login</a>
                                 </li>
                                 <li><a th:href="@{/user/viewCart}">Cart</a></li>
-
+                                <li><a th:href="@{/user/wishlist}">Wishlist</a></li>
 
                                 <!--                                <li><a href="contact.html">Contact</a></li>-->
                             </ul>
@@ -55,7 +55,7 @@
                     <!-- Header Right -->
                     <div class="header-right">
                         <ul>
-                            <li> <a th:href="@{/user/profile}"><span class="flaticon-user"></span></a></li>
+                            <li> <a th:href="@{/pro/profile}"><span class="flaticon-user"></span></a></li>
                             <li><a th:href="@{/user/viewCart}"><span class="flaticon-shopping-cart"></span></a> </li>
                         </ul>
                     </div>
@@ -71,18 +71,11 @@
 </header>
 <main>
     <!-- Hero Area Start-->
-    <div class="slider-area ">
-        <div class="single-slider slider-height2 d-flex align-items-center">
-            <div class="container">
-                <div class="row">
-                    <div class="col-xl-12">
-                        <div class="hero-cap text-center">
-                            <h2>Cart List</h2>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+
+    <div style="padding-left: 200px;padding-top: 50px;padding-bottom: 50px;">
+        <h1>
+            Shopping <span style="color:rgb(253,32,32) ">cart</span>
+        </h1>
     </div>
     <!--================Cart Area =================-->
     <section class="cart_area section_padding">
@@ -91,7 +84,7 @@
                 <div th:if="${error}" class="alert alert-danger">
                     <p th:text="${error}"></p>
                 </div>
-                <div class="table-responsive">
+                <div class="table-responsive" th:if="${not #lists.isEmpty(cartItems)}">
                     <table class="table">
                         <thead>
                         <tr>
@@ -106,7 +99,7 @@
                             <td>
                                 <div class="media">
                                     <div class="d-flex">
-                                        <img th:src="${'/assets'+cartItem.product.productImages[0].imageName}" th:alt="${cartItem.product.productName}" />
+                                        <img th:if="${cartItem.product.productImages.size() > 0}" th:src="${'/assets'+cartItem.product.productImages[0].imageName}" th:alt="${cartItem.product.productName}" />
                                     </div>
                                     <div class="media-body">
                                         <p th:text="${cartItem.product.productName}"></p>
@@ -114,16 +107,21 @@
                                 </div>
                             </td>
                             <td>
-                                <h5  th:id="'price' + ${cartItem.product.id}" th:text="${cartItem.product.price}"></h5>
-
+                                <h5 th:id="'price' + ${cartItem.product.id}">
+                                    <span th:if="${cartItem?.product?.category?.categoryOffer != null &&
+                                      cartItem?.product?.category?.categoryOffer.startDate.isBefore(T(java.time.LocalDate).now()) &&
+                                      cartItem?.product?.category?.categoryOffer.endDate.isAfter(T(java.time.LocalDate).now()) &&
+                                      not cartItem?.product?.category?.categoryOffer.isActive()}"
+                                          th:text="${cartItem.product.discountedAmount}">Discounted Price</span>
+                                    <span th:if="${cartItem.product.category.categoryOffer == null || cartItem.product.category.categoryOffer.isActive()}"
+                                          th:text="${cartItem.product.price}">Original Price</span>
+                                </h5>
                             </td>
 
                             <td>
                             <div class="input-group mb-3">
-                                <!--					             	<input type="text" name="quantity" class="quantity form-control input-number" value="1" min="1" max="100">-->
                                 <div class="input-group col-md-6 d-flex mb-3" style="flex-wrap:nowrap">
 										<span class="input-group-btn mr-2">
-<!--											<button th:onclick="'myFunction()'" >Click me</button>-->
 											<button  th:onclick="'changeQtyM(\'' + ${cartItem.product.id} + '\')'"   >
 												<i class="ti-minus"></i>
 											</button>
@@ -137,12 +135,21 @@
                                 </div>
                             </div>
                             </td>
-                            <td class="total" th:id="'Totalprice' + ${cartItem.product.id}" name="Total" th:text="${cartItem.quantity * cartItem.price}">$4.90</td>
+                            <td class="total" th:id="'Totalprice' + ${cartItem.product.id}" name="Total">
+                                <span th:if="${cartItem?.product?.category?.categoryOffer != null &&
+                                      cartItem?.product?.category?.categoryOffer.startDate.isBefore(T(java.time.LocalDate).now()) &&
+                                      cartItem?.product?.category?.categoryOffer.endDate.isAfter(T(java.time.LocalDate).now()) &&
+                                      not cartItem?.product?.category?.categoryOffer.isActive()}">
+                                    <span th:text="${cartItem.quantity * cartItem.product.discountedAmount}"></span>
+                                </span>
+                                <span th:if="${cartItem.product.category.categoryOffer == null || cartItem.product.category.categoryOffer.isActive()}">
+                                    <span th:text="${cartItem.quantity * cartItem.price}"></span>
+                                </span>
+                            </td>
                             <td>
-<!--                                <button th:onclick="'removeCartItem(\'' + ${cartItem.product.id} + '\')'">Remove</button>-->
-<!--                                <button th:onclick="'removeCartItem(this, \'' + ${cartItem.product.id} + '\')'">Remove</button>-->
-<!--                                <a th:href="@{'/user/remove-from-cart/' + ${cartItem.cartItemId}}" class="btn-primary" >Remove</a>                           </td>-->
-                                <a th:href="@{'/user/remove-from-cart/' + ${cartItem.cartItemId}}"  >&#x2716</a>
+<!--                           <a th:href="@{'/user/remove-from-cart/' + ${cartItem.cartItemId}}"  >&#x2716</a>-->
+                                <a th:href="@{'/user/remove-from-cart/' + ${cartItem.cartItemId}}" class="remove-from-cart">&#x2716;</a>
+
                             <td style="display: none;"> <!-- Hide this element, but it contains productQuantity -->
                                 <span th:id="'productQuantity'+${cartItem.product.id}" th:text="${cartItem.product.quantity}"></span>
                             </td>
@@ -152,15 +159,10 @@
 
                         <tr class="bottom_button">
                             <td>
-<!--                                <a class="btn_1" href="#">Update Cart</a>-->
                             </td>
                             <td></td>
                             <td></td>
-                            <td>
-                                <div class="cupon_text float-right">
-                                    <a class="btn_1" href="#">Close Coupon</a>
-                                </div>
-                            </td>
+
                         </tr>
                         <tr>
                             <td></td>
@@ -178,16 +180,18 @@
                         <a class="btn_1" th:href="@{/user/products}">Continue Shopping</a>
                         <a class="btn_1 checkout_btn_1" href="#" th:href="@{/checkout}">Proceed to checkout</a>
                     </div>
-<!--                    <div th:if="${#flash.error}">-->
-<!--                        <p th:text="${#flash.error}" class="error-message"></p>-->
-<!--                    </div>-->
 
                 </div>
+                <div th:unless="${not #lists.isEmpty(cartItems)}">
+                    <h2>Your cart is empty. <a th:href="@{/user/products}">Shop now</a>!</h2>
+                    <a  class="btn_3" th:href="@{/user/products}">Back to shopping</a>
+                </div>
+
             </div>
         </div>
     </section>
     <!--================End Cart Area =================-->
-</main>>
+</main>
 <footer>
     <!-- Footer Start-->
     <div class="footer-area footer-padding">
@@ -344,14 +348,12 @@
 
                 quantityInput.value = responseData.updatedQuantity;
 
-                TotalPrice.innerHTML = '$' + (OgPrice * responseData.updatedQuantity).toFixed(2);
-
+                TotalPrice.innerHTML = '$' + responseData.updatedPrice.toFixed(2);
                 totalSubAmount.innerHTML = '$' + responseData.totalPrice;
 
             }
         });
     }
-
 
     function changeQtyM(id) {
         let quantityInput = document.getElementById('quantity' + id);
@@ -366,18 +368,15 @@
             success: (response) => {
                 var responseData = JSON.parse(response);
 
-
                 quantityInput.value = responseData.updatedQuantity;
 
-                TotalPrice.innerHTML = '$' + (OgPrice * responseData.updatedQuantity).toFixed(2);
+                TotalPrice.innerHTML = '$' + responseData.updatedPrice.toFixed(2);
 
                 totalSubAmount.innerHTML = '$' + responseData.totalPrice;
 
             }
         });
     }
-
-
 </script>
 <script>
     document.getElementById('checkoutButton').addEventListener('click', function() {
@@ -403,8 +402,58 @@
                 console.error(error);
             });
     });
+
+
+    $(document).ready(function() {
+        $(".remove-from-cart").click(function(e) {
+            e.preventDefault();
+            var removeLink = $(this).attr('href');
+
+            // Show a confirmation alert using SweetAlert2
+            Swal.fire({
+                title: 'Are you sure?',
+                text: 'This action cannot be undone!',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Yes, remove it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // User clicked 'Yes', send an AJAX request to remove the product from the cart
+                    $.ajax({
+                        type: "GET",
+                        url: removeLink,
+                        success: function(data) {
+                            // Product was successfully removed from the cart
+                            Swal.fire({
+                                position: 'top-end',
+                                icon: 'success',
+                                title: 'Product removed from cart!',
+                                showConfirmButton: false,
+                                timer: 1500
+                            });
+                            // Remove the product row from the UI
+                            $(this).closest("tr").remove();
+                        },
+                        error: function() {
+                            // Handle errors, e.g., display an error message
+                            Swal.fire({
+                                position: 'top-end',
+                                icon: 'error',
+                                title: 'Failed to remove from cart',
+                                showConfirmButton: false,
+                                timer: 1500
+                            });
+                        }
+                    });
+                }
+            });
+        });
+    });
+
 </script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10.14.0/dist/sweetalert2.all.min.js"></script>
+<script src="/assets/js/checkBlocked.js"></script>
 
 </body>
 </html>

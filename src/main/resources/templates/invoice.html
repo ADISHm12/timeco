@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en"  xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Title</title>
+    <style>
+        h6 {
+            margin: 5px 0; /* Adjust the margin as needed */
+        }
+    </style>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+        }
+        #one{
+            color: rgba(253,0,60,0.73);
+        }
+    </style>
+</head>
+<body>
+<div>
+
+    <h1><span>Time</span> <span id="one">Zone</span></h1>
+</div>
+<div style="display: flex;flex-direction: row">
+    <div>
+        <h6>Contact Us: 7356169817 || timeco@gmail.com</h6>
+        <h6>Signature Not Verified</h6>
+        <h6> Digitally signed by TIMECO PVT LTD</h6>
+        <h6>Date</h6>
+        <h6>Reason : Invoice</h6>
+    </div>
+    <h4>PAN No:AAQCS4259Q</h4>
+    <h4>GST Registration No:19AAQCS4259Q1Z7</h4>
+
+    <div>
+        <h3>Billing Address:</h3>
+        <h6 >Name:<span th:text="${address.userName}"></span></h6>
+        <h6 >City:<span th:text="${address.city}"></span></h6>
+        <h6 >State:<span th:text="${address.state}"></span></h6>
+        <h6 >Country:<span th:text="${address.country}"></span></h6>
+        <h6 >Address:<span th:text="${address.address}"></span></h6>
+        <h6 >Mobile:<span th:text="${address.mobile}"></span></h6>
+
+
+    </div>
+
+</div>
+
+
+<div>
+    <h3>Order Details</h3>
+    <table>
+        <!-- Table header -->
+        <tr>
+            <th>Sl.No</th>
+            <th>Product name</th>
+            <th>Qty</th>
+            <th>Unit price</th>
+            <th>Net amount</th>
+            <th>Tax Rate</th>
+            <th>Tax Type</th>
+            <th>Total Amount</th>
+        </tr>
+        <!-- Table data -->
+        <tr>
+            <td>1</td>
+            <td th:text="${order.product.productName}"></td>
+            <td th:text="${order.orderItemCount}"></td>
+            <td th:text="${order.product.price}"></td>
+            <td th:text="${order.product.price * order.orderItemCount}"></td>
+            <td>18%</td>
+            <td>IGST</td>
+            <td th:text="${order.product.price * order.orderItemCount}"></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td ></td>
+            <td ></td>
+            <td ></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td th:text="${order.product.price * order.orderItemCount}"></td>
+        </tr>
+        <!-- ... additional rows -->
+    </table>
+
+    <!-- ... other order details -->
+
+    <h2>Sold By</h2>
+    <p></p>
+    <p>*Building No. CCU1, Mouza, Amraberia,Phase 2:</p>
+    <p>ESR Warehousing Pvt Ltd, Vill : Amraberia,</p>
+    <p>Rajapur, Joargori Gram Panchayet, Uluberia, Dist.</p>
+    <p>Howrah</p>
+    <p>Howrah, WEST BENGAL, 711303 </p>
+</div>
+</body>
+</html>

@@ -328,6 +328,61 @@
 <!-- Jquery Plugins, main Jquery -->
 <script src="./assets/js/plugins.js"></script>
 <script src="./assets/js/main.js"></script>
+<script>
+    // Check for URL parameter indicating successful registration
+    const urlParams = new URLSearchParams(window.location.search);
+    const registrationStatus = urlParams.get('registration');
+
+    // Function to display an alert for successful registration
+    function showRegistrationAlert() {
+        if (registrationStatus === 'success') {
+            const Toast = Swal.mixin({
+                toast: true,
+                position: "top-end",
+                showConfirmButton: false,
+                timer: 4000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.onmouseenter = Swal.stopTimer;
+                    toast.onmouseleave = Swal.resumeTimer;
+                }
+            });
+            Toast.fire({
+                icon: "success",
+                title: "Signed in successfully"
+            });
+        }
+    }
+
+    // Call the function to show the alert when the page loads
+    window.onload = function() {
+        showRegistrationAlert();
+    };
+</script>
+<script >
+    /* Your JavaScript logic */
+    document.addEventListener('DOMContentLoaded', function () {
+        // Check if the "blocked" parameter is present in the URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const isBlocked = urlParams.has('blocked');
+
+        if (isBlocked) {
+            Swal.fire({
+
+                title: 'Account Blocked',
+                text: 'Your account has been blocked.',
+                imageUrl: '/assets/img/logo/logo.png',
+                showConfirmButton: true,
+                footer: '<a href="https://www.investopedia.com/terms/b/blocked-account.asp" target="_blank">Learn More</a>'
+
+            });
+            urlParams.delete('blocked');
+            const newUrl = window.location.pathname + '?' + urlParams.toString();
+            history.replaceState({}, document.title, newUrl);
+        }
+    });
+</script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 </body>
 

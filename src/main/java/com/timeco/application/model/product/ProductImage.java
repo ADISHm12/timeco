@@ -14,18 +14,13 @@ public class ProductImage {
     @Column(name = "image_name", nullable = false)
     private String imageName;
 
-//    @Lob
-//    @Column(name = "image_data", nullable = false)
-//    private byte[] imageData;
 
-    // Other fields and getters/setters
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
     private Product product;
 
-    public ProductImage(ProductImage imageName, Product product) {
-    }
+
 
     public Long getId() {
         return id;
@@ -43,13 +38,6 @@ public class ProductImage {
         this.imageName = imageName;
     }
 
-//    public byte[] getImageData() {
-//        return imageData;
-//    }
-//
-//    public void setImageData(byte[] imageData) {
-//        this.imageData = imageData;
-//    }
 
     public Product getProduct() {
         return product;
@@ -71,9 +59,5 @@ public class ProductImage {
         super();
     }
 
-    public ProductImage(String imageName, Product product) {
-        this.imageName = imageName;
 
-        this.product = product;
-    }
 }

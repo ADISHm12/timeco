@@ -4,20 +4,23 @@ package com.timeco.application.web.admincontrollers;
 import com.timeco.application.Repository.OrderItemRepository;
 import com.timeco.application.Repository.PurchaseOrderRepository;
 import com.timeco.application.Repository.UserRepository;
+import com.timeco.application.Service.OrderService.OrderItemService;
 import com.timeco.application.model.order.OrderItem;
-import com.timeco.application.model.order.PurchaseOrder;
-import com.timeco.application.model.product.Product;
-import com.timeco.application.model.user.User;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
-import org.springframework.stereotype.Repository;
+
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.security.Principal;
-import java.util.Collection;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
+
 import java.util.Collections;
 import java.util.List;
+
 
 @Controller
 @RequestMapping("/admin")
@@ -30,21 +33,31 @@ public class AdminOrderController {
     @Autowired
     private OrderItemRepository orderItemRepository ;
 
+    @Autowired
+    private OrderItemService orderItemService ;
+
+
+
 
     @GetMapping("/orderList")
-    public String OrderList(Model  model){
+    public String orderList(Model model,@RequestParam(defaultValue = "0") int page,
+    @RequestParam(defaultValue = "6") int pageSize){
+        Page<OrderItem> orderItemsPage = orderItemService.findAllOrderItem(page,pageSize);
 
-        List<OrderItem> orderItems = orderItemRepository.findAll();
-        Collections.reverse(orderItems);
-        model.addAttribute("orderItems",orderItems);
+        model.addAttribute("orderItem", orderItemsPage.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", orderItemsPage.getTotalPages());
+
 
         return "orderList";
     }
+
     @GetMapping("/orderEdit/{orderItemId}")
     public String orderEdit(@PathVariable Long orderItemId, Model model){
 
         OrderItem orderItem = orderItemRepository.findByOrderItemId(orderItemId);
         model.addAttribute("orderItem",orderItem);
+
         return"OrderEdit";
     }
 

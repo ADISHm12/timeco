@@ -2,7 +2,11 @@ package com.timeco.application.Service.categoryservice;
 
 import com.timeco.application.Dto.CategoryDto;
 import com.timeco.application.Repository.CategoryRepository;
+import com.timeco.application.Repository.ProductRepository;
+import com.timeco.application.Service.productservice.ProductService;
 import com.timeco.application.model.category.Category;
+import com.timeco.application.model.category.CategoryOffer;
+import com.timeco.application.model.product.Product;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,7 +17,13 @@ import java.util.List;
 public class CategoryServiceImpl implements CategoryService{
 
     @Autowired
+    private ProductService  productService;
+
+    @Autowired
     private CategoryRepository categoryRepository;
+
+    @Autowired
+    private ProductRepository productRepository ;
     @Override
     public void addCategory(CategoryDto categoryDto) {
         Category category=new Category();
@@ -27,18 +37,22 @@ public class CategoryServiceImpl implements CategoryService{
     }
 
 //
-    @Override
-    @Transactional
-    public void updateCategoryById(Long categoryId, CategoryDto categoryDto) {
-        Category category = categoryRepository.findById(categoryId).orElse(null);
-        if(category!=null)
-        {
-            category.setName(categoryDto.getName());
-            categoryRepository.save(category);
-        }
-//        categoryRepository.save(category);
+@Override
+@Transactional
+public boolean updateCategoryById(Long categoryId, String  name) {
+    Category category = categoryRepository.findById(categoryId).orElse(null);
 
+    if (category != null) {
+        Category existingCategory = categoryRepository.findByNameIgnoreCase(name);
+
+        if (existingCategory == null || existingCategory.getId().equals(categoryId)) {
+            category.setName(name);
+            categoryRepository.save(category);
+            return true;
+        }
     }
+    return false;
+}
     @Override
     public void lockCategory(Long id) {
         Category lockCategory = categoryRepository.findById(id).get();
@@ -68,6 +82,42 @@ public class CategoryServiceImpl implements CategoryService{
     public boolean categoryExists(String categoryName) {
         Category existingCategory = categoryRepository.findByNameIgnoreCase(categoryName);
         return existingCategory != null;
+    }
+
+    @Override
+    public void calculateAndUpdateDiscountsForCategory(Category category) {
+        CategoryOffer  offer = category.getCategoryOffer();
+
+        // Fetch products related to this category
+        List<Product > products = productService.getProductsByCategory(category);
+
+        // Calculate and update discounted amounts for products
+        for (Product product : products) {
+            double discount = calculateDiscountedAmount(product.getPrice(), offer.getPercentage());
+            double discountedAmount=product.getPrice()-discount;
+            product.setDiscountedAmount(discountedAmount);
+        }
+
+        // Save or update the products with updated discounted amounts
+        productRepository.saveAll(products);
+    }
+
+
+    @Override
+    public double calculateDiscountedAmount(double price, Integer percentage) {
+        return (percentage / 100.0) * price;
+    }
+
+    @Override
+    public void resetDiscountedAmountsForCategoryProducts(Category category) {
+        List<Product> products = productService.getProductsByCategory(category);
+
+        for (Product product : products) {
+            // Reset or remove discounted amount for each product
+            product.setDiscountedAmount(null); // Assuming 0.0 means no discount
+        }
+        // Save or update products with reset discounted amounts
+        productRepository.saveAll(products);
     }
 
 }

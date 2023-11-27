@@ -18,9 +18,45 @@
   <!-- inject:css -->
   <!-- endinject -->
   <!-- Layout styles -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/alertifyjs@1.13.1/dist/css/alertify.css" />
+
   <link rel="stylesheet" href="/assets/css/admin.css">
   <!-- End layout styles -->
   <link rel="shortcut icon" href="/assets/images/favicon.png" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/AlertifyJS/1.13.1/css/alertify.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/AlertifyJS/1.13.1/css/themes/default.min.css" />
+
+  <style>
+    /* Override the vertical layout */
+    .block-27 ul {
+      display: flex;
+      flex-wrap: wrap; /* Allow items to wrap if they exceed the container width */
+      justify-content: center; /* Center the items horizontally */
+      list-style: none; /* Remove default list styles */
+      padding: 0;
+      margin: 0;
+    }
+
+    .block-27 ul li {
+      margin: 0 5px; /* Add spacing between pagination items */
+    }
+
+    /* Ensure buttons are displayed inline */
+    .block-27 ul li a,
+    .block-27 ul li span {
+      display: inline-block;
+      padding: 5px 10px; /* Adjust padding as needed */
+      /* Additional styling for buttons if needed */
+      /* Example: border: 1px solid #ccc; */
+    }
+    .actives {
+      background-color: rgba(25,28,36,0.73);
+      border: 1px solid #fff; /* Adding a border around the active page number */
+      border-radius: 2px;
+      color: #fff;
+    }
+
+  </style>
 </head>
 <body>
 <div class="container-scroller">
@@ -139,6 +175,22 @@
           <span class="menu-title">SALES REPORT</span>
         </a>
       </li>
+      <li class="nav-item menu-items">
+        <a class="nav-link" th:href="@{/admin/categoryOfferList}">
+              <span class="menu-icon">
+                <i class="mdi mdi-contacts"></i>
+              </span>
+          <span class="menu-title">OFFER </span>
+        </a>
+      </li>
+      <li class="nav-item menu-items">
+        <a class="nav-link" th:href="@{/admin/couponList}">
+              <span class="menu-icon">
+                <i class="mdi mdi-contacts"></i>
+              </span>
+          <span class="menu-title">COUPON </span>
+        </a>
+      </li>
     </ul>
   </nav>
   <!-- partial -->
@@ -169,140 +221,6 @@
           </li>
         </ul>
         <ul class="navbar-nav navbar-nav-right">
-          <li class="nav-item dropdown d-none d-lg-block">
-            <a class="nav-link btn btn-success create-new-button" id="createbuttonDropdown" data-toggle="dropdown" aria-expanded="false" href="#">+ Create New Project</a>
-            <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list" aria-labelledby="createbuttonDropdown">
-              <h6 class="p-3 mb-0">Projects</h6>
-              <div class="dropdown-divider"></div>
-              <a class="dropdown-item preview-item">
-                <div class="preview-thumbnail">
-                  <div class="preview-icon bg-dark rounded-circle">
-                    <i class="mdi mdi-file-outline text-primary"></i>
-                  </div>
-                </div>
-                <div class="preview-item-content">
-                  <p class="preview-subject ellipsis mb-1">Software Development</p>
-                </div>
-              </a>
-              <div class="dropdown-divider"></div>
-              <a class="dropdown-item preview-item">
-                <div class="preview-thumbnail">
-                  <div class="preview-icon bg-dark rounded-circle">
-                    <i class="mdi mdi-web text-info"></i>
-                  </div>
-                </div>
-                <div class="preview-item-content">
-                  <p class="preview-subject ellipsis mb-1">UI Development</p>
-                </div>
-              </a>
-              <div class="dropdown-divider"></div>
-              <a class="dropdown-item preview-item">
-                <div class="preview-thumbnail">
-                  <div class="preview-icon bg-dark rounded-circle">
-                    <i class="mdi mdi-layers text-danger"></i>
-                  </div>
-                </div>
-                <div class="preview-item-content">
-                  <p class="preview-subject ellipsis mb-1">Software Testing</p>
-                </div>
-              </a>
-              <div class="dropdown-divider"></div>
-              <p class="p-3 mb-0 text-center">See all projects</p>
-            </div>
-          </li>
-          <li class="nav-item nav-settings d-none d-lg-block">
-            <a class="nav-link" href="#">
-              <i class="mdi mdi-view-grid"></i>
-            </a>
-          </li>
-          <li class="nav-item dropdown border-left">
-            <a class="nav-link count-indicator dropdown-toggle" id="messageDropdown" href="#" data-toggle="dropdown" aria-expanded="false">
-              <i class="mdi mdi-email"></i>
-              <span class="count bg-success"></span>
-            </a>
-            <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list" aria-labelledby="messageDropdown">
-              <h6 class="p-3 mb-0">Messages</h6>
-              <div class="dropdown-divider"></div>
-              <a class="dropdown-item preview-item">
-                <div class="preview-thumbnail">
-                  <img src="assets/images/faces/face4.jpg" alt="image" class="rounded-circle profile-pic">
-                </div>
-                <div class="preview-item-content">
-                  <p class="preview-subject ellipsis mb-1">Mark send you a message</p>
-                  <p class="text-muted mb-0"> 1 Minutes ago </p>
-                </div>
-              </a>
-              <div class="dropdown-divider"></div>
-              <a class="dropdown-item preview-item">
-                <div class="preview-thumbnail">
-                  <img src="assets/images/faces/face2.jpg" alt="image" class="rounded-circle profile-pic">
-                </div>
-                <div class="preview-item-content">
-                  <p class="preview-subject ellipsis mb-1">Cregh send you a message</p>
-                  <p class="text-muted mb-0"> 15 Minutes ago </p>
-                </div>
-              </a>
-              <div class="dropdown-divider"></div>
-              <a class="dropdown-item preview-item">
-                <div class="preview-thumbnail">
-                  <img src="assets/images/faces/face3.jpg" alt="image" class="rounded-circle profile-pic">
-                </div>
-                <div class="preview-item-content">
-                  <p class="preview-subject ellipsis mb-1">Profile picture updated</p>
-                  <p class="text-muted mb-0"> 18 Minutes ago </p>
-                </div>
-              </a>
-              <div class="dropdown-divider"></div>
-              <p class="p-3 mb-0 text-center">4 new messages</p>
-            </div>
-          </li>
-          <li class="nav-item dropdown border-left">
-            <a class="nav-link count-indicator dropdown-toggle" id="notificationDropdown" href="#" data-toggle="dropdown">
-              <i class="mdi mdi-bell"></i>
-              <span class="count bg-danger"></span>
-            </a>
-            <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list" aria-labelledby="notificationDropdown">
-              <h6 class="p-3 mb-0">Notifications</h6>
-              <div class="dropdown-divider"></div>
-              <a class="dropdown-item preview-item">
-                <div class="preview-thumbnail">
-                  <div class="preview-icon bg-dark rounded-circle">
-                    <i class="mdi mdi-calendar text-success"></i>
-                  </div>
-                </div>
-                <div class="preview-item-content">
-                  <p class="preview-subject mb-1">Event today</p>
-                  <p class="text-muted ellipsis mb-0"> Just a reminder that you have an event today </p>
-                </div>
-              </a>
-              <div class="dropdown-divider"></div>
-              <a class="dropdown-item preview-item">
-                <div class="preview-thumbnail">
-                  <div class="preview-icon bg-dark rounded-circle">
-                    <i class="mdi mdi-settings text-danger"></i>
-                  </div>
-                </div>
-                <div class="preview-item-content">
-                  <p class="preview-subject mb-1">Settings</p>
-                  <p class="text-muted ellipsis mb-0"> Update dashboard </p>
-                </div>
-              </a>
-              <div class="dropdown-divider"></div>
-              <a class="dropdown-item preview-item">
-                <div class="preview-thumbnail">
-                  <div class="preview-icon bg-dark rounded-circle">
-                    <i class="mdi mdi-link-variant text-warning"></i>
-                  </div>
-                </div>
-                <div class="preview-item-content">
-                  <p class="preview-subject mb-1">Launch Admin</p>
-                  <p class="text-muted ellipsis mb-0"> New admin wow! </p>
-                </div>
-              </a>
-              <div class="dropdown-divider"></div>
-              <p class="p-3 mb-0 text-center">See all notifications</p>
-            </div>
-          </li>
           <li class="nav-item dropdown">
             <a class="nav-link" id="profileDropdown" href="#" data-toggle="dropdown">
               <div class="navbar-profile">
@@ -314,18 +232,9 @@
             <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list" aria-labelledby="profileDropdown">
               <h6 class="p-3 mb-0">Profile</h6>
               <div class="dropdown-divider"></div>
-              <a class="dropdown-item preview-item">
-                <div class="preview-thumbnail">
-                  <div class="preview-icon bg-dark rounded-circle">
-                    <i class="mdi mdi-settings text-success"></i>
-                  </div>
-                </div>
-                <div class="preview-item-content">
-                  <p class="preview-subject mb-1">Settings</p>
-                </div>
-              </a>
+
               <div class="dropdown-divider"></div>
-              <a class="dropdown-item preview-item">
+              <a th:href="@{/logout}"  class="dropdown-item preview-item">
                 <div class="preview-thumbnail">
                   <div class="preview-icon bg-dark rounded-circle">
                     <i class="mdi mdi-logout text-danger"></i>
@@ -336,7 +245,6 @@
                 </div>
               </a>
               <div class="dropdown-divider"></div>
-              <p class="p-3 mb-0 text-center">Advanced settings</p>
             </div>
           </li>
         </ul>
@@ -388,19 +296,74 @@
 
                       <td class="align-middle d-flex align-items-center justify-content-center pe-0">
 
-                      <td>
-                        <a  id="unblockButton" th:href="@{/admin/unBlock/{id}(id=${user.id})}" data-method="put" class="btn bg-gradient-warning font-weight-bold text-xs mb-0" data-toggle="tooltip" th:if="${user.isBlocked and #authentication.name != user.email}">
-                          Unblock
-                        </a>
-                        <a id="blockButton" th:href="@{/admin/block/{id}(id=${user.id})}" data-method="put" class="btn bg-gradient-danger font-weight-bold text-xs mb-0 ms-2 me-0" data-toggle="tooltip" th:if="${!user.isBlocked() and #authentication.name != user.email}">
-                          Block
-                        </a>
-                      </td>
+<!--                      <td>-->
+<!--                        <a  id="unblockButton" th:href="@{/admin/unBlock/{id}(id=${user.id})}" data-method="put" class="btn bg-gradient-warning font-weight-bold text-xs mb-0" data-toggle="tooltip" th:if="${user.isBlocked and #authentication.name != user.email}">-->
+<!--                          Unblock-->
+<!--                        </a>-->
+<!--                        <a id="blockButton" th:href="@{/admin/block/{id}(id=${user.id})}" data-method="put" class="btn bg-gradient-danger font-weight-bold text-xs mb-0 ms-2 me-0" data-toggle="tooltip" th:if="${!user.isBlocked() and #authentication.name != user.email}">-->
+<!--                          Block-->
+<!--                        </a>-->
+<!--                      </td>-->
+<!--                        <div>-->
+<!--                          <form id="unblockForm" th:action="@{/admin/unBlock/{id}(id=${user.id})}" data-method="get" class="btn bg-gradient-warning font-weight-bold text-xs mb-0" data-toggle="tooltip">-->
+<!--                            <input type="hidden" name="_method" value="put">-->
+<!--                            <button type="button" class="btn bg-gradient-warning btn-fw custom-small-button" id="hello" th:if="${user.isBlocked and #authentication.name != user.email}" onclick="confirmAction('unblock', this)">Unblock</button>-->
+<!--                          </form>-->
+<!--                          <form id="blockForm" th:action="@{/admin/block/{id}(id=${user.id})}" data-method="get" class="btn bg-gradient-danger font-weight-bold text-xs mb-0 ms-2 me-0" data-toggle="tooltip">-->
+<!--                            <input type="hidden" name="_method" value="put">-->
+<!--                            <button type="button" class="btn bg-gradient-danger btn-fw custom-small-button" id="hell" th:if="${!user.isBlocked() and #authentication.name != user.email}" onclick="confirmAction('block', this)">Lock</button>-->
+<!--                          </form>-->
+<!--                        </div>-->
+                        <div>
+                          <form th:if="${user.isBlocked and #authentication.name != user.email}"
+                                id="unblockForm"
+                                th:action="@{/admin/unBlock/{id}(id=${user.id})}"
+                                data-method="get"
+                                data-toggle="tooltip">
+                            <input type="hidden" name="_method" value="put">
+                            <button type="button" class="btn bg-gradient-warning btn-fw custom-small-button blockBtn" onclick="confirmAction('unblock', this)">
+                              Unblock
+                            </button>
+                          </form>
+                          <form th:if="${!user.isBlocked() and #authentication.name != user.email}"
+                                id="blockForm"
+                                th:action="@{/admin/block/{id}(id=${user.id})}"
+                                data-method="get"
+                                data-toggle="tooltip">
+                            <input type="hidden" name="_method" value="put">
+                            <button type="button" class="btn bg-gradient-danger btn-fw custom-small-button unblockBtn" onclick="confirmAction('block', this)">
+                              Lock
+                            </button>
+                          </form>
+                        </div>
+
                       </td>
                     </tbody>
                   </table>
-
                 </div>
+                <th:block th:if="${totalPages > 1}">
+
+                  <div class="row mt-5" >
+                    <div class="col text-center" >
+                      <div class="block-27" >
+                        <ul>
+                          <li th:class="${currentPage == 0} ? 'disabled' : ''">
+                            <a th:if="${currentPage > 0}" th:href="@{/admin/listUsers(page=${currentPage - 1}, pageSize=${pageSize})}"><button class="btn bg-gradient-primary btn-fw custom-small-button">Previous</button></a>
+                            <span th:if="${currentPage <= 0}"><button class="btn bg-gradient-primary btn-fw custom-small-button">Previous</button></span>
+                          </li>
+                          <li th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+                              th:class="${currentPage == i} ? 'actives' : ''">
+                            <a th:href="@{/admin/listUsers(page=${i}, pageSize=${pageSize})}" th:text="${i + 1}"></a>
+                          </li>
+                          <li th:class="${currentPage >= totalPages - 1} ? 'disabled' : ''">
+                            <a th:if="${currentPage < totalPages - 1}" th:href="@{/admin/listUsers(page=${currentPage + 1}, pageSize=${pageSize})}"><button class="btn bg-gradient-primary btn-fw custom-small-button">Next</button></a>
+                            <span th:if="${currentPage >= totalPages - 1}"><button class="btn bg-gradient-primary btn-fw custom-small-button">Next</button></span>
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </th:block>
               </div>
             </div>
           </div>
@@ -441,26 +404,58 @@
 <!-- endinject -->
 <!-- Custom js for this page -->
 <script src="/assets/adminjs/js/dashboard.js"></script>
+<!--<script>-->
+<!--  // Select the Block and Unblock buttons by their IDs-->
+<!--  var blockButton = document.getElementById("blockButton");-->
+<!--  var unblockButton = document.getElementById("unblockButton");-->
+
+<!--  // Add click event listeners to the buttons-->
+<!--  blockButton.addEventListener("click", function(event) {-->
+<!--    // Show a confirmation dialog and proceed if the user clicks OK-->
+<!--    if (!confirm("Are you sure you want to block this user?")) {-->
+<!--      event.preventDefault();-->
+<!--    }-->
+<!--  });-->
+
+<!--  unblockButton.addEventListener("click", function(event) {-->
+<!--    // Show a confirmation dialog and proceed if the user clicks OK-->
+<!--    if (!confirm("Are you sure you want to unblock this user?")) {-->
+<!--      event.preventDefault(); // Prevent the default action if the user clicks Cancel-->
+<!--    }-->
+<!--  });-->
+<!--</script>-->
 <script>
-  // Select the Block and Unblock buttons by their IDs
-  var blockButton = document.getElementById("blockButton");
-  var unblockButton = document.getElementById("unblockButton");
-
-  // Add click event listeners to the buttons
-  blockButton.addEventListener("click", function(event) {
-    // Show a confirmation dialog and proceed if the user clicks OK
-    if (!confirm("Are you sure you want to block this user?")) {
-      event.preventDefault(); // Prevent the default action if the user clicks Cancel
+  function confirmAction(action, button) {
+    let message;
+    if (action === 'block') {
+      message = 'Are you sure you want to unblock this user?';
+    } else if (action === 'unblock') {
+      message = 'Are you sure you want to lock this user?';
     }
-  });
 
-  unblockButton.addEventListener("click", function(event) {
-    // Show a confirmation dialog and proceed if the user clicks OK
-    if (!confirm("Are you sure you want to unblock this user?")) {
-      event.preventDefault(); // Prevent the default action if the user clicks Cancel
+    alertify.confirm(message, function (result) {
+      if (result) {
+        performAction(action, button);
+      } else {
+        // Do something if canceled
+      }
+    }).set('labels', {ok:'Yes', cancel:'No'});
+  }
+
+  function performAction(action, button) {
+    const form = button.closest('form'); // Get the parent form of the clicked button
+
+    if (form) {
+      form.submit(); // Submit the form after the user confirms
     }
-  });
+  }
 </script>
-<!-- End custom js for this page -->
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/AlertifyJS/1.13.1/alertify.min.js"></script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
 </body>
 </html>

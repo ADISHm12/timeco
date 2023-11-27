@@ -11,4 +11,5 @@ public class WebMvcConfig implements WebMvcConfigurer {
         registry.addResourceHandler("/productimages/**")
                 .addResourceLocations("file:C:\\Users\\hp\\OneDrive\\Desktop\\PROJECT\\application\\src\\main\\resources\\static\\assets\\productImages");  // Change this to your actual image directory path
     }
+
 }

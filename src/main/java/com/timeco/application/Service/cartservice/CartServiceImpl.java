@@ -8,6 +8,7 @@ import com.timeco.application.Service.productservice.ProductService;
 import com.timeco.application.Service.userservice.UserService;
 import com.timeco.application.model.cart.Cart;
 import com.timeco.application.model.cart.CartItems;
+import com.timeco.application.model.product.Product;
 import com.timeco.application.model.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -88,15 +89,27 @@ public List<CartItems> getCartItemsForUser(User user) {
             // Assuming that cart items have a reference to the product
             if (cartItem.getProduct().getId().equals(productDTO.getId())) {
 
-                System.out.println("9999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999");
                 return true; // Product is in the cart
             }
         }
-        System.out.println("-00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000");
 
         return false;
     }
 
+    @Override
+    public void addToCartFromWishlist(Cart cart, Product product) {
+        CartItems cartItem = new CartItems() ;
+        cartItem.setProduct(product);
+        cartItem.setQuantity(1); // You can set the quantity as needed
+        cartItem.setPrice(product.getPrice()); // Set the price based on the product's price
+        cartItem.setCart(cart); // Associate the cart item with the cart
+
+        // Add the cart item to the cart's list of items
+        cart.getCartItems().add(cartItem);
+
+        // Save the updated cart to the database
+        cartRepository.save(cart);
+    }
 
 
 }

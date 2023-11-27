@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface PurchaseOrderRepository extends JpaRepository<PurchaseOrder,Long> {
@@ -31,4 +32,5 @@ public interface PurchaseOrderRepository extends JpaRepository<PurchaseOrder,Lon
 
     @Query("SELECT po FROM PurchaseOrder po WHERE DATE(po.orderedDate) = CURRENT_DATE()")
     List<PurchaseOrder> findOrdersForToday();
+
 }

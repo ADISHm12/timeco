@@ -23,20 +23,20 @@ public class ProductImageService {
         // You can add additional logic here if needed, such as handling image storage.
     }
 
-    public void deleteProductImages(Product product) {
-        // Replace 'ProductImageRepository' with the actual name of your repository for product images
-        // Assuming you have a 'ProductImageRepository' to manage product images
-        List<ProductImage> productImages = productImageRepository.findByProduct(product);
-
-        for (ProductImage productImage : productImages) {
-            // Delete the physical image file from the storage
-            // Replace 'deleteImageFile' with your method for deleting image files
-            deleteImageFile(productImage.getImageName());
-
-            // Delete the product image from the repository
-            productImageRepository.delete(productImage);
-        }
-    }
+//    public void deleteProductImages(Product product) {
+//        // Replace 'ProductImageRepository' with the actual name of your repository for product images
+//        // Assuming you have a 'ProductImageRepository' to manage product images
+//        List<ProductImage> productImages = productImageRepository.findByProduct(product);
+//
+//        for (ProductImage productImage : productImages) {
+//            // Delete the physical image file from the storage
+//            // Replace 'deleteImageFile' with your method for deleting image files
+//            deleteImageFile(productImage.getImageName());
+//
+//            // Delete the product image from the repository
+//            productImageRepository.delete(productImage);
+//        }
+//    }
 
     private void deleteImageFile(String imagePath) {
         // Replace 'UPLOAD_DIR' with the directory where your images are stored

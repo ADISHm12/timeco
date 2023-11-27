@@ -18,13 +18,22 @@ public class Category {
     @Column(name = "isListed")
     public boolean isListed;
 
-
+    @ManyToOne
+    @JoinColumn(name = "category_offer_id")
+    private CategoryOffer categoryOffer;
 
     public Long getId() {
         return id;
     }
 
 
+    public CategoryOffer getCategoryOffer() {
+        return categoryOffer;
+    }
+
+    public void setCategoryOffer(CategoryOffer categoryOffer) {
+        this.categoryOffer = categoryOffer;
+    }
 
     public void setId(Long id) {
         this.id = id;

@@ -1,11 +1,17 @@
 package com.timeco.application.Service.OrderService;
 
 import com.timeco.application.Repository.OrderItemRepository;
+import com.timeco.application.Repository.ProductRepository;
 import com.timeco.application.Repository.PurchaseOrderRepository;
 import com.timeco.application.model.cart.CartItems;
+import com.timeco.application.model.category.Category;
 import com.timeco.application.model.order.OrderItem;
 import com.timeco.application.model.order.PurchaseOrder;
+import com.timeco.application.model.product.Product;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -23,10 +29,12 @@ public class OrderItemService {
     @Autowired
     private PurchaseOrderRepository purchaseOrderRepository ;
 
-
+    @Autowired
+    private ProductRepository productRepository ;
 
     public List <OrderItem > convertCartItemsToOrderItems(List<CartItems> cartItems) {
         List<OrderItem> orderItems = new ArrayList<>();
+
 
         for (CartItems cartItem : cartItems) {
             OrderItem orderItem = new OrderItem();
@@ -34,7 +42,16 @@ public class OrderItemService {
             orderItem.setProduct(cartItem.getProduct());
             orderItem.setOrderStatus("Order Placed");
             orderItem.setOrderItemCount(cartItem.getQuantity());
+            double price =0.0;
+            if(cartItem.getProduct().getDiscountedAmount()!=null){
+                price = cartItem.getProduct().getDiscountedAmount();
+
+            }else {
+                price = cartItem.getProduct().getPrice();
+            }
+            orderItem.setOrderedPrice(price);
             orderItems.add(orderItem);
+
         }
 
         return orderItems;
@@ -98,18 +115,14 @@ public class OrderItemService {
             case "week=" -> {
                 purchaseOrdersList = purchaseOrderRepository.findOrdersInCurrentWeek();
 
-                System.out.println(period+"111111111111111111111111111111111111111111111111111111");
             }
             case "month=" -> {
                 purchaseOrdersList = purchaseOrderRepository.findOrdersInCurrentMonth();
-                System.out.println(period+"22222222222222222222222222222222222222222222222222222222");
             }
             case "day=" -> {
                 purchaseOrdersList = purchaseOrderRepository.findOrdersForToday();
-                System.out.println(period+"333333333333333333333333333333333333333333333333333333");
             }
             default -> {
-                System.out.println(period+"helloo44444444444444444444444444444444444444444444444444444444444444");
                 purchaseOrdersList = purchaseOrderRepository.findOrdersInCurrentYear();
             }
         }
@@ -222,5 +235,61 @@ public Map<String, Integer> countOrderItemsByMonth() {
         }
 
         return totalRevenue;
+    }
+
+    public List<OrderItem> findOrderItemsByCategory(Category  category) {
+         List<OrderItem> orderItems = new ArrayList<>();
+
+        // Retrieve all products belonging to the provided category
+        List<Product > productsInCategory = productRepository.findByCategoryId(category.getId());
+
+        // For each product in the category, find its associated order items
+        for (Product product : productsInCategory) {
+            List<OrderItem> orderItemsForProduct = orderItemRepository.findByProduct(product);
+            orderItems.addAll(orderItemsForProduct);
+        }
+
+        return orderItems;
+    }
+
+    public Page<OrderItem> findAllOrderItem(int page, int pageSize) {
+        Pageable pageable = PageRequest.of(page,pageSize);
+
+        return orderItemRepository.findAll(pageable);
+    }
+
+    public int countWallet() {
+        List<OrderItem> allOrderItems = orderItemRepository.findAll(); // Get all OrderItems
+        int count = 0;
+
+        for (OrderItem orderItem : allOrderItems) {
+            if (orderItem.getOrder() != null &&
+                    orderItem.getOrder().getPaymentMethod() != null &&
+                    "WALLET".equals(orderItem.getOrder().getPaymentMethod().getPaymentMethodName())) {
+                count++;
+            }
+
+        }
+        return  count;
+    }
+
+    public int getWalletPaymentRevenue() {
+        List<OrderItem> onlineDeliveredOrders = orderItemRepository.findWithOrderStatusAndPaymentMethod("delivered", "WALLET");
+
+        int totalRevenue = 0;
+
+        for (OrderItem orderItem : onlineDeliveredOrders) {
+            totalRevenue += orderItem.getProduct().getPrice();
+        }
+
+        return totalRevenue;
+    }
+
+
+
+    public int cancelOrder() {
+        List<OrderItem> cancelOrder = orderItemRepository.findByOrderStatus("cancelled");
+        int count = 0;
+        return count = cancelOrder.size();
     }
 }

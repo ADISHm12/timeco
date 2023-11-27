@@ -48,6 +48,7 @@ public class AdminDashBoardController {
         // Fetch other statistics and data as you did before
         int sales = orderItemService.totalSales("delivered");
         int stock = productService.getTotalStock();
+        int cancelOrder = orderItemService.cancelOrder();
         List<OrderItem> orderItems = orderItemRepository.findAll();
         Collections.reverse(orderItems);
         model.addAttribute("orderItems", orderItems);
@@ -58,6 +59,9 @@ public class AdminDashBoardController {
         long totalOrders = orderItemService.countOrderItems();
         int totalOnlinePayment = orderItemService.getOnlinePaymentRevenue();
         int totalCashOnDelivery = orderItemService.getCODPaymentRevenue();
+        int walletCount = orderItemService.countWallet();
+        int totalWalletPayment = orderItemService.getWalletPaymentRevenue();
+
 
         model.addAttribute("Orders", totalOrders);
         model.addAttribute("customer", count);
@@ -69,7 +73,9 @@ public class AdminDashBoardController {
         model.addAttribute("totalRevenue", revenue);
         model.addAttribute("totalOnlinePayment", totalOnlinePayment);
         model.addAttribute("totalCashOnDelivery", totalCashOnDelivery);
-
+        model.addAttribute("WALLET",walletCount);
+        model.addAttribute("totalWalletPayment",totalWalletPayment);
+        model.addAttribute("cancelOrder",cancelOrder);
         return "adminHome";
     }
     @PostMapping("/adminHome")

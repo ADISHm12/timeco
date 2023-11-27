@@ -5,6 +5,7 @@ import com.timeco.application.Repository.UserRepository;
 import com.timeco.application.Service.userservice.UserService;
 import com.timeco.application.model.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -44,10 +45,14 @@ public class AdminUserController {
         return "redirect:/admin/listUsers";
     }
     @GetMapping ("/listUsers")
-    public String UserManagement(Model model){
+    public String UserManagement(Model model ,@RequestParam(defaultValue = "0") int page,
+                                 @RequestParam(defaultValue = "6") int pageSize){
 
-        List<User> users=userRepository.findAll();
+        Page<User> users=userService.findAllusers(page,pageSize);
         model.addAttribute("customers",users);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", users.getTotalPages());
+
         return "userList";
     }
     @GetMapping("/searchUser")

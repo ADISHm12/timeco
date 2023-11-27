@@ -39,7 +39,7 @@ public class OtpService {
         int randomNumber = random.nextInt(max - min + 1) + min;
 
         // Set the expiration time for the OTP
-        LocalDateTime expirationTime = LocalDateTime.now().plus(4, ChronoUnit.MINUTES);
+        LocalDateTime expirationTime = LocalDateTime.now().plus(1, ChronoUnit.MINUTES);
 
         String emailBody = "Your OTP is: " + randomNumber;
         try {
@@ -60,10 +60,16 @@ public class OtpService {
 
     }
     public boolean validateRegistrationOtp(String email, Integer otp) {
-        // Check if the OTP is valid
-        // Get the current time
 
         Otp validatedOtp = otpRepository.findByEmail(email);
+
+        if (validatedOtp == null) {
+            // Handle the case where the OTP for the provided email is not found
+            errorMessage = "No OTP found for this email";
+            successMessage = null;
+            return false;
+        }
+
 
         LocalDateTime expirationTime = validatedOtp.getExpirationTime();
         LocalDateTime currentTime = LocalDateTime.now();
@@ -92,5 +98,7 @@ public class OtpService {
             return false;
         }
     }
+
+
 
 }

@@ -3,7 +3,7 @@ package com.timeco.application.web.usercontrollers;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.razorpay.*;
+import com.razorpay .*;
 import com.timeco.application.Repository.*;
 import com.timeco.application.Service.OrderService.OrderItemService;
 import com.timeco.application.Service.OrderService.PurchaseOrderService;
@@ -18,6 +18,8 @@ import com.timeco.application.model.order.PurchaseOrder;
 import com.timeco.application.model.product.Product;
 import com.timeco.application.model.user.User;
 import com.timeco.application.model.user.UserAddress;
+import com.timeco.application.model.wallet.Wallet;
+import com.timeco.application.model.wallet.WalletTransaction;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -35,6 +37,7 @@ import com.razorpay.Order;
 import javax.servlet.http.HttpSession;
 import java.security.Principal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -79,7 +82,11 @@ public class CheckOutController {
     @Autowired
     private CouponService couponService ;
 
+    @Autowired
+    private WalletRepository walletRepository ;
 
+    @Autowired
+    private WalletTransactionRepository walletTransactionRepository ;
 
 
 
@@ -114,13 +121,29 @@ public String checkOutPage(Model model, Principal principal, RedirectAttributes 
     @PostMapping("/placeOrder")
     public ResponseEntity <String> submitOrder(@RequestParam("selectedAddressId") Long selectedAddressId,
                                               @RequestParam("MethodId") Long selectedPaymentMethodId,
+                                              @RequestParam("totalAmount") double totalAmount,
+                                               @RequestParam(value = "couponCode", required = false) String couponCode,
                                               Principal principal) throws RazorpayException {
+
 
 
 
         Map<String, Object> response = new HashMap<>();
         String username=principal.getName();
         User user = userRepository.findByEmail(username);
+
+        if (couponCode != null ) {
+            Coupon coupon = couponRepository.findByCouponCode(couponCode);
+            if (coupon != null) {
+                coupon.incrementUsageCount();
+                coupon.getUsers().add(user);
+                user.getCoupons().add(coupon);
+                // Save the updated entities to the database
+                couponRepository.save(coupon);
+                userRepository.save(user);
+            }
+        }
+
         List<CartItems> cartItems = cartItemsService.findCartItems(user);
         // Convert cart items to order items
         List<OrderItem> orderItems =orderItemService.convertCartItemsToOrderItems(cartItems);
@@ -137,7 +160,7 @@ public String checkOutPage(Model model, Principal principal, RedirectAttributes 
         purchaseOrder.setOrderItems(orderItems);
 
 
-        double orderAmount = purchaseOrderService.calculateOrderAmount(orderItems);
+        double orderAmount = totalAmount ;
         int orderedQuantity = purchaseOrderService.calculateOrderedQuantity(orderItems);
         purchaseOrder.setOrderAmount(orderAmount);
         purchaseOrder.setOrderedQuantity(orderedQuantity);
@@ -156,7 +179,7 @@ public String checkOutPage(Model model, Principal principal, RedirectAttributes 
         for (OrderItem orderItem : orderItems) {
             orderItem.setOrder(purchaseOrder);
         }
-        for (OrderItem orderItem : orderItems) {
+        for(OrderItem orderItem : orderItems) {
 
             Product  product = orderItem.getProduct();
             int OrderedQuantity = orderItem.getOrderItemCount();
@@ -192,8 +215,44 @@ public String checkOutPage(Model model, Principal principal, RedirectAttributes 
             assert selectedAddress != null;
             response.put("username", selectedAddress.getUserName());
             response.put("contact", selectedAddress.getMobile());
-        }
+        } else if (selectedMethodName.equals("WALLET")) {
+            Wallet userWallet = walletRepository.findByUser(user);
 
+            if (userWallet != null) {
+                double walletBalance = userWallet.getBalance();
+
+                if (walletBalance >= orderAmount) {
+                    // Sufficient funds in the wallet
+                    userWallet.withdraw(orderAmount);
+
+                    // Record the wallet transaction
+                    WalletTransaction walletTransaction = new WalletTransaction();
+                    walletTransaction.setWallet(userWallet);
+                    walletTransaction.setAmount(orderAmount);
+                    walletTransaction.setTransactionType("DEBIT"); // Assuming 'DEBIT' for deduction, adjust accordingly
+                    walletTransaction.setTransactionTime(LocalDateTime.now());
+                    walletTransactionRepository.save(walletTransaction);
+                    List<CartItems> userCartItems = cartItemsService.findCartItems(user);
+                    cartItemsService.deleteCartItems(userCartItems);
+                    // Continue with the rest of the order placement logic
+                    response.put("isValid", true);
+                    response.put("orderId", "Wallet payment"); // Adjust accordingly for wallet transactions
+                    response.put("amount", orderAmount);
+                    response.put("purchaseId", purchaseOrder.getOrderId());
+                    response.put("email", username);
+                    response.put("username", selectedAddress.getUserName());
+                    response.put("contact", selectedAddress.getMobile());
+                } else {
+                    // Insufficient funds in the wallet
+                    response.put("isValid", true);
+                    response.put("error", "Insufficient funds in the wallet");
+                }
+            } else {
+                // User doesn't have a wallet
+                response.put("isValid", true);
+                response.put("error", "User does not have a wallet");
+            }
+        }
         try {
             ObjectMapper  objectMapper = new ObjectMapper();
             String jsonResponse = objectMapper.writeValueAsString(response);
@@ -212,6 +271,9 @@ public String checkOutPage(Model model, Principal principal, RedirectAttributes 
                                                  @RequestParam("purchaseId") Long  purchaseId,
                                                  Principal principal) throws RazorpayException {
 
+
+        String username=principal.getName();
+        User user = userRepository.findByEmail(username);
         RazorpayClient razorpay = new RazorpayClient("rzp_test_CiR2CrX4sA44LS", "z5RbPNpHnx9le0sSSLCu4DIk");
 
         String secret = "z5RbPNpHnx9le0sSSLCu4DIk";
@@ -229,12 +291,33 @@ public String checkOutPage(Model model, Principal principal, RedirectAttributes 
             {
                 purchaseOrder.setPaymentStatus("success");
                 purchaseOrder.setTranscationId(paymentId);
-                purchaseOrderRepository.save(purchaseOrder);
-                System.out.println(purchaseOrder.getPaymentMethod());
-                System.out.println(purchaseOrder.getPaymentStatus());
-                System.out.println(purchaseOrder.getTranscationId());
 
+                // Reduce product quantity
+                List<OrderItem> orderItems = purchaseOrder.getOrderItems();
+                for (OrderItem orderItem : orderItems) {
+                    Product product = orderItem.getProduct();
+                    int orderedQuantity = orderItem.getOrderItemCount();
+                    int currentQuantity = product.getQuantity();
+                    if (currentQuantity >= orderedQuantity) {
+                        List<CartItems> userCartItems = cartItemsService.findCartItems(user);
+                        cartItemsService.deleteCartItems(userCartItems);
+                        productRepository.save(product); // Update the product in the database
+                        purchaseOrderRepository.save(purchaseOrder);
+                    } else {
+                        // Handle the case where there is not enough quantity in stock (e.g., show an error message).
+                    }
+                }
             }
+            if (!status) {
+                // Payment verification failed, delete the purchase order
+                PurchaseOrder purchaseOrder1 = purchaseOrderRepository.findById(purchaseId).orElse(null);
+                if (purchaseOrder1 != null) {
+                    // Assuming you have cascading relationships set up properly
+                    purchaseOrderRepository.delete(purchaseOrder1);
+                    return ResponseEntity.ok(false); // Indicate failure due to payment verification
+                }
+            }
+
         }
 
         return ResponseEntity.ok(status);
@@ -292,9 +375,40 @@ public String checkOutPage(Model model, Principal principal, RedirectAttributes 
 
         // If all checks pass, calculate the coupon discount amount and return it as a response
         double couponDiscountedAmount = purchaseAmount - coupon.getCouponAmount();
-
+        double couponAmount = coupon.getCouponAmount();
+//        coupon.getUsers().add(user);
+//        user.getCoupons().add(coupon);
+//
+//        // Save the updated entities to the database
+//        couponRepository.save(coupon);
+//        userRepository.save(user);
         // You can return the discount amount as a response
-        return ResponseEntity.ok(couponDiscountedAmount);
+        return ResponseEntity.ok(couponAmount);
+    }
+    @PostMapping("/removeCoupon")
+    public ResponseEntity<String> removeCoupon(@RequestParam String couponCode) {
+        try {
+
+
+
+
+            Coupon coupon = couponRepository.findByCouponCode(couponCode);
+
+            if (coupon == null) {
+                return ResponseEntity.badRequest().body("Invalid coupon code.");
+            }
+
+            // Remove the coupon from the user's set of coupons
+//            user.getCoupons().remove(coupon);
+//
+//            // Update the user in the database
+//            userRepository.save(user);
+
+            return ResponseEntity.ok("Coupon removed successfully.");
+        } catch (Exception e) {
+            // Handle exceptions if needed
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred while removing the coupon.");
+        }
     }
 
 

@@ -10,22 +10,27 @@ import com.timeco.application.Service.addressService.AddressService;
 import com.timeco.application.Service.cartitemsService.CartItemsService;
 import com.timeco.application.Service.cartservice.CartService;
 import com.timeco.application.Service.productservice.ProductService;
+import com.timeco.application.Service.shared.WishListService;
 import com.timeco.application.Service.userservice.UserService;
 import com.timeco.application.model.cart.Cart;
 import com.timeco.application.model.cart.CartItems;
 import com.timeco.application.model.category.Category;
 import com.timeco.application.model.coupon.Coupon;
 import com.timeco.application.model.order.OrderItem;
+import com.timeco.application.model.order.PaymentMethod;
 import com.timeco.application.model.order.PurchaseOrder;
 import com.timeco.application.model.product.Product;
 import com.timeco.application.model.user.User;
 import com.timeco.application.model.user.UserAddress;
+import com.timeco.application.model.wallet.Wallet;
+import com.timeco.application.model.wishlist.Wishlist;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -35,6 +40,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.servlet.http.HttpSession;
 
 import java.security.Principal;
+import java.time.LocalDate;
 import java.util.*;
 
 import static org.springframework.http.ResponseEntity.*;
@@ -76,28 +82,44 @@ public class UserController {
     private CategoryRepository categoryRepository ;
     @Autowired
     private CouponRepository couponRepository;
+    @Autowired
+    private WishListService wishListService ;
+    @Autowired
+    private WishlistRepository wishlistRepository ;
 
+    @Autowired
+    private WalletRepository walletRepository ;
 
+    @GetMapping("/status")
+    public ResponseEntity<String> getUserStatus(Principal principal ) {
+        String userEmail = principal.getName();
+        User user = userRepository.findByEmail(userEmail);
 
-@GetMapping("/products")
-public String searchProducts(@RequestParam(name = "page", required = false, defaultValue = "0") int page, Model model) {
-    int nextPage = page + 1;
+        if (user != null) {
+            if (user.isBlocked()) {
+                SecurityContextHolder.clearContext(); // Log out the user
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("BLOCKED"); // Provide a blocked message
+            } else {
+                return ResponseEntity.ok("User is active");
+            }
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+        }
+    }
 
-    Pageable pageable = PageRequest.of(page, 6); // Page 1, 6 results per page
-    Page<Product> productsPage = productRepository.findAll(pageable);
-    List<Product> productSortHighToLow = productService.sortProductsByPriceHighToLow();
-    List<Category> categories = categoryRepository.findAll();
-    List<Product> productSortLowToHigh = productService.sortProductsByPriceLowToHigh();
+    @GetMapping("/products")
+    public String listProducts(Model model,@RequestParam(defaultValue = "0") int page,
+                               @RequestParam(defaultValue = "6") int pageSize){
+     Page<Product> productsPage = productService.findAllProducts(page,pageSize);
+     List<Category>categories = categoryRepository.findAll();
 
-    model.addAttribute("categories", categories);
-    model.addAttribute("nextPage", nextPage);
-    model.addAttribute("products", productsPage);
-    model.addAttribute("productSortHighToLow",productSortHighToLow);
-    model.addAttribute("productSortLowToHigh",productSortLowToHigh);
-
-
-    return "products"; // Return the name of your Thymeleaf template
-}
+        model.addAttribute("products", productsPage);
+        model.addAttribute("orderItem", productsPage.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", productsPage.getTotalPages());
+        model.addAttribute("categories",categories);
+        return "products";
+    }
 
 
 
@@ -110,7 +132,11 @@ public String searchProducts(@RequestParam(name = "page", required = false, defa
         // Retrieve the product details based on the productId
         Product product = productService.getProductById(productId);
         List<Product> allProductsExceptCurrent = productRepository.findAllByIdNot(productId);
-        model.addAttribute("allProductsExceptCurrent", allProductsExceptCurrent);
+        int maxProductsToShow = 6;
+        int endIndex = Math.min(maxProductsToShow, allProductsExceptCurrent.size());
+        List<Product> limitedProducts = allProductsExceptCurrent.subList(0, endIndex);
+
+        model.addAttribute("allProductsExceptCurrent", limitedProducts);
         model.addAttribute("product", product);
         return "product-details";
     }
@@ -118,148 +144,11 @@ public String searchProducts(@RequestParam(name = "page", required = false, defa
 
     //profile and other related to user---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-    @GetMapping("/profile")
-    public String showProfile(Model model, Principal principal) {
-        String username = principal.getName();
-        User user = userService.findUserByUsername(username);
-        List<UserAddress> addresses = addressRepository.getAddressByUser(user);
-        List<PurchaseOrder> purchaseOrders = purchaseOrderRepository.findByUserId(user.getId());
-        List<OrderItem> orderItemsList = new ArrayList<>();
-
-        for (PurchaseOrder purchaseOrder : purchaseOrders) {
-            List<OrderItem> orderItemsForPurchaseOrder = orderItemRepository.findOrderItemByOrder(purchaseOrder);
-
-
-            orderItemsList.addAll(orderItemsForPurchaseOrder);
-          }
-        Collections.reverse(orderItemsList);
-
-
-        model.addAttribute("editMode", false);
-        model.addAttribute("user", user); // Pass the user object to the template
-        model.addAttribute("addresses", addresses);
-        model.addAttribute("orderItemsList", orderItemsList);
-
-        return "UserProfile";
-    }
-
-
-    @PostMapping("/updateAccount")
-    public String updateAccountDetails(@ModelAttribute("user") User updatedUser,Principal principal) {
-
-
-        System.out.println(updatedUser+"sjdhvfjsdhvfjsdhvfjahsdvfjs");
-        // Update the user's account details with the data from the form
-        userService.updateUserDetails(updatedUser,principal); // Implement this method in your service
-
-        // Redirect to a success page or back to the update form with a success message
-        return "redirect:/user/profile"; // Replace with your success page or update form
-    }
-
-    @GetMapping("/resetPasswordProfile")
-    public String resetOnProfile() {
-        return "resetPasswordOnProfile";
-    }
-
-    @PostMapping("/resetPasswordProfile")
-    public String resetPassword(@RequestParam String currentPassword, @RequestParam String newPassword, @RequestParam String confirmPassword, Principal principal, RedirectAttributes  redirectAttributes, Model model) {
-        // Get the currently logged-in user
-        String username = principal.getName();
-        User currentUser = userService.findUserByUsername(username);
-
-        // Check if the current password matches the user's stored password
-        if (!userService.isPasswordCorrect(currentUser, currentPassword)) {
-            model.addAttribute("error", "Current password is incorrect.");
-            return "resetPasswordOnProfile";
-        }
-
-        // Check if the new password and confirm password match
-        if (!newPassword.equals(confirmPassword)) {
-            model.addAttribute("error", "New password and confirm password do not match.");
-            return "resetPasswordOnProfile";
-        }
-
-        // Update the user's password
-        userService.updatePassword(currentUser, newPassword);
-        redirectAttributes.addFlashAttribute("success", "Password reset successfully.");
-
-        // Redirect or display a success message
-        return "redirect:/user/profile"; // Redirect to the user's profile page
-    }
-
-    @GetMapping("/addAddress")
-    public String ShowAddressRegForm(@RequestParam(name = "source") String source, Model model) {
-        AddressDto addressDto = new AddressDto();
-        model.addAttribute("address", addressDto);
-        model.addAttribute("source", source); //  Pass the source as a model attribute
-        return "addAddress";
-    }
-    @PostMapping("/addAddress")
-    public String addAddressToDataBase(Principal principal, @ModelAttribute("address") AddressDto address, HttpSession session , @RequestParam(name = "source") String source) {
-
-        String username = principal.getName();
-        User user = userService.findUserByUsername(username);
-        Long userId = user.getId();
-        session.setAttribute("userId", userId);
-        session.setAttribute("user", user);
-        addressService.save(address, userId);
-
-        if ("profile".equals(source)) {
-            // Redirect to the profile page
-            return "redirect:/user/profile";
-        } else if ("checkout".equals(source)) {
-
-            // Redirect to the checkout page
-            return "redirect:/checkout";
-        } else {
-
-            // Handle the case where the source is not recognized
-            return "redirect:/user/profile"; // You can replace this with your default page
-        }
-
-    }
-
-
-    @PostMapping("/updateAddress{addressId}")
-    public String updateAddressPost(@PathVariable("addressId") Long addressId,
-                                    @ModelAttribute("user_address") AddressDto addressDto) {
-
-        UserAddress address = addressRepository.findById(addressId).orElse(null);
-
-
-        if(address != null) {
-            address.setUserName(addressDto.getUserName());
-            address.setCity(addressDto.getCity());
-            address.setCountry(addressDto.getCountry());
-            address.setState(addressDto.getState());
-            address.setPinCode(addressDto.getPinCode());
-            address.setMobile(addressDto.getMobile());
-            address.setAddress(addressDto.getAddress());
-            addressRepository.save(address);
-
-
-        }
-
-
-        return "redirect:/user/profile";
-    }
-
-    @DeleteMapping("/deleteAddress/{addressId}")
-    public ResponseEntity<String> deleteAddress(@PathVariable Long addressId) {
-        try {
-            addressRepository.deleteById(addressId);
-            return ok("Address deleted successfully");
-        } catch (Exception e) {
-            return status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error deleting address");
-        }
-    }
-
     //cart section-====================================================================================================================================================================================
     //============================================================================================================================================================================================================================
 
     @GetMapping("/cart")
     public String showCart() {
-        System.out.println("ksdjfhdsklhfhkadsjfklsjdhfkjasdhf;kjsjdhf;kjasjdhf;jkshd");
         return "cart";
     }
 
@@ -270,7 +159,6 @@ public ResponseEntity<String> addToCart(@RequestBody ProductDto productDTO, Prin
     try {
         // Check if the product is already in the cart
         boolean isProductInCart = cartService.isProductInCart(productDTO, principal);
-        System.out.println(isProductInCart+"555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555");
             // Product is not in the cart, so you can add it
             cartService.addProductToCart(productDTO, principal);
             return ok("Product added to cart.");
@@ -335,15 +223,38 @@ public ResponseEntity<Boolean> checkProductInCart(@RequestParam Long id,Principa
     @ResponseBody
     public ResponseEntity<String> updateQuantity(@RequestParam Product id, @RequestParam Integer count, Principal principal) {
 
-
+        
         String username = principal.getName();
         int updatedQuantity = cartItemsService.updateQuantity(count, id.getId(), username);
-
+        Product product = productRepository.findById(id.getId()).orElse(null);
         double totalPrice = cartItemsService.totalPrice(username);
+        Double updatedPrice;
+        LocalDate currentDate = LocalDate.now();
+
+        if (product.getCategory() != null && product.getCategory().getCategoryOffer() != null && product.getCategory().getCategoryOffer().getStartDate() != null && !product.getCategory().getCategoryOffer().isActive()) {
+            LocalDate  startDate = product.getCategory().getCategoryOffer().getStartDate();
+            LocalDate endDate = product.getCategory().getCategoryOffer().getEndDate();
+
+            // Check if the current date is after or equal to the start date
+            boolean hasStarted = !currentDate.isBefore(startDate);
+
+            // Check if the current date is before the end date
+            boolean hasNotExpired = currentDate.isBefore(endDate) || currentDate.isEqual(endDate);
+
+            if (hasStarted && hasNotExpired) {
+                updatedPrice = product.getDiscountedAmount() * updatedQuantity;
+            } else {
+                updatedPrice = product.getPrice() * updatedQuantity;
+            }
+
+        } else {
+            updatedPrice = product.getPrice() * updatedQuantity;
+        }
 
         Map<String, Object> response = new HashMap<>();
         response.put("updatedQuantity", updatedQuantity);
         response.put("totalPrice", totalPrice);
+        response.put("updatedPrice", updatedPrice);
 
         try {
             ObjectMapper objectMapper = new ObjectMapper();
@@ -394,51 +305,251 @@ public ResponseEntity<Boolean> checkProductInCart(@RequestParam Long id,Principa
     }
 
 
+    @PostMapping("/cancel-order/{orderItemId}")
+    public String cancelOrder(@PathVariable Long orderItemId) {
+        OrderItem orderItem = orderItemRepository.findById(orderItemId).orElse(null);
+
+        if (orderItem != null && !orderItem.getOrderStatus().equals("delivered")) {
+            Product product = orderItem.getProduct();
+            if (product != null) {
+                int orderedQuantity = orderItem.getOrderItemCount();
+                int currentQuantity = product.getQuantity();
+
+                // Increase the available quantity of the product
+                product.setQuantity(currentQuantity + orderedQuantity);
+
+                // Set the order status to "cancelled"
+                orderItem.setOrderStatus("cancelled");
+
+                // Refund the payment to the user's wallet if it's an online payment
+                PaymentMethod  paymentMethod = orderItem.getOrder().getPaymentMethod();
+                if (paymentMethod != null && paymentMethod.getPaymentMethodName().equals("ONLINE PAYMENT")) {
+                    User user = orderItem.getOrder().getUser();
+
+                    // Check if the user already has a wallet
+                    Wallet userWallet = user.getWallet();
+                    if (userWallet == null) {
+                        // Create a new wallet for the user
+                        userWallet = new Wallet();
+                        userWallet.setUser(user);
+                        user.setWallets(userWallet);
+                    }
 
 
-@PostMapping("/cancel-order/{orderItemId}")
-public String cancelOrder(@PathVariable Long orderItemId) {
-    OrderItem orderItem = orderItemRepository.findById(orderItemId).orElse(null);
+                    double refundAmount = orderItem.getOrderItemCount() * orderItem.getProduct().getPrice(); // Assuming the refund is the total order amount
 
-    if (orderItem != null && !orderItem.getOrderStatus().equals("delivered")) {
-        Product product = orderItem.getProduct();
-        if (product != null) {
-            int orderedQuantity = orderItem.getOrderItemCount();
-            int currentQuantity = product.getQuantity();
-            // Increase the available quantity of the product
-            product.setQuantity(currentQuantity + orderedQuantity);
+                    // Perform the wallet refund
+                    userWallet.deposit(refundAmount);
+                    userWallet.recordTransaction(refundAmount, "Refund");
+                    // Save the user and wallet entities
 
-            // Set the order status to "cancelled"
-            orderItem.setOrderStatus("cancelled");
+                    walletRepository.save(userWallet);
+                    userRepository.save(user);
+                }
 
-            // Update the product and order item
-            productRepository.save(product);
-            orderItemRepository.save(orderItem);
+                // Update the product and order item
+                productRepository.save(product);
+                orderItemRepository.save(orderItem);
+            }
         }
+
+        return "redirect:/user/orderShow/" + orderItemId;
     }
 
-    return "redirect:/user/orderShow/" + orderItemId;
-}
-
     @GetMapping("/searchProduct")
-    public String searchProduct(@RequestParam("searchTerm") String searchTerm, Model model) {
-        List<Product> searchResults = productRepository.findByProductNameContaining(searchTerm); // Implement the search logic
-        model.addAttribute("products", searchResults);
+    public String searchProduct(@RequestParam("searchTerm") String searchTerm, Model model,@RequestParam(defaultValue = "0") int page,
+                                @RequestParam(defaultValue = "6") int pageSize) {
+        Page<Product> searchResults = productService.findByProductNameContaining(searchTerm,page,pageSize); // Implement the search logic
+        model.addAttribute("products", searchResults.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", searchResults.getTotalPages());
+
+
         return "products"; // Assuming the template name is "products.html"
     }
 
 
+@GetMapping("/filterProducts")
+public String filterProducts(@RequestParam(value = "category", required = false) Long categoryId,
+                             @RequestParam(value = "price", required = false) String priceRange,
+                             Model model,@RequestParam(defaultValue = "0") int page,
+                             @RequestParam(defaultValue = "6") int pageSize) {
 
 
-    @GetMapping("/filterProducts")
-    public String filterProducts(@RequestParam("category") Long categoryId, Model model) {
-        Category category = categoryRepository.findById(categoryId).orElse(null);
-        List<Product> filteredProducts = productService.getProductsByCategory(category);
-        List<Category> categories =categoryRepository.findAll();
-        model.addAttribute("categories",categories );
-        model.addAttribute("products", filteredProducts);
+    Category category = null;
 
-        return "products"; // Return a view to display the filtered products
+     if (categoryId != null) {
+        category = categoryRepository.findById(categoryId).orElse(null);
+    }
+
+    Page<Product> filteredProducts;
+
+    if (priceRange != null && !priceRange.isEmpty()) {
+
+        // Example logic:
+        double minPrice = 0;
+        double maxPrice = 0;
+
+        switch (priceRange) {
+            case "0-500":
+                minPrice = 0;
+                maxPrice = 500;
+                break;
+            case "501-1000":
+                minPrice = 501;
+                maxPrice = 1000;
+                break;
+            case "1001-1500":
+                minPrice = 1001;
+                maxPrice = 1500;
+                break;
+            case "1501-2000":
+                minPrice = 1501;
+                maxPrice = 2000;
+                break;
+        }
+
+        // Use productService method to get filtered products by category and price range
+        filteredProducts = productService.getProductsByCategoryAndPriceRange(category, minPrice, maxPrice, page, pageSize);
+    } else {
+        // If no price range is selected, filter products only by category
+        filteredProducts = productService.getProductsByCategoryPage(category, page, pageSize);
+    }
+
+    List<Category> categories = categoryRepository.findAll();
+    model.addAttribute("categories", categories);
+    model.addAttribute("products", filteredProducts.getContent());
+    model.addAttribute("currentPage", page);
+    model.addAttribute("totalPages", filteredProducts.getTotalPages());
+
+
+    return "products"; // Return a view to display the filtered products
+}
+
+
+
+    //wishList==================================================================================================================================================
+    @GetMapping("/wishlist")
+    public String getWishList(Model model,Principal principal ){
+        String username = principal.getName();
+        User user = userRepository.findByEmail(username);
+        Wishlist wishList = wishListService.findWishList(user);
+            if(wishList==null){
+                wishList= new Wishlist();
+                wishList.setUser(user);
+
+                user.setWishlist(wishList);
+                wishlistRepository.save(wishList);
+            }
+
+
+        Set<Product> productsInWishList = wishList.getProducts();
+
+
+        model.addAttribute("productsInWishList", productsInWishList);
+
+        return "wishList";
+    }
+
+
+    @PostMapping("/addToWishlist")
+    public ResponseEntity<String> addWishToList(@RequestParam Long productId, Principal principal) {
+        try {
+            String username = principal.getName();
+            User user = userRepository.findByEmail(username);
+
+            // Fetch the user's wishlist or create one if it doesn't exist
+            Wishlist  wishlist = user.getWishlist();
+            if (wishlist == null) {
+                wishlist = new Wishlist();
+                user.setWishlist(wishlist);
+            }
+            wishlist.setUser(user);
+            // Create or fetch the product entity based on the 'id'
+            Product product = productRepository.findById(productId).orElse(null);
+
+
+            // Add the product to the wishlist
+            wishlist.getProducts().add(product);
+
+            // Update the user entity to save the wishlist
+            userRepository.save(user);
+
+            return ResponseEntity.ok("Added to wishlist successfully");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to add to wishlist: " + e.getMessage());
+        }
+    }
+
+    @GetMapping("/checkProductInWishlist")
+    public ResponseEntity<String> checkProductInWishlist(@RequestParam Long productId, Principal principal) {
+        String username = principal.getName();
+        User user = userRepository.findByEmail(username);
+
+        Product product = productRepository.findById(productId).orElse(null);
+
+        if (wishListService.isProductInWishlist(user, product)) {
+            return ResponseEntity.ok("Product is already in the wishlist.");
+        } else {
+            return ResponseEntity.ok("Product is not in the wishlist.");
+        }
+    }
+
+    @PostMapping("/addToCartFromWishlist")
+    public ResponseEntity<String> addToCart(@RequestParam Long productId, Principal principal) {
+        String username = principal.getName();
+        User user = userRepository.findByEmail(username);
+
+        // Fetch the user's cart
+        Cart cart = user.getCart();
+
+        // Fetch the product based on the productId
+        Product product = productRepository.findById(productId).orElse(null);
+        if (cart != null && product != null) {
+            // Check if the product is already in the cart
+            boolean productAlreadyInCart = cart.getCartItems().stream()
+                    .anyMatch(cartItem -> cartItem.getProduct().equals(product));
+
+            if (productAlreadyInCart) {
+                return ResponseEntity.ok("Product is already in the cart.");
+            }
+            if (product.getQuantity() <= 0) {
+                return ResponseEntity.badRequest().body("Product is out of stock.");
+            }
+            // If the product is not in the cart, add it
+            cartService.addToCartFromWishlist(cart, product);
+
+            return ResponseEntity.ok("Product added to the cart.");
+        } else {
+            return ResponseEntity.badRequest().body("Invalid request or product not found.");
+        }
+    }
+
+    @PostMapping("/removeFromWishlist")
+    public ResponseEntity<String> removeWishlist(@RequestParam Long productId,Principal principal){
+        String username = principal.getName();
+        User user = userRepository.findByEmail(username);
+
+        Wishlist  wishlist = user.getWishlist();
+
+        Product productToRemove = null;
+        for (Product product : wishlist.getProducts()) {
+            if (product.getId().equals(productId)) {
+                productToRemove = product;
+                break;
+            }
+        }
+
+        if (productToRemove != null) {
+            // Remove the product from the wishlist
+            wishlist.getProducts().remove(productToRemove);
+            // Update the user's wishlist
+            userRepository.save(user);
+
+            return ResponseEntity.ok("Product removed from wishlist");
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Product not found in wishlist");
+        }
     }
 
 

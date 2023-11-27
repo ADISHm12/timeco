@@ -1,223 +1,70 @@
-<!--<!DOCTYPE html>-->
-<!--<html lang="en">-->
-<!--<head>-->
-<!--    <meta charset="UTF-8">-->
-<!--    <meta http-equiv="X-UA-Compatible" content="IE=edge">-->
-<!--    <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
-<!--    <title>OTP Verification Form</title>-->
-<!--    &lt;!&ndash; Include Bootstrap CSS &ndash;&gt;-->
-<!--    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">-->
-<!--    &lt;!&ndash; Include Bootstrap JS and Popper.js (for Bootstrap's JavaScript functionality) &ndash;&gt;-->
-<!--    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>-->
-<!--    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>-->
-<!--    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>-->
-<!--    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha384-pzjw2f5M3h8HtAq9OjllFpWyb+st9R6lCvq/rVm2p+pOA+M/zDd5PpaT+pDK9Usl" crossorigin="anonymous">-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OTP Verification Form</title>
 
-<!--    &lt;!&ndash; Your custom CSS &ndash;&gt;-->
-<!--    <link rel="stylesheet" href="../static/css/otp.css">-->
-<!--    <style>-->
-<!--        .otp-field {-->
-<!--            flex-direction: row;-->
-<!--            column-gap: 10px;-->
-<!--            display: flex;-->
-<!--            align-items: center;-->
-<!--            justify-content: center;-->
-<!--        }-->
 
-<!--        .otp-field input {-->
-<!--            height: 45px;-->
-<!--            width: 42px;-->
-<!--            border-radius: 6px;-->
-<!--            outline: none;-->
-<!--            font-size: 1.125rem;-->
-<!--            text-align: center;-->
-<!--            border: 1px solid #ddd;-->
-<!--        }-->
-<!--        .otp-field input:focus {-->
-<!--            box-shadow: 0 1px 0 rgba(0, 0, 0, 0.1);-->
-<!--        }-->
-<!--        .otp-field input::-webkit-inner-spin-button,-->
-<!--        .otp-field input::-webkit-outer-spin-button {-->
-<!--            display: none;-->
-<!--        }-->
+</head>
+<body >
+<main class="container">
 
-<!--        .resend {-->
-<!--            font-size: 12px;-->
-<!--        }-->
+    <div class="tab-pane fade" id="tab-orders" role="tabpanel" aria-labelledby="tab-orders-link">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-body">
+                        <!-- Your existing HTML content -->
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                <tr>
+                                    <th>
+                                        <a th:href="@{'/page/' + ${currentPage} + '?sortField=firstName&sortDir=' + ${reverseSortDir}}" >
+                                            No
+                                        </a>
+                                    </th>
+                                    <th>
+                                        <a th:href="@{'/page/' + ${currentPage} + '?sortField=email&sortDir=' + ${reverseSortDir}}" >
+                                            Date
+                                        </a>
+                                    </th>
+                                    <th>
+                                        <a th:href="@{'/page/' + ${currentPage} + '?sortField=email&sortDir=' + ${reverseSortDir}}" >
+                                            Amount
+                                        </a>
+                                    </th>
+                                    <th> Payment</th>
+                                    <th> Status </th>
+                                    <th>Order status</th>
+                                    <th>Details</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="orderItem, stat : ${orderItemsList}" style="align-items: center">
+                                    <td th:text="${stat.index + 1}" class="large-text"></td>
+                                    <td th:text="${orderItem.order.orderedDate}" class="large-text"></td>
+                                    <td th:text="${orderItem.product.price * orderItem.orderItemCount}" class="large-text"></td>
+                                    <td th:text="${orderItem.order.paymentStatus}" class="large-text"></td>
+                                    <td th:text="${orderItem.order.paymentMethod.PaymentMethodName}" class="large-text"></td>
+                                    <td class="large-text" th:text="${orderItem.orderStatus}" th:style="${orderItem.orderStatus == 'cancelled' ? 'color: red;' : ''}"></td>
+                                    <td><a th:href="@{'/user/orderShow/' + ${orderItem.orderItemId}}" class="btn_3">Details</a></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div th:unless="${orderItemsList != null and orderItemsList.size() > 0}">
+                            <p>There are no order items. Please go and make a purchase.</p>
+                        </div>
+                        <a th:href="@{/user/products}" class="btn_3"><span>GO SHOP</span><i class="icon-long-arrow-right"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
 
-<!--        .footer {-->
-<!--            position: absolute;-->
-<!--            bottom: 10px;-->
-<!--            right: 10px;-->
-<!--            color: black;-->
-<!--            font-size: 12px;-->
-<!--            text-align: right;-->
-<!--            font-family: monospace;-->
-<!--        }-->
-
-<!--        .footer a {-->
-<!--            color: black;-->
-<!--            text-decoration: none;-->
-<!--        }-->
-<!--        .otp-box{-->
-<!--            height: 100vh;-->
-<!--              }-->
-
-<!--    </style>-->
-
-<!--</head>-->
-<!--<body class="container-fluid h-100 bg-body-tertiary  d-block">-->
-<!--<div class="row justify-content-center align-items-center d-flex otp-box">-->
-<!--    <div class="col-12 col-md-6 col-lg-4" style="min-width: 500px;">-->
-<!--        <div class="card bg-white mb-5 mt-5 border-0" style="box-shadow: 0 12px 15px rgba(0, 0, 0, 0.02);">-->
-<!--            <div class="card-body p-5 text-center shadow">-->
-<!--                <h4>Verify</h4>-->
-<!--                <p>Your code was sent to you via email <br>Check your email at <b><span id="maskedEmail"></span></b> for the OTP:</p>-->
-<!--                <p></p>-->
-
-<!--                <form action="" method="post">-->
-<!--                    <div class="otp-field mb-4">-->
-<!--                        <input name="a" type="number" />-->
-<!--                        <input name="b" type="number" disabled />-->
-<!--                        <input name="c" type="number" disabled />-->
-<!--                        <input name="d"type="number" disabled />-->
-<!--                        <input name="e" type="number" disabled />-->
-<!--                        <input name="f"type="number" disabled />-->
-<!--                    </div>-->
-
-<!--                    <button type="submit" class="btn btn-warning mb-3">-->
-<!--                        Verify-->
-<!--                    </button>-->
-<!--                </form>-->
-<!--                <p>Time left: <span class="text-danger" id="timer">02:00</span></p>-->
-<!--                &lt;!&ndash; <p class="resend text-muted mb-0">-->
-<!--                  Didn't receive code? <a href="">Request again</a>-->
-<!--                </p> &ndash;&gt;-->
-<!--            </div>-->
-<!--        </div>-->
-<!--    </div>-->
-<!--</div>-->
-
-<!--&lt;!&ndash;<script>&ndash;&gt;-->
-<!--&lt;!&ndash;    function redirectToPage() {&ndash;&gt;-->
-<!--&lt;!&ndash;    setTimeout(function () {&ndash;&gt;-->
-<!--&lt;!&ndash;      window.location.href = '/expire?userId=<%- userId %>';&ndash;&gt;-->
-<!--&lt;!&ndash;    }, 123000); &ndash;&gt;-->
-<!--&lt;!&ndash;  }&ndash;&gt;-->
-<!--&lt;!&ndash;  &ndash;&gt;-->
-<!--&lt;!&ndash;  redirectToPage();&ndash;&gt;-->
-
-<!--&lt;!&ndash;</script>&ndash;&gt;-->
-<!--&lt;!&ndash;<script>&ndash;&gt;-->
-<!--&lt;!&ndash;    // Replace 'test@gmail.com' with the actual email address&ndash;&gt;-->
-<!--&lt;!&ndash;    const email = '<%= email %>';&ndash;&gt;-->
-
-<!--&lt;!&ndash;    // Display the masked email in the <span> element&ndash;&gt;-->
-<!--&lt;!&ndash;    const maskedEmail = email.substr(0, 3) + '**' + email.substr(-9);&ndash;&gt;-->
-<!--&lt;!&ndash;    document.getElementById('maskedEmail').textContent = maskedEmail;&ndash;&gt;-->
-
-<!--&lt;!&ndash;    function submitOTP() {&ndash;&gt;-->
-<!--&lt;!&ndash;        const enteredOTP = document.getElementById('otpInput').value;&ndash;&gt;-->
-<!--&lt;!&ndash;        // Validate the OTP and continue with your logic&ndash;&gt;-->
-<!--&lt;!&ndash;    }&ndash;&gt;-->
-<!--&lt;!&ndash;</script>&ndash;&gt;-->
-<!--&lt;!&ndash;<script src="/user/main.js"></script>&ndash;&gt;-->
-<!--<script>-->
-<!--    const inputs = document.querySelectorAll(".otp-field > input");-->
-<!--    const button = document.querySelector(".btn");-->
-
-<!--    window.addEventListener("load", () => inputs[0].focus());-->
-<!--    button.setAttribute("disabled", "disabled");-->
-
-<!--    inputs[0].addEventListener("paste", function (event) {-->
-<!--        event.preventDefault();-->
-
-<!--        const pastedValue = (event.clipboardData || window.clipboardData).getData(-->
-<!--            "text"-->
-<!--        );-->
-<!--        const otpLength = inputs.length;-->
-
-<!--        for (let i = 0; i < otpLength; i++) {-->
-<!--            if (i < pastedValue.length) {-->
-<!--                inputs[i].value = pastedValue[i];-->
-<!--                inputs[i].removeAttribute("disabled");-->
-<!--                inputs[i].focus;-->
-<!--            } else {-->
-<!--                inputs[i].value = ""; // Clear any remaining inputs-->
-<!--                inputs[i].focus;-->
-<!--            }-->
-<!--        }-->
-<!--    });-->
-
-<!--    inputs.forEach((input, index1) => {-->
-<!--        input.addEventListener("keyup", (e) => {-->
-<!--            const currentInput = input;-->
-<!--            const nextInput = input.nextElementSibling;-->
-<!--            const prevInput = input.previousElementSibling;-->
-
-<!--            if (currentInput.value.length > 1) {-->
-<!--                currentInput.value = "";-->
-<!--                return;-->
-<!--            }-->
-
-<!--            if (-->
-<!--                nextInput &&-->
-<!--                nextInput.hasAttribute("disabled") &&-->
-<!--                currentInput.value !== ""-->
-<!--            ) {-->
-<!--                nextInput.removeAttribute("disabled");-->
-<!--                nextInput.focus();-->
-<!--            }-->
-
-<!--            if (e.key === "Backspace") {-->
-<!--                inputs.forEach((input, index2) => {-->
-<!--                    if (index1 <= index2 && prevInput) {-->
-<!--                        input.setAttribute("disabled", true);-->
-<!--                        input.value = "";-->
-<!--                        prevInput.focus();-->
-<!--                    }-->
-<!--                });-->
-<!--            }-->
-
-<!--            button.classList.remove("active");-->
-<!--            button.setAttribute("disabled", "disabled");-->
-
-<!--            const inputsNo = inputs.length;-->
-<!--            if (!inputs[inputsNo - 1].disabled && inputs[inputsNo - 1].value !== "") {-->
-<!--                button.classList.add("active");-->
-<!--                button.removeAttribute("disabled");-->
-
-<!--                return;-->
-<!--            }-->
-<!--        });-->
-<!--    });-->
-
-<!--    // otp timer-->
-
-<!--    function startCountdown(durationInSeconds) {-->
-<!--        const timerElement = document.getElementById("timer");-->
-<!--        let timeLeft = durationInSeconds;-->
-
-<!--        const countdownInterval = setInterval(function() {-->
-<!--            const minutes = Math.floor(timeLeft / 60);-->
-<!--            const seconds = timeLeft % 60;-->
-
-<!--            const minutesStr = String(minutes).padStart(2, '0');-->
-<!--            const secondsStr = String(seconds).padStart(2, '0');-->
-
-<!--            timerElement.textContent = ${minutesStr}:${secondsStr};-->
-
-<!--            if (timeLeft <= 0) {-->
-<!--                clearInterval(countdownInterval);-->
-<!--                timerElement.textContent = "00:00";-->
-<!--                timerElement.textContent="The OTP has expired"-->
-<!--            } else {-->
-<!--                timeLeft&#45;&#45;;-->
-<!--            }-->
-<!--        }, 1000);-->
-<!--    }-->
-
-<!--    startCountdown(120);-->
-<!--</script>-->
-<!--</body>-->
-<!--</html>-->
+</body>
+</html>

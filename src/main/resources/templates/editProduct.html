@@ -6,17 +6,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Corona Admin</title>
     <!-- plugins:css -->
-    <link rel="stylesheet" href="/assets/vendors/mdi/css/materialdesignicons.min.css">
-    <link rel="stylesheet" href="/assets/vendors/css/vendor.bundle.base.css">
+    <link rel="stylesheet" href="/assets/adminjs/vendors/mdi/css/materialdesignicons.min.css">
+    <link rel="stylesheet" href="/assets/adminjs/vendors/css/vendor.bundle.base.css">
     <!-- endinject -->
     <!-- Plugin css for this page -->
-    <link rel="stylesheet" href="/assets/vendors/jvectormap/jquery-jvectormap.css">
-    <link rel="stylesheet" href="/assets/vendors/flag-icon-css/css/flag-icon.min.css">
-    <link rel="stylesheet" href="/assets/vendors/owl-carousel-2/owl.carousel.min.css">
-    <link rel="stylesheet" href="/assets/vendors/owl-carousel-2/owl.theme.default.min.css">
-    <!-- End plugin css for this page -->
-    <!-- inject:css -->
-    <!-- endinject -->
+    <link rel="stylesheet" href="/assets/adminjs/vendors/jvectormap/jquery-jvectormap.css">
+    <link rel="stylesheet" href="/assets/adminjs/vendors/flag-icon-css/css/flag-icon.min.css">
+    <link rel="stylesheet" href="/assets/adminjs/vendors/owl-carousel-2/owl.carousel.min.css">
+    <link rel="stylesheet" href="/assets/adminjs/vendors/owl-carousel-2/owl.theme.default.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.11/cropper.min.css">
     <!-- Layout styles -->
     <link rel="stylesheet" href="/assets/css/admin.css">
     <!-- End layout styles -->
@@ -40,14 +38,47 @@
         }
     </script>
     <style>
+        .img-size{
+            width:9rem;
+            height:8rem;
+        }
 
-        /* Style form labels */
-        .form-label {
-            font-weight: bold;
+        .page {
+            margin: 1em auto;
+            max-width: 768px;
+            display: flex;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            height: 100%;
         }
-        #form{
-            width: 60%;
+
+        .box {
+            padding: 0.5em;
+            width: 100%;
+            margin:0.5em;
         }
+
+        .box-2 {
+            padding: 0.5em;
+            width: calc(100%/2 - 1em);
+        }
+
+        .options label,
+        .options input{
+            width:4em;
+            padding:0.5em 1em;
+        }
+
+
+        .hide {
+            display: none;
+        }
+
+        img {
+            max-width:100%;
+        }
+
+
 
         /* Style form inputs */
         .form-control {
@@ -88,7 +119,7 @@
     <!-- partial:partials/_sidebar.html -->
     <nav class="sidebar sidebar-offcanvas" id="sidebar">
         <div class="sidebar-brand-wrapper d-none d-lg-flex align-items-center justify-content-center fixed-top">
-            <a class="sidebar-brand brand-logo" href="index.html"><img src="/assets/img/logo.svg" alt="logo" /></a>
+            <a class="sidebar-brand brand-logo" href="index.html"><img src="/assets/img/logo/logo.png" alt="logo" /></a>
             <a class="sidebar-brand brand-logo-mini" href="index.html"><img src="/assets/img/logo-mini.svg" alt="logo" /></a>
         </div>
         <ul class="nav">
@@ -96,7 +127,7 @@
                 <div class="profile-desc">
                     <div class="profile-pic">
                         <div class="count-indicator">
-                            <img class="img-xs rounded-circle " src="/assets/img/faces/face15.jpg" alt="">
+                            <img class="img-xs rounded-circle " src="/assets/productImages/profileforAdmin.jpeg" alt="">
                             <span class="count bg-success"></span>
                         </div>
                         <div class="profile-name">
@@ -145,7 +176,7 @@
                 <span class="nav-link">Navigation</span>
             </li>
             <li class="nav-item menu-items">
-                <a class="nav-link"  th:href="@{/admin/adminHome}">
+                <a class="nav-link" th:href="@{/admin/adminHome}">
               <span class="menu-icon">
                 <i class="mdi mdi-speedometer"></i>
               </span>
@@ -153,40 +184,68 @@
                 </a>
             </li>
             <li class="nav-item menu-items">
-                <a class="nav-link" data-toggle="collapse"  th:href="@{/admin/listUsers}" aria-expanded="false" aria-controls="ui-basic">
-              <span class="menu-icon">
-                <i class="mdi mdi-laptop"></i>
-              </span>
-                    <span class="menu-title"> UserManagement</span>
-                    <i class="menu-arrow"></i>
-                </a>
-            </li>
-            <li class="nav-item menu-items">
-                <a class="nav-link"  th:href="@{/admin/listUsers}">
+                <a class="nav-link" th:href="@{/admin/listUsers}" >
               <span class="menu-icon">
                 <i class="mdi mdi-playlist-play"></i>
               </span>
-                    <span class="menu-title">ProductManagement</span>
+                    <span class="menu-title">USER </span>
                 </a>
             </li>
             <li class="nav-item menu-items">
-                <a class="nav-link" href="/pages/tables/basic-table.html">
+                <a class="nav-link" th:href="@{/admin/listProducts}" >
+              <span class="menu-icon">
+                <i class="mdi mdi-playlist-play"></i>
+              </span>
+                    <span class="menu-title">PRODUCT </span>
+                </a>
+            </li>
+            <li class="nav-item menu-items">
+                <a class="nav-link" th:href="@{/admin/category-list}">
               <span class="menu-icon">
                 <i class="mdi mdi-table-large"></i>
               </span>
-                    <span class="menu-title">CategroyManagement</span>
+                    <span class="menu-title">CATEGORY</span>
                 </a>
             </li>
-
-            <div class="collapse" id="auth">
-                <ul class="nav flex-column sub-menu">
-                    <li class="nav-item"> <a class="nav-link" href="pages/samples/blank-page.html"> Blank Page </a></li>
-                    <li class="nav-item"> <a class="nav-link" href="pages/samples/error-404.html"> 404 </a></li>
-                    <li class="nav-item"> <a class="nav-link" href="pages/samples/error-500.html"> 500 </a></li>
-                    <li class="nav-item"> <a class="nav-link" href="pages/samples/login.html"> Login </a></li>
-                    <li class="nav-item"> <a class="nav-link" href="pages/samples/register.html"> Register </a></li>
-                </ul>
-            </div>
+            <li class="nav-item menu-items">
+                <a class="nav-link" th:href="@{/admin/SubCategory-list}">
+              <span class="menu-icon">
+                <i class="mdi mdi-chart-bar"></i>
+              </span>
+                    <span class="menu-title">SUBCATEGORY</span>
+                </a>
+            </li>
+            <li class="nav-item menu-items">
+                <a class="nav-link" th:href="@{/admin/orderList}">
+              <span class="menu-icon">
+                <i class="mdi mdi-contacts"></i>
+              </span>
+                    <span class="menu-title">ORDERS</span>
+                </a>
+            </li>
+            <li class="nav-item menu-items">
+                <a class="nav-link" th:href="@{/admin/sales-report}">
+              <span class="menu-icon">
+                <i class="mdi mdi-contacts"></i>
+              </span>
+                    <span class="menu-title">SALES REPORT</span>
+                </a>
+            </li>
+            <li class="nav-item menu-items">
+                <a class="nav-link" th:href="@{/admin/categoryOfferList}">
+              <span class="menu-icon">
+                <i class="mdi mdi-contacts"></i>
+              </span>
+                    <span class="menu-title">OFFER </span>
+                </a>
+            </li>
+            <li class="nav-item menu-items">
+                <a class="nav-link" th:href="@{/admin/couponList}">
+              <span class="menu-icon">
+                <i class="mdi mdi-contacts"></i>
+              </span>
+                    <span class="menu-title">COUPON </span>
+                </a>
             </li>
         </ul>
     </nav>
@@ -194,19 +253,24 @@
         <div class="card-body">
             <h4 class="card-title">Basic form elements</h4>
             <p class="card-description"> Basic form elements </p>
-            <form class="forms-sample" th:action="@{/admin/updateProduct/{id}(id=${pro})}" method="post" th:object="${product}" enctype="multipart/form-data">
+            <form class="forms-sample" th:action="@{/admin/updateProduct/{id}(id=${pro})}" method="post" th:object="${product}" enctype="multipart/form-data"  id="productForm">
 <!--                <input type="hidden" th:field="*{id}"> &lt;!&ndash; Add an ID field for the product &ndash;&gt;-->
                 <div class="form-group">
                     <label for="exampleInputName1">Name</label>
                     <input type="text" class="form-control" id="exampleInputName1" placeholder="Name" th:field="*{productName}">
+                    <span class="error" id="nameError" style="color: rgba(255,0,24,0.73)"></span>
                 </div>
                 <div class="form-group">
                     <label for="exampleInputQuantity">Quantity</label>
                     <input type="text" class="form-control" id="exampleInputQuantity" placeholder="Quantity" th:field="*{quantity}">
+                    <span class="error" id="quantityError" style="color: rgba(255,0,24,0.73)"></span>
+
                 </div>
                 <div class="form-group">
                     <label for="exampleInputPrice">Price</label>
                     <input type="text" class="form-control" id="exampleInputPrice" placeholder="Price" th:field="*{price}">
+                    <span class="error" id="priceError" style="color: rgba(255,0,24,0.73)"></span>
+
                 </div>
 
                 <div class="form-group">
@@ -214,23 +278,118 @@
                     <select class="form-control" id="exampleSelectCategory" th:field="*{category.id}">
                         <option value="">Select a Category</option>
                         <option th:each="category : ${category}" th:value="${category.id}" th:text="${category.name}"></option>
+
                     </select>
+                    <span class="error" id="categoryError" style="color: rgba(255,0,24,0.73)"></span>
+
                 </div>
                 <div class="form-group">
                     <label for="exampleSelectSubcategory">Subcategory</label>
                     <select class="form-control" id="exampleSelectSubcategory" th:field="*{subcategory.id}">
-                        <option value="">Select a Subcategory</option>
                         <option th:each="subcategory : ${subcategory}" th:value="${subcategory.id}" th:text="${subcategory.name}"></option>
                     </select>
+                    <span class="error" id="subcategoryError" style="color: rgba(255,0,24,0.73)"></span>
+
                 </div>
-                <div class="form-group">
-                    <label for="newImages">New Images</label>
-                    <input type="file" class="form-control" id="newImages" name="newImages" multiple>
+
+<!--                =====================================  images ================================&ndash;&gt;-->
+                <div class="row d-flex justify-content-center ">
+
+                    <div class="row d-flex justify-content-between ">
+
+<!--                        <div class="col-lg-3 col-md-6 rounded-image-preview ">-->
+<!--                            <label for="file-input1" class="image-label ">image 1-->
+<!--                                <div class="rounded-image-preview img-result1">-->
+<!--                                    <img class="cropped1" id="imagePreview1" src="https://www.creativefabrica.com/wp-content/uploads/2021/04/05/Image-Upload-Icon-Graphics-10388650-1-580x386.jpg"-->
+<!--                                         alt="Preview" style="width:10rem;height:6.4rem" />-->
+<!--                                </div>-->
+<!--                                <input type="file" id="file-input1"  th:onclick="crop(1)"  hidden name="croppedImage1" >-->
+<!--                                <div>-->
+<!--                                    <img  th:id="'imageId_' + ${product.productImages[0].id}" th:src="${'/assets' + product.productImages[0].imageName}" style="width: 150px;height: 150px">-->
+<!--                                </div>-->
+<!--                            </label>-->
+<!--                        </div>-->
+
+<!--                        <div class="col-lg-3 col-md-6 rounded-image-preview">-->
+<!--                            <label for="file-input2" class="image-label">image 2-->
+<!--                                <div class="rounded-image-preview img-result2">-->
+<!--                                    <img class="cropped2" id="imagePreview2" src="https://www.creativefabrica.com/wp-content/uploads/2021/04/05/Image-Upload-Icon-Graphics-10388650-1-580x386.jpg"-->
+<!--                                         alt="Preview" style="width:10rem;height:6.4rem" />-->
+<!--                                </div>-->
+<!--                                <input type="file" id="file-input2" th:onclick="crop(2)" hidden name="croppedImage2">-->
+<!--                                <div >-->
+<!--                                    <img  th:id="'imageId_' + ${product.productImages[1].id}" th:src="${'/assets' + product.productImages[1].imageName}" style="width: 150px;height: 150px">-->
+<!--                                </div>-->
+<!--                            </label>-->
+<!--                        </div>-->
+<!--                        <div class="col-lg-3 col-md-6 rounded-image-preview ">-->
+<!--                            <label for="file-input3" class="image-label">image 3-->
+<!--                                <div class="rounded-image-preview img-result3">-->
+<!--                                    <img class="cropped3" id="imagePreview3" src="https://www.creativefabrica.com/wp-content/uploads/2021/04/05/Image-Upload-Icon-Graphics-10388650-1-580x386.jpg"-->
+<!--                                         alt="Preview" style="width:10rem;height:6.4rem" />-->
+<!--                                </div>-->
+<!--                                <input type="file" id="file-input3" th:onclick="crop(3)" hidden name="croppedImage3" >-->
+<!--                                <div >-->
+<!--                                    <img  th:id="'imageId_' + ${product.productImages[2].id}" th:src="${'/assets' + product.productImages[2].imageName}" style="width: 150px;height: 150px">-->
+<!--                                    <button>Replace</button>-->
+<!--                                </div>-->
+<!--                            </label>-->
+<!--                        </div>-->
+                        <div class="col-lg-3 col-md-6 rounded-image-preview">
+                            <label for="file-input1" class="image-label">image 1
+                                <div class="rounded-image-preview img-result1">
+                                    <img th:src="${'/assets' + product.productImages[0].imageName}" class="cropped1" id="imagePreview1" src="https://www.creativefabrica.com/wp-content/uploads/2021/04/05/Image-Upload-Icon-Graphics-10388650-1-580x386.jpg"
+                                         alt="Preview" style="width:10rem;height:6.4rem" />
+                                </div>
+                                <input type="file" id="file-input1" th:onclick="crop(1)" hidden name="croppedImage1" >
+
+                            </label>
+                        </div>
+
+                        <div class="col-lg-3 col-md-6 rounded-image-preview">
+                            <label for="file-input2" class="image-label">image 2
+                                <div class="rounded-image-preview img-result2">
+                                    <img th:src="${'/assets' + product.productImages[1].imageName}" class="cropped2" id="imagePreview2" src="https://www.creativefabrica.com/wp-content/uploads/2021/04/05/Image-Upload-Icon-Graphics-10388650-1-580x386.jpg"
+                                         alt="Preview" style="width:10rem;height:6.4rem" />
+                                </div>
+                                <input type="file" id="file-input2" th:onclick="crop(2)" hidden name="croppedImage2">
+
+                            </label>
+                        </div>
+
+                        <div class="col-lg-3 col-md-6 rounded-image-preview">
+                            <label for="file-input3" class="image-label">image 3
+                                <div class="rounded-image-preview img-result3">
+                                    <img th:src="${'/assets' + product.productImages[2].imageName}" class="cropped3" id="imagePreview3" src="https://www.creativefabrica.com/wp-content/uploads/2021/04/05/Image-Upload-Icon-Graphics-10388650-1-580x386.jpg"
+                                         alt="Preview" style="width:10rem;height:6.4rem" />
+                                </div>
+                                <input type="file" id="file-input3" th:onclick="crop(3)" hidden name="croppedImage3" >
+                            </label>
+                        </div>
+                    </div>
                 </div>
+
+                <main class="page">
+                    <div class="box-2">
+                        <div class="result"></div>
+                    </div>
+                    <div class="box">
+                        <div class="options hide ">
+                            <label> Width</label>
+                            <input type="number" class="img-w" value="300" min="100" max="1200" />
+                        </div>
+                        <!-- save btn -->
+                        <button class="btn btn-inverse-success save hide">Save</button>
+                    </div>
+                </main>
+
+
 
                 <div class="form-group">
                     <label for="exampleTextarea1">Description</label>
                     <textarea class="form-control" id="exampleTextarea1" rows="4" th:field="*{description}"></textarea>
+                    <span class="error" id="desError" style="color: rgba(255,0,24,0.73)"></span>
+
                 </div>
                 <button type="submit" class="btn btn-primary mr-2">Update</button>
                 <button class="btn btn-dark">Cancel</button>
@@ -253,13 +412,7 @@
             <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="minimize">
                 <span class="mdi mdi-menu"></span>
             </button>
-            <ul class="navbar-nav w-100">
-                <li class="nav-item w-100">
-                    <form class="nav-link mt-2 mt-md-0 d-none d-lg-flex search">
-                        <input type="text" class="form-control" placeholder="Search products">
-                    </form>
-                </li>
-            </ul>
+
             <ul class="navbar-nav navbar-nav-right">
 
                 <li class="nav-item nav-settings d-none d-lg-block">
@@ -267,8 +420,6 @@
                         <i class="mdi mdi-view-grid"></i>
                     </a>
                 </li>
-
-
                     <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list" aria-labelledby="profileDropdown">
                         <h6 class="p-3 mb-0">Profile</h6>
                         <div class="dropdown-divider"></div>
@@ -307,26 +458,284 @@
 </div>
 <!-- page-body-wrapper ends -->
 </div>
-<!-- container-scroller -->
-<!-- plugins:js -->
-<script src="/assets/vendors/js/vendor.bundle.base.js"></script>
+<script src="/assets/adminjs/vendors/js/vendor.bundle.base.js"></script>
 <!-- endinject -->
 <!-- Plugin js for this page -->
-<script src="/assets/vendors/chart.js/Chart.min.js"></script>
-<script src="/assets/vendors/progressbar.js/progressbar.min.js"></script>
-<script src="/assets/vendors/jvectormap/jquery-jvectormap.min.js"></script>
-<script src="/assets/vendors/jvectormap/jquery-jvectormap-world-mill-en.js"></script>
-<script src="/assets/vendors/owl-carousel-2/owl.carousel.min.js"></script>
+<script src="/assets/adminjs/vendors/chart.js/Chart.min.js"></script>
+<script src="/assets/adminjs/vendors/progressbar.js/progressbar.min.js"></script>
+<script src="/assets/adminjs/vendors/jvectormap/jquery-jvectormap.min.js"></script>
+<script src="/assets/adminjs/vendors/jvectormap/jquery-jvectormap-world-mill-en.js"></script>
+<script src="/assets/adminjs/vendors/owl-carousel-2/owl.carousel.min.js"></script>
 <!-- End plugin js for this page -->
 <!-- inject:js -->
-<script src="/assets/js/off-canvas.js"></script>
-<script src="/assets/js/hoverable-collapse.js"></script>
-<script src="/assets/js/misc.js"></script>
-<script src="/assets/js/settings.js"></script>
-<script src="/assets/js/todolist.js"></script>
+<script src="/assets/adminjs/js/off-canvas.js"></script>
+<script src="/assets/adminjs/js/hoverable-collapse.js"></script>
+<script src="/assets/adminjs/js/misc.js"></script>
+<script src="/assets/adminjs/js/settings.js"></script>
+<script src="/assets/adminjs/js/todolist.js"></script>
 <!-- endinject -->
 <!-- Custom js for this page -->
-<script src="/assets/js/dashboard.js"></script>
+<script src="/assets/adminjs/js/dashboard.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
 <!-- End custom js for this page -->
+<script>
+    function toggleInput(inputId) {
+        const fileInput = document.getElementById(inputId);
+        fileInput.hidden = !fileInput.hidden;
+    }
+</script>
+<script>
+
+    // Function to trigger file input click
+    function crop(index) {
+        // Store the index value in the variable
+        currentIndex = index;
+        upload = document.querySelector('#file-input' + currentIndex);
+        img_result = document.querySelector('.img-result' + currentIndex),
+            cropped = document.querySelector('.cropped' + currentIndex);
+
+        upload.click();
+    }
+    // vars
+    let result = document.querySelector('.result'),
+        img_w = document.querySelector('.img-w'),
+        img_h = document.querySelector('.img-h'),
+        options = document.querySelector('.options'),
+        save = document.querySelector('.save'),
+        dwn = document.querySelector('.download'),
+        cropper = '';
+
+    // Variable to store the index value
+    let currentIndex = null;
+
+    document.body.addEventListener('change', function (e) {
+        if (e.target.id === 'file-input' + currentIndex) {
+            alert(currentIndex)
+            // start file reader
+            const reader = new FileReader();
+            reader.onload = (e)=> {
+                if(e.target.result){
+                    // create new image
+                    let img = document.createElement('img');
+                    img.id = 'image';
+                    img.src = e.target.result
+                    // clean result before
+                    result.innerHTML = '';
+                    // append new image
+                    result.appendChild(img);
+                    // show save btn and options
+                    save.classList.remove('hide');
+                    options.classList.remove('hide');
+                    // init cropper
+                    cropper = new Cropper(img);
+                }
+            };
+            reader.readAsDataURL(e.target.files[0]);
+
+            // Reset the currentIndex after processing the file input
+            currentIndex = null;
+        }
+    });
+
+    // save on click
+    save.addEventListener('click', (e) => {
+        e.preventDefault();
+
+        // Get result as data URI
+        let imgSrc = cropper.getCroppedCanvas({
+            width: img_w.value // input value
+        }).toDataURL();
+
+        // Create a Blob object from the data URI
+        const blob = dataURItoBlob(imgSrc);
+
+        // Create a File object from the Blob
+        const file = new File([blob], 'imagename.png', { type: 'image/png' });
+
+        // Set the File object to the input element
+        setFileInput(file);
+
+        // Remove hide class of img
+        cropped.classList.remove('hide');
+        img_result.classList.remove('hide');
+
+        // Show image cropped
+        cropped.src = imgSrc;
+
+        dwn.classList.remove('hide');
+        dwn.download = 'imagename.png';
+        dwn.setAttribute('href', imgSrc);
+    });
+
+    // Function to convert data URI to Blob
+    function dataURItoBlob(dataURI) {
+        const byteString = atob(dataURI.split(',')[1]);
+        const mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+        const ab = new ArrayBuffer(byteString.length);
+        const ia = new Uint8Array(ab);
+
+        for (let i = 0; i < byteString.length; i++) {
+            ia[i] = byteString.charCodeAt(i);
+        }
+
+        return new Blob([ab], { type: mimeString });
+    }
+
+    // Function to set File object to input element
+    function setFileInput(file) {
+        const inputElement = upload;
+        const dataTransfer = new DataTransfer();
+        dataTransfer.items.add(file);
+        inputElement.files = dataTransfer.files;
+    }
+</script>
+<script>
+    $(document).ready(function () {
+        $('#exampleInputName1').on('input', function () {
+            const name = $(this).val().trim();
+            const containsNonNumeric = /\D/.test(name); // Check if the name contains non-numeric characters
+
+            if (name.length === 0) {
+                $('#nameError').text('Name is required').show();
+            } else if (name.length < 4 || !containsNonNumeric) {
+                $('#nameError').text('Name should have at least 4 non-numeric characters').show();
+            } else {
+                $('#nameError').hide();
+            }
+        });
+
+        $('#exampleInputQuantity').on('input', function () {
+            const quantity = $(this).val().trim();
+            if (parseInt(quantity) < 0) {
+                $('#quantityError').text('Quantity should be a non-negative number').show();
+            } else if (quantity === '') {
+                $('#quantityError').text('Provide quantity').show();
+            } else {
+                $('#quantityError').hide();
+            }
+        });
+
+        $('#exampleInputPrice').on('input', function () {
+            const price = $(this).val().trim();
+            if (price.length === 0) {
+                $('#priceError').text('Price is required').show();
+            } else if (price < 1) {
+                $('#priceError').text('Price must be greater than 0').show();
+            } else {
+                $('#priceError').hide();
+            }
+        });
+
+        $('#exampleSelectCategory').on('change', function () {
+            const selectedCategory = $(this).val();
+            if (!selectedCategory || selectedCategory === '') {
+                $('#categoryError').text('Please select a category').show();
+            } else {
+                $('#categoryError').hide();
+            }
+        });
+
+        $('#exampleSelectSubcategory').on('change', function () {
+            const selectedSubCategory = $(this).val();
+            if (!selectedSubCategory || selectedSubCategory === '') {
+                $('#subcategoryError').text('Please select a Subcategory').show();
+            } else {
+                $('#subcategoryError').hide();
+            }
+        });
+
+        $('#exampleTextarea1').on('input', function () {
+            const description = $(this).val().trim();
+            if (description.length === 0) {
+                $('#desError').text('Description is required').show();
+            } else {
+                $('#desError').hide();
+            }
+        });
+
+
+        $(document).ready(function () {
+            $('#productForm').on('submit', function (event) {
+                let isValid = true;
+
+                const name = $('#exampleInputName1').val().trim();
+                if (name.length === 0) {
+                    $('#nameError').text('Name is required').show();
+                    isValid = false;
+                } else {
+                    $('#nameError').hide();
+                }
+
+                const quantity = $('#exampleInputQuantity').val().trim();
+                if (parseInt(quantity) < 0 || quantity === '') {
+                    $('#quantityError').text('Quantity should be a non-negative number').show();
+                    isValid = false;
+                } else {
+                    $('#quantityError').hide();
+                }
+
+                const price = $('#exampleInputPrice').val().trim();
+                if (price.length === 0 || price < 1) {
+                    $('#priceError').text('Price is required and must be greater than 0').show();
+                    isValid = false;
+                } else {
+                    $('#priceError').hide();
+                }
+
+                const selectedCategory = $('#exampleSelectCategory').val();
+                if (!selectedCategory || selectedCategory === '') {
+                    $('#categoryError').text('Please select a category').show();
+                    isValid = false;
+                } else {
+                    $('#categoryError').hide();
+                }
+
+                const selectedSubCategory = $('#exampleSelectSubcategory').val();
+                if (!selectedSubCategory || selectedSubCategory === '') {
+                    $('#subcategoryError').text('Please select a Subcategory').show();
+                    isValid = false;
+                } else {
+                    $('#subcategoryError').hide();
+                }
+
+                const description = $('#exampleTextarea1').val().trim();
+                if (description.length === 0) {
+                    $('#desError').text('Description is required').show();
+                    isValid = false;
+                } else {
+                    $('#desError').hide();
+                }
+
+
+
+
+                if (!isValid) {
+                    event.preventDefault();
+                }
+            });
+        });
+    });
+</script>
+<script>
+    function deleteImage(imageId) {
+
+        $.ajax({
+            url: '/admin/removeImage/' + imageId,
+            type: 'DELETE',
+            success: function (response) {
+
+                $('#imageId' + imageId).parent().remove();
+                var inputField = document.getElementById('file-input2');
+                    inputField.removeAttribute('hidden');
+                alert(response); // Show success message
+
+            },
+            error: function (xhr, status, error) {
+                alert('Failed to delete image with ID: ' + String(imageId));
+            }
+        });
+    }
+</script>
 </body>
 </html>

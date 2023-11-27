@@ -1,7 +1,9 @@
 package com.timeco.application.Repository;
 
+import com.timeco.application.model.category.Category;
 import com.timeco.application.model.order.OrderItem;
 import com.timeco.application.model.order.PurchaseOrder;
+import com.timeco.application.model.product.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -56,4 +58,6 @@ public interface OrderItemRepository extends JpaRepository<OrderItem ,Long> {
     @Query("SELECT o FROM OrderItem o WHERE o.orderStatus = :orderStatus AND o.order.paymentMethod.PaymentMethodName = :paymentMethodName")
     List<OrderItem> findWithOrderStatusAndPaymentMethod(String orderStatus, String paymentMethodName);
 
+
+    List<OrderItem> findByProduct(Product product);
 }

@@ -23,6 +23,15 @@ public class OrderItem {
     @JoinColumn(name = "order_id")
     private PurchaseOrder order;
 
+    private Double orderedPrice;
+
+    public Double getOrderedPrice() {
+        return orderedPrice;
+    }
+
+    public void setOrderedPrice(Double orderedPrice) {
+        this.orderedPrice = orderedPrice;
+    }
 
     public OrderItem() {
         super();
@@ -30,11 +39,11 @@ public class OrderItem {
 
     private String orderStatus;
 
-    public OrderItem(Integer orderItemCount, Product product, PurchaseOrder order, String orderStatus) {
-        super();
+    public OrderItem(Integer orderItemCount, Product product, PurchaseOrder order, Double orderedPrice, String orderStatus) {
         this.orderItemCount = orderItemCount;
         this.product = product;
         this.order = order;
+        this.orderedPrice = orderedPrice;
         this.orderStatus = orderStatus;
     }
 

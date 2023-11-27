@@ -7,6 +7,7 @@ import com.timeco.application.model.category.Subcategory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.Optional;
 
 @Service
@@ -24,6 +25,24 @@ public class SubCategoryServiceImpl implements SubCategoryService{
     @Override
     public void deleteSubCategoryById(Long id) {
         this.subCategoryRepository.deleteById(id);
+    }
+
+
+    @Override
+    @Transactional
+    public boolean  updateSubCategoryById(Long subcategoryId, String  name) {
+        Subcategory subcategory = subCategoryRepository.findById(subcategoryId).orElse(null);
+
+        if (subcategory != null) {
+            Subcategory existingSubCategory = subCategoryRepository.findByNameIgnoreCase(name);
+
+            if (existingSubCategory == null || existingSubCategory.getId().equals(subcategoryId)) {
+                subcategory.setName(name);
+                subCategoryRepository.save(subcategory);
+                return true;
+            }
+        }
+        return false;
     }
 
     public void updateSubCategoryById(Long id, SubCategoryDto subCategoryDto) {

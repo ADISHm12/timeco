@@ -1,11 +1,15 @@
 package com.timeco.application.Service.userservice;
 
 import com.timeco.application.Dto.RegistrationDto;
+import com.timeco.application.Dto.UserDto;
 import com.timeco.application.Repository.RoleRepository;
 import com.timeco.application.Repository.UserRepository;
 import com.timeco.application.model.role.Role;
 import com.timeco.application.model.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -16,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.security.Principal;
+import java.security.SecureRandom;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -39,7 +44,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        System.out.println("Email received in loadUserByUsername: " + email);
         User user = userRepository.findByEmail(email);
         if (user == null) {
             throw new UsernameNotFoundException("Invalid username or password.");
@@ -47,10 +51,7 @@ public class UserServiceImpl implements UserService {
         if(user.isBlocked()){
             throw new DisabledException("User is blocked");
         }
-        System.out.println("User found: " + user.getEmail());
         return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), mapRolesToAuthorities(user.getRoles()));
-
-
     }
 
 
@@ -68,6 +69,7 @@ public class UserServiceImpl implements UserService {
             registrationDto.setErrorMessage("The email address is already taken. Please choose another one.");
             return null;
         }
+        String code = generateRandomCode(6);
         User user = new User(registrationDto.getFirstName(),
                 registrationDto.getLastName(), registrationDto.getEmail(),
                 registrationDto.getPhoneNumber(), passwordEncoder.encode(registrationDto.getPassword()),
@@ -112,32 +114,19 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void updateUserDetails(User updatedUser , Principal principal) {
-        // Here, you can perform the logic to update the user's details in the database
-        // First, you might want to fetch the existing user from the database
+    public boolean updateUserDetails(UserDto updatedUser , Principal principal) {
         String username= principal.getName();
-        System.out.println(updatedUser.getFirstName()+"1111111111111111111111111111");
-        System.out.println(updatedUser.getEmail()+"1111111111111111111111111111");
-
         User existingUser = userRepository.findByEmail(username);
-
-
-
         if (existingUser != null) {
             // Update the user's details based on the updatedUser object
             existingUser.setFirstName(updatedUser.getFirstName());
             existingUser.setLastName(updatedUser.getLastName());
-            existingUser.setEmail(updatedUser.getEmail());
             existingUser.setPhoneNumber(updatedUser.getPhoneNumber());
-
-//             Save the updated user back to the database
             userRepository.save(existingUser);
-
-
-        } else {
-            // Handle the case where the user doesn't exist
-            // You can throw an exception, return null, or handle it as needed
-
+            return true;
+        }
+        else {
+            return false;
         }
     }
 
@@ -145,6 +134,28 @@ public class UserServiceImpl implements UserService {
     public int countCustomers() {
         return userRepository.countByIsBlocked(false);
     }
+
+    @Override
+    public String generateRandomCode(int length) {
+        String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        StringBuilder code = new StringBuilder();
+        SecureRandom  random = new SecureRandom();
+
+        for (int i = 0; i < length; i++) {
+            int index = random.nextInt(characters.length());
+            code.append(characters.charAt(index));
+        }
+
+        return code.toString();
+    }
+
+    @Override
+    public Page<User> findAllusers(int page, int pageSize) {
+        Pageable pageable = PageRequest.of(page,pageSize);
+
+        return userRepository.findAll(pageable);
+    }
+
 
     public boolean isPasswordCorrect(User user, String currentPassword) {
         // Retrieve the stored password hash for the user

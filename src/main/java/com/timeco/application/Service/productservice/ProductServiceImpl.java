@@ -9,6 +9,7 @@ import com.timeco.application.model.product.ProductImage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -96,16 +97,15 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<Product> getAllProducts() {
-
-        return productRepository.findAll();
+    public Page<Product> getAllProducts() {
+        return null;
     }
 
     @Override
-    public List<Product> searchProducts(String searchTerm) {
-
-        return productRepository.findByProductNameContaining(searchTerm);
+    public Page<Product> searchProducts(String searchTerm) {
+        return null;
     }
+
 
     @Override
     public List<Product> getAllProductsWithImages() {
@@ -145,10 +145,8 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<Product> getProductsByCategory(Category category) {
-
-        return productRepository.findByCategory(category);
-
-
+        List<Product> products = productRepository.findByCategory(category);
+        return products;
     }
 
     @Override
@@ -171,6 +169,53 @@ public class ProductServiceImpl implements ProductService {
         Product product = productRepository.findById(id).get();
         product.setBlocked(false);
         productRepository.save(product);
+    }
+
+    @Override
+    public Page<Product> getAllProducts(int page, int pageSize) {
+        Pageable  pageable = PageRequest.of(page,pageSize);
+
+        return productRepository.findAll(pageable);
+    }
+
+
+
+    @Override
+    public Page<Product> searchProductsAsPage(String searchTerm, int page, int pageSize) {
+        return null;
+    }
+
+    @Override
+    public Page<Product> findAllProducts(int page, int pageSize) {
+        Pageable pageable =PageRequest.of(page,pageSize);
+
+        return productRepository.findAllByIsBlockedFalse(pageable);
+    }
+
+    @Override
+    public Page<Product> findByProductNameContaining(String searchTerm, int page, int pageSize) {
+        Pageable pageable = PageRequest.of(page, pageSize);
+        return productRepository.findByProductNameContaining(searchTerm,  pageable);
+
+    }
+
+    @Override
+    public Page<Product> getProductsByCategoryAndPriceRange(Category category, double minPrice, double maxPrice, int page, int pageSize) {
+
+        Pageable pageable = PageRequest.of(page,pageSize);
+
+        if (category != null) {
+            return productRepository.findByCategoryAndPriceBetween(category, minPrice, maxPrice,pageable );
+        } else {
+            return productRepository.findByPriceBetween(minPrice, maxPrice,pageable);
+        }
+    }
+
+    @Override
+    public Page<Product> getProductsByCategoryPage(Category category, int page, int pageSize) {
+        Pageable pageable = PageRequest.of(page,pageSize);
+
+        return productRepository.findByCategory(category ,pageable);
     }
 
 

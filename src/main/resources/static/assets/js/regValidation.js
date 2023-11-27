@@ -1,44 +1,4 @@
-//
-// function setupValidation(inputId, feedbackId) {
-//     console.log('calling this function');
-//     const inputElem = document.getElementById(inputId);
-//     const feedbackElem = document.getElementById(feedbackId);
-//
-//     inputElem.addEventListener('input', function() {
-//         if (inputElem.validity.patternMismatch) {
-//             feedbackElem.textContent = inputElem.title;
-//         } else if (inputElem.value.trim() === "") {
-//             feedbackElem.textContent = "This field cannot be empty or contain only spaces.";
-//         } else {
-//             feedbackElem.textContent = ''; // Clear the error message if input is valid
-//         }
-//     });
-// }
-//
-// // Set up validation for each input
-// setupValidation('firstName', 'usernameFeedback');
-// setupValidation('lastName', 'lastnameFeedback');
-// setupValidation('email', 'emailFeedback');
-// setupValidation('phoneNumber', 'numberFeedBack');
-// setupValidation('password', 'passwordFeedback');
-//
-// function validateForm() {
-//     const formError = document.getElementById('formError');
-//     formError.style.display = 'none'; // Hide the global error message initially
-//
-//     const firstName = document.getElementById('firstName').value;
-//     const lastName = document.getElementById('lastName').value;
-//     const email = document.getElementById('email').value;
-//     const phoneNumber = document.getElementById('phoneNumber').value;
-//     const password = document.getElementById('password').value;
-//
-//     if (firstName.trim() === "" || lastName.trim() === "" || email.trim() === "" || phoneNumber.trim() === "" || password.trim() === "") {
-//         formError.style.display = 'block'; // Show the global error message
-//         return false; // Prevent form submission
-//     }
-//
-//     return true; // Allow form submission if all fields are filled
-// }
+
 
 function setupValidation(inputId, feedbackId) {
     const inputElem = document.getElementById(inputId);

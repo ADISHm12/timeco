@@ -68,19 +68,7 @@
 </header>
 <main>
     <!-- Hero Area Start-->
-    <!-- <div class="slider-area ">
-        <div class="single-slider slider-height2 d-flex align-items-center">
-            <div class="container">
-                <div class="row">
-                    <div class="col-xl-12">
-                        <div class="hero-cap text-center">
-                            <h2>Login</h2>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div> -->
+
     <!-- Hero Area End-->
     <!--================login_part Area =================-->
     <section class="login_part section_padding ">
@@ -109,6 +97,8 @@
                                 </span>
                             </div>
                             <form class="row contact_form" th:action="@{/registration/Register}" method="post" th:object="${user}" novalidate="novalidate" onsubmit="return validateForm()">
+                                <input type="hidden"  id="referralCodeInput" name="referralCode" th:value="${param.referralCode}" >
+
                                 <div class="col-md-12 form-group p_star">
                                     <input type="text" class="form-control" id="firstName" name="firstName" th:field="*{firstName}" pattern="[a-zA-Z0-9]{5,15}" title="First name must be alphanumeric and between 5-15 characters" placeholder="First Name" required>
                                     <span class="text-danger" id="usernameFeedback"></span>
@@ -134,7 +124,6 @@
 
                                     </div>
                                     <button type="submit" value="submit" class="btn_3">SIGN UP</button>
-
                                 </div>
                             </form>
                         </div>

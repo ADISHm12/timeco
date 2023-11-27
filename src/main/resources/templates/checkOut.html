@@ -24,7 +24,14 @@
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 
-
+    <style>
+        .limited-length {
+            max-width: 150px; /* Set your desired maximum width */
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+    </style>
 
 </head>
 
@@ -47,6 +54,8 @@
                                 <li><a th:href="@{/}">Home</a></li>
                                 <li><a th:href="@{/user/products}">shop</a></li>
                                 <li><a th:href="@{/user/viewCart}">Cart</a></li>
+                                <li><a th:href="@{/user/wishlist}">wishlist</a></li>
+
                                 <!--                                <li><a href="contact.html">Contact</a></li>-->
                             </ul>
                         </nav>
@@ -54,13 +63,9 @@
                     <!-- Header Right -->
                     <div class="header-right">
                         <ul>
-                            <li>
-                                <div class="nav-search search-switch">
-                                    <span class="flaticon-search"></span>
-                                </div>
-                            </li>
-                            <li> <a href="login.html"><span class="flaticon-user"></span></a></li>
-                            <li><a href="cart.html"><span class="flaticon-shopping-cart"></span></a> </li>
+
+                            <li> <a th:href="@{/pro/profile}" ><span class="flaticon-user"></span></a></li>
+                            <li><a th:href="@{/user/viewCart}"><span class="flaticon-shopping-cart"></span></a> </li>
                         </ul>
                     </div>
                 </div>
@@ -110,17 +115,13 @@
                 <div class="check_title">
                     <h2>
                         Have a coupon?
-                        <a href="#">Click here to enter your code</a>
                     </h2>
                 </div>
-                <input type="text" placeholder="Enter coupon code" id="couponCodeInput" />
-                <a class="tp_btn" href="#"  onclick="applyCoupon()">Apply Coupon</a>
-                <a id="removeCouponButton" class="tp_btn" href="#" style="display: none;" onclick="removeCoupon()">Remove Coupon</a>
+                <input type="text" placeholder="Enter coupon code" id="couponCodeInput" name="couponCode" />
+                <a class="tp_btn" href="#"  onclick="applyCoupon()" id="applyCouponButton">Apply Coupon</a>
+                <a id="removeCouponButton" class="tp_btn" href="#" style="display: none;padding-top: 10px;padding-bottom: 10px" onclick="removeCoupon()">Remove Coupon</a>
                 <a class="tp_btn" href="#" data-toggle="modal" data-target="#exampleModalLong">Select Coupon</a>
-                <!-- Button trigger modal -->
-<!--                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalLong">-->
-<!--                    Launch demo modal-->
-<!--                </button>-->
+
 
                 <!-- Modal -->
                 <div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
@@ -139,15 +140,16 @@
                                             <h5 class="card-title" th:text="${coupon.couponName}">Card title</h5>
                                             <div class="coupon-code-container">
                                                 <h6 class="card-subtitle mb-2 text-muted" th:text="${coupon.couponCode}" th:attr="data-coupon-code=${coupon.couponCode}">Coupon Code</h6>
-<!--                                                <span class="copy-icon"  onclick="copyCouponCode('${coupon.couponCode}')">-->
-<!--                                                        <i class="fas fa-copy"></i>-->
-<!--                                                    </span>-->
-                                                <span class="copy-icon"  onclick="console.log(this.getAttribute('data-coupon-code')); copyCouponCode(this.getAttribute('data-coupon-code'))">
-                                                    <i class="fas fa-copy"></i>
-                                                </span>
+<!--
+                                               <span class="copy-icon"  onclick="console.log(this.getAttribute('data-coupon-code')); copyCouponCode(this.getAttribute('data-coupon-code'))">-->
+<!--                                                    <i class="fas fa-copy"></i>-->
+<!--                                                </span>-->
                                             </div>
                                             <span>only for up to: <p class="card-text" style="display: inline-block;" th:text="${coupon.minimumAmount}"></p></span>
                                             <p class="card-text" th:text="${coupon.description}">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                                            <a class="btn_3 apply-button" onclick="selectCoupon(this)" th:attr="data-coupon-code=${coupon.couponCode}" style="height: 10px;display: flex;justify-content: center;align-items: center">
+                                                Select
+                                            </a>
                                         </div>
                                     </div>
                                 </div>
@@ -177,8 +179,7 @@
                                                <span th:text="${address.city}"></span>, <span th:text="${address.state}"></span>,
                                                                    <span>Contact: <i class="fa-thin fa-mobile"></i>
                                                      <b style="color: #043a6c;">
-                                                    <span style="font-size: 13px;" th:text="${address.mobile}">smartphone</span>
-                                                                  </b>
+                                                    <span style="font-size: 13px;" th:text="${address.mobile}">smartphone</span></b>
                                              </span>
                                            </p>
                                            <p th:text="${address.address}"></p>
@@ -191,7 +192,7 @@
                            <div th:if="${#lists.isEmpty(address)}">
                                <!-- Display the form for adding a new address when the address list is empty -->
 <!--                               <a th:href="@{user/addAddress}" class="btn_3">Add address</a>-->
-                               <a th:href="@{/user/addAddress(source='checkout')}" class="btn_3">Add Address</a>
+                               <a th:href="@{/pro/addressList(source='checkout')}" class="btn_3">Add Address</a>
 
                            </div>
                        </div>
@@ -207,41 +208,48 @@
                                     </a>
                                 </li>
 
+<!--                                <li th:each="cartItem : ${cartItems}" style="display: flex;align-items: center;justify-content: space-between">-->
+<!--                                    <span th:text="${cartItem.product.productName}"></span>-->
+<!--                                    <span class="middle" th:text="'x ' + ${cartItem.quantity}"></span>-->
+<!--                                    <span class="last" th:text="'$' + ${totalPrice}"></span>-->
+<!--                                </li>-->
                                 <li th:each="cartItem : ${cartItems}" style="display: flex;align-items: center;justify-content: space-between">
-                                    <span th:text="${cartItem.product.productName}"></span>
-                                    <span class="middle" th:text="'x ' + ${cartItem.quantity}"></span>
-                                    <span class="last" th:text="'$' + (${cartItem.product.price * cartItem.quantity})"></span>
+                                    <a href="#" th:text="${cartItem.product.productName}">Subtotal
+
+                                    </a>
+                                    <a th:text="'$' + ${totalPrice}"></a>
+                                </li>
+                                <li>
+                                    <a href="#" >Discount
+                                        <span class="totalAmount1" ></span>
+                                    </a>
+                                    <!--                                    th:object="${totalPrice}"-->
                                 </li>
 
                             </ul>
                             <ul class="list list_2">
+<!--                                <li>-->
+<!--                                    <a href="#" >Subtotal-->
+<!--                                        <span th:text="'$' + ${totalPrice}"></span>-->
+<!--                                    </a>-->
+<!--                                </li>-->
+
                                 <li>
                                     <a href="#" >Subtotal
-                                        <span th:text="'$' + ${totalPrice}"></span>
+                                        <span class="totalAmount" th:text=" ${totalPrice}"></span>
                                     </a>
-                                </li>
-                                <li>
-                                    <a href="#">Shipping
-                                        <span>Flat rate: $50.00</span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#" >Subtotal
-                                        <span id="totalAmount" th:text="'$' + ${totalPrice}"></span>
-                                    </a>
-<!--                                    th:object="${totalPrice}"-->
+                                    <input type="hidden" class="totalAmountInput" name="totalAmount" th:value=" ${totalPrice}" />
+                                    <input type="hidden" >
+                                    <!--                                    th:object="${totalPrice}"-->
                                 </li>
                             </ul>
                             <div class="payment_item" >
                                 <div class="radion_btn">
-                                    <input type="radio" id="f-option5" name="MethodId" value="1" />
+                                    <input type="radio" id="f-option5" name="MethodId" value="1" checked />
                                     <label for="f-option5">Cash On Delivery</label>
                                     <div class="check"></div>
                                 </div>
-                                <p>
-                                    Please send a check to Store Name, Store Street, Store Town,
-                                    Store State / County, Store Postcode.
-                                </p>
+
                             </div>
                             <div class="payment_item active">
                                 <div class="radion_btn">
@@ -250,16 +258,22 @@
                                     <img src="img/product/single-product/card.jpg" alt="" />
                                     <div class="check"></div>
                                 </div>
-                                <p>
-                                    Please send a check to Store Name, Store Street, Store Town,
-                                    Store State / County, Store Postcode.
-                                </p>
+
                             </div>
-                            <div class="creat_account">
-                                <input type="checkbox" id="f-option4" name="selector" />
-                                <label for="f-option4">I’ve read and accept the </label>
-                                <a href="#">terms & conditions*</a>
+                            <div class="payment_item active">
+                                <div class="radion_btn">
+                                    <input type="radio" id="f-option7" name="MethodId" value="3" />
+                                    <label for="f-option7">Wallet</label>
+                                    <img src="img/product/single-product/card.jpg" alt="" />
+                                    <div class="check"></div>
+                                </div>
+
                             </div>
+<!--                            <div class="creat_account">-->
+<!--                                <input type="checkbox" id="f-option4" name="selector" required />-->
+<!--                                <label for="f-option4">I’ve read and accept the </label>-->
+<!--                                <a href="#">terms & conditions*</a>-->
+<!--                            </div>-->
 <!--                            <div style="display: flex;justify-content: center">-->
 <!--                                <button type="submit" class="btn_3">Proceed</button>-->
 <!--                            </div>-->
@@ -370,7 +384,6 @@
     </div>
 </div>
 <!-- Search model end -->
-
 <!-- JS here -->
 
 <script src="./assets/js/vendor/modernizr-3.5.0.min.js"></script>
@@ -408,81 +421,26 @@
 <script src="/assets/js/checkout.js"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<!--<script>-->
-<!--    function copyToClipboard(element) {-->
-<!--        var $temp = $("<input>");-->
-<!--        $("body").append($temp);-->
-<!--        $temp.val($(element).text()).select();-->
-<!--        document.execCommand("copy");-->
-<!--        $temp.remove();-->
-<!--    }-->
-<!--</script>-->
-<!--<script>-->
-
-<!--        function copyCouponCode(couponCode) {-->
-<!--            const couponCodeElement = document.querySelector('h6[data-coupon-code="' + couponCode + '"]');-->
-
-<!--            if (couponCodeElement) {-->
-<!--                const textToCopy = couponCodeElement.textContent;-->
-
-<!--                // Create a temporary input element to copy the text-->
-<!--                const tempInput = document.createElement('input');-->
-<!--                tempInput.value = textToCopy;-->
-<!--                document.body.appendChild(tempInput);-->
-<!--                tempInput.select();-->
-<!--                document.execCommand('copy');-->
-<!--                document.body.removeChild(tempInput);-->
-
-<!--                alert('Coupon code copied to clipboard: ' + textToCopy);-->
-<!--            } else {-->
-<!--                alert('Coupon code element not found');-->
-<!--            }-->
-<!--        }-->
-
-<!--</script>-->
 
 
-<!--<script>-->
-<!--    function applyCoupon() {-->
-
-<!--        // Get the coupon code entered by the user-->
-<!--        var couponCode = $("#couponCodeInput").val();-->
-<!--        console.log(couponCode)-->
-
-<!--        // Get the total amount displayed on the page-->
-<!--        var totalAmount = parseFloat($("#totalAmount").text().replace('$', '')); // Assuming the total amount is in USD format-->
-
-<!--        console.log(totalAmount)-->
-<!--        // Create an object with the coupon code and total amount-->
-<!--        // var requestData = {-->
-<!--        //     couponCode: couponCode,-->
-<!--        //     totalAmount: totalAmount-->
-<!--        // };-->
-
-<!--        // Make an AJAX request to your server to apply the coupon-->
-<!--        $.ajax({-->
-<!--            url: "/applyCoupon", // Replace with the actual endpoint on your server-->
-<!--            method: "POST",-->
-<!--            data: JSON.stringify({couponCode : couponCode , totalAmount: totalAmount}), // Send data as JSON-->
-<!--            contentType: "application/json", // Set the content type to JSON-->
-<!--            success: function(response) {-->
-<!--                // Update the total amount displayed on the page with the response from the server-->
-<!--                $("#totalAmount").text("$" + response.updatedTotalAmount);-->
-<!--            },-->
-<!--            error: function(error) {-->
-<!--                // Handle errors if the coupon code is invalid or other issues-->
-<!--                alert("Coupon code is invalid or an error occurred.");-->
-<!--            }-->
-<!--        });-->
-<!--    }-->
-<!--</script>-->
 <script>
+    function updateSubtotalInput(discountAmount) {
+        var totalPrice = parseFloat($(".totalAmount").text().replace('$', ''));
+        var updatedTotal = (totalPrice - discountAmount) > 0 ? (totalPrice - discountAmount) : totalPrice;
+
+        // Check if a discount is applied, if yes, update the input field with the discounted amount
+        // Otherwise, use the original total amount
+        var finalTotal = (discountAmount > 0) ? updatedTotal : totalPrice;
+
+        $(".totalAmountInput").val(finalTotal);
+    }
     function applyCoupon() {
+        $("#applyCouponButton").prop("disabled", true);
         // Get the coupon code entered by the user
         var couponCode = $("#couponCodeInput").val();
 
         // Get the total amount displayed on the page
-        var totalAmount = parseFloat($("#totalAmount").text().replace('$', '')); // Assuming the total amount is in USD format
+        var totalAmount = parseFloat($(".totalAmount").text().replace('$', '')); // Assuming the total amount is in USD format
 
         // Make an AJAX request to your server to apply the coupon
         $.ajax({
@@ -494,7 +452,19 @@
             },
             success: function(response) {
                 // Update the total amount displayed on the page with the response from the server
-                $("#totalAmount").text("$" + response);
+                $(".totalAmount1").text("$" + response);
+                $(".totalAmountInput1").val(response);
+
+
+                var discountAmount = totalAmount - response;
+                if (discountAmount > 0) {
+                    $(".totalAmount").text("$" + discountAmount);
+                } else {
+                    $(".totalAmount").text("$" + totalAmount);
+                }
+
+                updateSubtotalInput(discountAmount);
+
                 const Toast = Swal.mixin({
                     toast: true,
                     position: "top-end",
@@ -514,6 +484,8 @@
 
             },
             error: function(xhr, textStatus, error) {
+                $("#applyCouponButton").prop("disabled", false);
+
                 // Handle errors if the coupon code is invalid or other issues using SweetAlert2
                 if (xhr.status === 400) {
                     // Display error message using SweetAlert2
@@ -531,6 +503,10 @@
                         text: 'An error occurred: ' + error,
                     });
                 }
+            },
+            complete: function() {
+                // Re-enable the apply coupon button on completion (whether success or error)
+                $("#applyCouponButton").prop("disabled", false);
             }
         });
     }
@@ -551,31 +527,51 @@
             if (result.isConfirmed) {
                 // User confirmed, continue with the removal logic
 
+
+                var couponCode = $("#couponCodeInput").val();
+
                 // Clear the coupon code input
                 $("#couponCodeInput").val("");
 
                 // Update the total amount to the original value
-                $("#totalAmount").text("$" + originalTotalAmount);
+                $(".totalAmount").text("$" + originalTotalAmount);
+                $(".totalAmountInput").val("$" + originalTotalAmount);
 
                 // Hide the "Remove Coupon" button (if you want to)
                 document.getElementById("removeCouponButton").style.display = "none";
 
-                // Show a success toast
-                const Toast = Swal.mixin({
-                    toast: true,
-                    position: "top-end",
-                    showConfirmButton: false,
-                    timer: 1000,
-                    timerProgressBar: true,
-                    didOpen: (toast) => {
-                        toast.onmouseenter = Swal.stopTimer;
-                        toast.onmouseleave = Swal.resumeTimer;
-                    }
-                });
+                $(".totalAmount1").text(""); // Clear the displayed coupon amount
+                $(".totalAmountInput1").val("0");
+                // Make an AJAX request to inform the server to mark the coupon as not used
+                $.ajax({
+                    url: "/removeCoupon", // Replace with the actual endpoint on your server
+                    method: "POST",
+                    data: {
+                        couponCode: couponCode, // You might need to fetch the couponCode from somewhere
+                    },
+                    success: function(response) {
+                        // Show a success toast
+                        const Toast = Swal.mixin({
+                            toast: true,
+                            position: "top-end",
+                            showConfirmButton: false,
+                            timer: 1000,
+                            timerProgressBar: true,
+                            didOpen: (toast) => {
+                                toast.onmouseenter = Swal.stopTimer;
+                                toast.onmouseleave = Swal.resumeTimer;
+                            }
+                        });
 
-                Toast.fire({
-                    icon: "info",
-                    title: "Coupon removed successfully"
+                        Toast.fire({
+                            icon: "info",
+                            title: "Coupon removed successfully"
+                        });
+                    },
+                    error: function(xhr, textStatus, error) {
+                        // Handle errors if needed
+                        console.error("Error removing coupon:", error);
+                    }
                 });
             } else {
                 // User canceled, terminate the function
@@ -586,11 +582,21 @@
 </script>
 <script>
     // Get the total amount displayed on the page when the page loads
-    var originalTotalAmount = parseFloat($("#totalAmount").text().replace('$', '')); // Assuming the total amount is in USD format
+    var originalTotalAmount = parseFloat($(".totalAmount").text().replace('$', '')); // Assuming the total amount is in USD format
+</script>
+<script>
+    function selectCoupon(button) {
+        // Get the coupon code from the data attribute
+        var couponCode = $(button).data("coupon-code");
+
+        // Set the coupon code as the value of the input field
+        $("#couponCodeInput").val(couponCode);
+    }
 </script>
 
 
-
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script src="/assets/js/checkBlocked.js"></script>
+
 </body>
 </html>/

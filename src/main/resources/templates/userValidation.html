@@ -23,7 +23,7 @@
       animation: fadeIn 0.5s ease-in-out;
       border-radius: 10px;
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-      height: 400px;
+      height: 430px;
       margin-bottom: 10px;
       margin-top: 10px;
     }
@@ -129,12 +129,16 @@
 
 
 <div class="otp-container ">
-  <img src="/assets/img/confirmPhone.jpeg" width="80" height="80">
+  <div style="padding-top: 40px;padding-bottom: 30px">
+    <img src="/assets/img/logo/logo.png" width="150" height="35">
+
+  </div>
   <h2>Just one more step</h2>
   <p>Please enter the 6-digit code sent to your Email.</p>
-  <form th:action="@{/registration/otpRegistrationValidation}" method="post">
+
+  <form id="otpForm">
     <div th:if="${error}" class="alert alert-danger">
-      <p th:text="${error}" class="alert alert-danger" ></p>
+      <p th:text="${error}" class="alert alert-danger"></p>
     </div>
     <div class="otp-field form-outline form-white mb-4">
       <input type="text" maxlength="6" class="form-control custom-input" name="otp" placeholder="Enter your otp" required/>
@@ -158,6 +162,8 @@
   </h5>
 </div>
 </div>
+
+
 <script>
   let timerInterval; // Declare a variable to hold the timer interval
 
@@ -183,7 +189,7 @@
   }
 
   // Set the timer duration (in seconds)
-  const timerDuration = 30;
+  const timerDuration = 60;
 
   // Start the timer when the page loads
   window.onload = function () {
@@ -191,6 +197,45 @@
     startTimer(timerDuration, display);
   };
 </script>
+<script>
+  document.querySelector("form").addEventListener("submit", function (event) {
+    event.preventDefault();
+
+    let formData = new FormData(this);
+    let xhr = new XMLHttpRequest();
+
+    xhr.open("POST", "/registration/otpRegistrationValidation", true);
+
+    xhr.onreadystatechange = function () {
+      if (xhr.readyState === XMLHttpRequest.DONE) {
+        if (xhr.status === 200) {
+          // Handle successful response
+          // For instance, display a success message or redirect the user
+          let response = JSON.parse(xhr.responseText);
+          if (response.message === "success") {
+            // Display success message or redirect the user
+            window.location.href = "/main/login?registration=success";
+          }
+        } else {
+          // Handle error response
+          // For instance, display an error message
+          let response = JSON.parse(xhr.responseText);
+          if (response.message === "Incorrect OTP. Please try again.") {
+            // Display error message
+            let errorDiv = document.querySelector(".alert-danger");
+            errorDiv.textContent = response.message;
+            errorDiv.style.display = "block";
+          }
+        }
+      }
+    };
+
+    xhr.send(formData); // Send the form data via AJAX
+  });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 </body>
 
 </html>
