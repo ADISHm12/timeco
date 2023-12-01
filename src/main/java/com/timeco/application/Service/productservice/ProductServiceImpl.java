@@ -32,36 +32,6 @@ public class ProductServiceImpl implements ProductService {
         return productRepository.save(product);
     }
 
-    //    @Override
-//    @Transactional
-//    public void updateProductById( ProductDto products,Long id) {
-//        System.out.println(id + "99999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999");
-//
-//        // Retrieve the existing Product from the database
-//        Product product = productRepository.findById(id).orElse(null);
-//        System.out.println("Received id n  sjkdhfgajhs: " + product.getId());
-//
-//
-//        System.out.println(products.getCategory().getId() + "9999999999999999999999999999999999999999999999900000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000878888");
-//
-//        // Retrieve the Category based on categoryId from the ProductDto
-//        Category category = categoryRepository.findById(product.getCategory().getId()).orElse(null);
-//        System.out.println(category);
-//
-//        if (product != null && category != null) {
-//            product.setProductName(products.getProductName());
-//            product.setDescription(products.getDescription());
-//            product.setProductImages(products.getImageNames());
-//            product.setPrice(products.getPrice());
-//            product.setQuantity(products.getQuantity());
-//
-//            // Set the Category on the Product
-//            product.setCategory(category);
-//        }
-//
-//        // Save the updated Product
-//        productRepository.save(product);
-//    }
     @Override
     @Transactional
     public void updateProductById(ProductDto products, Long id) {
@@ -178,12 +148,16 @@ public class ProductServiceImpl implements ProductService {
         return productRepository.findAll(pageable);
     }
 
-
-
     @Override
     public Page<Product> searchProductsAsPage(String searchTerm, int page, int pageSize) {
         return null;
     }
+
+    @Override
+    public List<Product> searchProduct(String searchTerm) {
+       return productRepository.findByProductNameContaining(searchTerm);
+    }
+
 
     @Override
     public Page<Product> findAllProducts(int page, int pageSize) {

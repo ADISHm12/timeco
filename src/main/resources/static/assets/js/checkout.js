@@ -30,7 +30,30 @@
             var responseData = JSON.parse(response);
             console.log(responseData.isValid);
             if (responseData.isValid === true) {
-                window.location.href = "/orderPlaced";
+                let timerInterval;
+                Swal.fire({
+                    title: "Please wait!",
+                    html: "Finish in <b></b> milliseconds.",
+                    timer: 2000,
+                    timerProgressBar: true,
+                    didOpen: () => {
+                        Swal.showLoading();
+                        const timer = Swal.getPopup().querySelector("b");
+                        timerInterval = setInterval(() => {
+                            timer.textContent = `${Swal.getTimerLeft()}`;
+                        }, 100);
+                    },
+                    willClose: () => {
+                        clearInterval(timerInterval);
+                    }
+                }).then((result) => {
+                    /* Read more about handling dismissals below */
+                    if (result.dismiss === Swal.DismissReason.timer) {
+                        console.log("I was closed by the timer");
+                        // Redirect to the orderPlaced page
+                        window.location.href = "/orderPlaced";
+                    }
+                });
             }
             if (responseData.orderId) {
                 console.log(responseData.orderId);

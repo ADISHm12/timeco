@@ -189,10 +189,8 @@ public String checkOutPage(Model model, Principal principal, RedirectAttributes 
                 product.setQuantity(currentQuantity - OrderedQuantity);
                 productRepository.save(product); // Update the product in the database
             } else {
-                // Handle the case where there is not enough quantity in stock (e.g., show an error message).
             }
         }
-        // Save the order items
         orderItemRepository.saveAll(orderItems);
 
         if (selectedMethodName.equals("ONLINE PAYMENT")) {
@@ -222,43 +220,41 @@ public String checkOutPage(Model model, Principal principal, RedirectAttributes 
                 double walletBalance = userWallet.getBalance();
 
                 if (walletBalance >= orderAmount) {
-                    // Sufficient funds in the wallet
                     userWallet.withdraw(orderAmount);
 
-                    // Record the wallet transaction
                     WalletTransaction walletTransaction = new WalletTransaction();
                     walletTransaction.setWallet(userWallet);
                     walletTransaction.setAmount(orderAmount);
-                    walletTransaction.setTransactionType("DEBIT"); // Assuming 'DEBIT' for deduction, adjust accordingly
+                    walletTransaction.setTransactionType("DEBIT");
                     walletTransaction.setTransactionTime(LocalDateTime.now());
                     walletTransactionRepository.save(walletTransaction);
                     List<CartItems> userCartItems = cartItemsService.findCartItems(user);
                     cartItemsService.deleteCartItems(userCartItems);
-                    // Continue with the rest of the order placement logic
                     response.put("isValid", true);
-                    response.put("orderId", "Wallet payment"); // Adjust accordingly for wallet transactions
+                    response.put("orderId", "Wallet payment");
                     response.put("amount", orderAmount);
                     response.put("purchaseId", purchaseOrder.getOrderId());
                     response.put("email", username);
                     response.put("username", selectedAddress.getUserName());
                     response.put("contact", selectedAddress.getMobile());
                 } else {
-                    // Insufficient funds in the wallet
                     response.put("isValid", true);
                     response.put("error", "Insufficient funds in the wallet");
                 }
             } else {
-                // User doesn't have a wallet
                 response.put("isValid", true);
                 response.put("error", "User does not have a wallet");
             }
+        }else if (selectedMethodName.equals("CASH ON DELIVERY")) {
+            List<CartItems> userCartItems = cartItemsService.findCartItems(user);
+            cartItemsService.deleteCartItems(userCartItems);
+
         }
         try {
             ObjectMapper  objectMapper = new ObjectMapper();
             String jsonResponse = objectMapper.writeValueAsString(response);
             return ResponseEntity.ok(jsonResponse);
         } catch (JsonProcessingException e) {
-            // Handle the exception, e.g., log it and return an error response
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error processing JSON response");
         }
 
@@ -292,7 +288,6 @@ public String checkOutPage(Model model, Principal principal, RedirectAttributes 
                 purchaseOrder.setPaymentStatus("success");
                 purchaseOrder.setTranscationId(paymentId);
 
-                // Reduce product quantity
                 List<OrderItem> orderItems = purchaseOrder.getOrderItems();
                 for (OrderItem orderItem : orderItems) {
                     Product product = orderItem.getProduct();
@@ -301,18 +296,15 @@ public String checkOutPage(Model model, Principal principal, RedirectAttributes 
                     if (currentQuantity >= orderedQuantity) {
                         List<CartItems> userCartItems = cartItemsService.findCartItems(user);
                         cartItemsService.deleteCartItems(userCartItems);
-                        productRepository.save(product); // Update the product in the database
+                        productRepository.save(product);
                         purchaseOrderRepository.save(purchaseOrder);
                     } else {
-                        // Handle the case where there is not enough quantity in stock (e.g., show an error message).
                     }
                 }
             }
             if (!status) {
-                // Payment verification failed, delete the purchase order
                 PurchaseOrder purchaseOrder1 = purchaseOrderRepository.findById(purchaseId).orElse(null);
                 if (purchaseOrder1 != null) {
-                    // Assuming you have cascading relationships set up properly
                     purchaseOrderRepository.delete(purchaseOrder1);
                     return ResponseEntity.ok(false); // Indicate failure due to payment verification
                 }

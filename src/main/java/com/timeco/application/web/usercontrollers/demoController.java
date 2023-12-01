@@ -109,28 +109,56 @@ public class demoController {
         }
     }
 
-    @GetMapping("/userOrders")
-    public String userOrderList(Model model , Principal principal){
+//    @GetMapping("/userOrders")
+//    public String userOrderList(Model model , Principal principal,@RequestParam(defaultValue = "0") int page,@RequestParam(defaultValue = "6") int pageSize){
+//
+//        String username = principal.getName();
+//        User user = userService.findUserByUsername(username);
+//
+//        List<PurchaseOrder> purchaseOrders = purchaseOrderRepository.findByUserId(user.getId());
+//        List<OrderItem> orderItemsList = new ArrayList<>();
+//
+//        for (PurchaseOrder purchaseOrder : purchaseOrders) {
+//            List<OrderItem> orderItemsForPurchaseOrder = orderItemRepository.findOrderItemByOrder(purchaseOrder);
+//
+//
+//            orderItemsList.addAll(orderItemsForPurchaseOrder);
+//        }
+//        Collections.reverse(orderItemsList);
+//
+//        UserDto userDto = new UserDto();
+//        model.addAttribute("user",userDto);
+//        model.addAttribute("orderItemsList",orderItemsList);
+//        return"user-Orders";
+//    }
+@GetMapping("/userOrders")
+public String userOrderList(Model model, Principal principal, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int pageSize) {
+    String username = principal.getName();
+    User user = userService.findUserByUsername(username);
 
-        String username = principal.getName();
-        User user = userService.findUserByUsername(username);
+    List<PurchaseOrder> purchaseOrders = purchaseOrderRepository.findByUserId(user.getId());
+    List<OrderItem> orderItemsList = new ArrayList<>();
 
-        List<PurchaseOrder> purchaseOrders = purchaseOrderRepository.findByUserId(user.getId());
-        List<OrderItem> orderItemsList = new ArrayList<>();
-
-        for (PurchaseOrder purchaseOrder : purchaseOrders) {
-            List<OrderItem> orderItemsForPurchaseOrder = orderItemRepository.findOrderItemByOrder(purchaseOrder);
-
-
-            orderItemsList.addAll(orderItemsForPurchaseOrder);
-        }
-        Collections.reverse(orderItemsList);
-
-        UserDto userDto = new UserDto();
-        model.addAttribute("user",userDto);
-        model.addAttribute("orderItemsList",orderItemsList);
-        return"user-Orders";
+    for (PurchaseOrder purchaseOrder : purchaseOrders) {
+        List<OrderItem> orderItemsForPurchaseOrder = orderItemRepository.findOrderItemByOrder(purchaseOrder);
+        orderItemsList.addAll(orderItemsForPurchaseOrder);
     }
+    Collections.reverse(orderItemsList);
+
+    // Paginating the orderItemsList
+    int start = page * pageSize;
+    int end = Math.min(start + pageSize, orderItemsList.size());
+    List<OrderItem> paginatedList = orderItemsList.subList(start, end);
+
+    UserDto userDto = new UserDto();
+    model.addAttribute("user", userDto);
+    model.addAttribute("orderItemsList", paginatedList);
+    model.addAttribute("currentPage", page);
+    model.addAttribute("totalPages", (int) Math.ceil((double) orderItemsList.size() / pageSize));
+
+    return "user-Orders";
+}
+
 
 
     @PostMapping("/updateAccount")
@@ -312,7 +340,6 @@ public class demoController {
             renderer.createPDF(outputStream);
             renderer.finishPDF();
 
-            // Prepare response with PDF
             byte[] pdfBytes = outputStream.toByteArray();
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_PDF);

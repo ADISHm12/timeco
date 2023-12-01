@@ -152,22 +152,30 @@
         div.col-md-6 {
             scrollbar-color: transparent transparent; /* Set the color of the scrollbar thumb and track to transparent */
         }
+        .slide::-webkit-scrollbar {
+            width: 8px; /* Set a width for the scrollbar */
+        }
+
+        .slide::-webkit-scrollbar-thumb {
+            background-color: transparent; /* Make the scrollbar thumb transparent */
+            border-radius: 4px; /* Optional: Add border-radius to the scrollbar thumb */
+        }
 
     </style>
 
 </head>
 <body>
 <header>
-    <!--    <div id="preloader-active">-->
-    <!--        <div class="preloader d-flex align-items-center justify-content-center">-->
-    <!--            <div class="preloader-inner position-relative">-->
-    <!--                <div class="preloader-circle"></div>-->
-    <!--                <div class="preloader-img pere-text">-->
-    <!--                    <img src="/assets/img/logo/logo.png" alt="">-->
-    <!--                </div>-->
-    <!--            </div>-->
-    <!--        </div>-->
-    <!--    </div>-->
+        <div id="preloader-active">
+            <div class="preloader d-flex align-items-center justify-content-center">
+                <div class="preloader-inner position-relative">
+                    <div class="preloader-circle"></div>
+                    <div class="preloader-img pere-text">
+                        <img src="/assets/img/logo/logo.png" alt="">
+                    </div>
+                </div>
+            </div>
+        </div>
     <!-- Header Start -->
     <div class="header-area">
         <div class="main-header header-sticky">
@@ -237,8 +245,12 @@
         <div class="container">
             <div class="row">
                 <!-- First column for displaying user addresses -->
-                <div class="col-md-6"n style="max-height: 550px;overflow: auto">
+
+                <div class="col-md-6" >
                     <h2>All Addresses</h2>
+                    <div class="slide" style="max-height: 550px;overflow: auto">
+
+
                     <div th:object="${addresses}" th:if="${addresses.isEmpty()}" >
                         <h4>No address available yet!.</h4>
                     </div>
@@ -258,12 +270,9 @@
                                 <button type="button" class="btn-danger delete-address" th:attr="data-address-id=${address.addressId}" style="width: 90px;height: 35px">
                                     <i class="material-icons">delete</i>
                                 </button>
-                                <button type="button" class="btn-danger edit-address"  style="width: 90px;height: 35px" data-toggle="modal" th:attr="data-target='#modal_' + ${address.addressId}">
+                                <button type="button" class="btn-warning edit-address"  style="width: 90px;height: 35px" data-toggle="modal" th:attr="data-target='#modal_' + ${address.addressId}">
                                     <i class="material-icons">edit</i>
                                 </button>
-
-
-                                    <!-- Modal -->
 
                                 <div class="modal fade" th:id="'modal_' + ${address.addressId}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
                                     <div class="modal-dialog" role="document">
@@ -284,7 +293,7 @@
                                                         <div class="col-sm-12 ">
                                                             <h5>Phone Number:</h5>
                                                             <input type="text" class="form-control" id="mobile1" name="mobile" th:value="*{mobile}"placeholder="Your phone number.."  oninput="validateInput(this)">
-                                                            <small class="error-message" id="mobileError"  style="color: rgba(255,0,24,0.73);font-size: 15px"></small>
+                                                            </i><small class="error-message" id="mobileError"  style="color: rgba(255,0,24,0.73);font-size: 15px"></small>
                                                         </div>
 
                                                         <div class="col-sm-12 ">
@@ -331,12 +340,11 @@
                         </div>
 
                     </div>
+                    </div>
                 </div>
                 <div th:if="${param.successMessage}" class="alert alert-success">
                     <p th:text="${param.successMessage}"></p>
                 </div>
-
-
 
                 <!-- Second column for adding a new address -->
                 <div class="col-md-6">
@@ -392,7 +400,7 @@
                         </div>
 
                         <div>
-                            <button type="submit" id="submitButton" class="btn btn-primary" >Submit</button>
+                            <button type="submit" id="submitButton" class="btn_3 " >Submit</button>
                         </div>
                     </form>
                 </div>
@@ -402,7 +410,6 @@
 
     <main>
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.20/dist/sweetalert2.all.min.js"></script>
-
 
         <!-- Footer End-->
         <footer>
@@ -499,9 +506,7 @@
                 </form>
             </div>
         </div>
-        <!-- Search model end -->
 
-        <!-- JS here -->
 
         <script src="/assets/js/vendor/modernizr-3.5.0.min.js"></script>
         <!-- Jquery, Popper, Bootstrap -->
@@ -577,8 +582,6 @@
             }
         });
     });
-
-
 </script>
 <script>
     function validateForm(event) {
@@ -600,11 +603,16 @@
         if (userName === '') {
             document.getElementById("userNameError1").innerText = "Name is required";
             event.preventDefault();
+        } else if (userName.length > 25) {
+            document.getElementById("userNameError1").innerText = "Username cannot exceed 25 characters";
+            event.preventDefault();
+        }else if (/\d/.test(userName)) {
+            document.getElementById("userNameError1").innerText = "Username cannot contain numbers";
+            event.preventDefault();
         } else {
             document.getElementById("userNameError1").innerText = "";
         }
 
-        // Validate Mobile
         if (mobile === '') {
             document.getElementById("mobileError1").innerText = "Phone number is required";
             event.preventDefault();
@@ -615,20 +623,32 @@
             document.getElementById("mobileError1").innerText = "";
         }
 
+
         if (city === '') {
             document.getElementById("cityError1").innerText = "City name is required";
             event.preventDefault();
-        } else {
+        } else if (city.length > 25) {
+            document.getElementById("cityError1").innerText = "city name cannot exceed 25 characters";
+            event.preventDefault();
+        }else if (/\d/.test(city)) {
+            document.getElementById("cityError1").innerText = "city name cannot contain numbers";
+            event.preventDefault();
+        }else {
             document.getElementById("cityError1").innerText = "";
         }
+
 
 
         if (address === '') {
             document.getElementById("addressError1").innerText = "Address is required";
             event.preventDefault();
+        } else if (address.length <= 10 || /^\d+$/.test(address)) {
+            document.getElementById("addressError1").innerText = "Address must have more than 10 non-numeric characters";
+            event.preventDefault();
         } else {
             document.getElementById("addressError1").innerText = "";
         }
+
         if (pinCode === '') {
             document.getElementById("pinCodeError1").innerText = "Zip Code is required";
             event.preventDefault();
@@ -638,18 +658,27 @@
         } else {
             document.getElementById("pinCodeError1").innerText = "";
         }
+
         if (state === '') {
-            document.getElementById("stateError1").innerText = "state name is required";
+            document.getElementById("stateError1").innerText = "State name is required";
+            event.preventDefault();
+        } else if (state.length < 4 || /\d/.test(state) || state.length > 25) {
+            document.getElementById("stateError1").innerText = "must have  4 letters, not be more than 25 characters, and cannot contain numbers";
             event.preventDefault();
         } else {
             document.getElementById("stateError1").innerText = "";
         }
+
         if (country === '') {
             document.getElementById("countryError1").innerText = "Country name is required";
+            event.preventDefault();
+        } else if (country.length < 4 || /\d/.test(country) || country.length > 25) {
+            document.getElementById("countryError1").innerText = " must have  4 letters, not be more than 25 characters, and cannot contain numbers";
             event.preventDefault();
         } else {
             document.getElementById("countryError1").innerText = "";
         }
+
         return true;
     }
 
@@ -675,6 +704,12 @@
         if (userName === '') {
             document.getElementById("userNameError").innerText = "Name is required";
             event.preventDefault();
+        } else if (userName.length > 25) {
+            document.getElementById("userNameError").innerText = "Username cannot exceed 25 characters";
+            event.preventDefault();
+        }else if (/\d/.test(userName)) {
+            document.getElementById("userNameError").innerText = "Username cannot contain numbers";
+            event.preventDefault();
         } else {
             document.getElementById("userNameError").innerText = "";
         }
@@ -689,17 +724,27 @@
             document.getElementById("mobileError").innerText = "";
         }
 
-// Validate other fields similarly...
 
         if (city === '') {
             document.getElementById("cityError").innerText = "City name is required";
             event.preventDefault();
-        } else {
+        } else if (city.length > 25) {
+            document.getElementById("cityError").innerText = "city name cannot exceed 25 characters";
+            event.preventDefault();
+        }else if (/\d/.test(city)) {
+            document.getElementById("cityError").innerText = "city name cannot contain numbers";
+            event.preventDefault();
+        }else {
             document.getElementById("cityError").innerText = "";
         }
 
+
+
         if (address === '') {
             document.getElementById("addressError").innerText = "Address is required";
+            event.preventDefault();
+        } else if (address.length <= 10 || /^\d+$/.test(address)) {
+            document.getElementById("addressError").innerText = "Address must have more than 10 non-numeric characters";
             event.preventDefault();
         } else {
             document.getElementById("addressError").innerText = "";
@@ -718,12 +763,18 @@
         if (state === '') {
             document.getElementById("stateError").innerText = "State name is required";
             event.preventDefault();
+        } else if (state.length < 4 || /\d/.test(state) || state.length > 25) {
+            document.getElementById("stateError").innerText = "must have  4 letters, not be more than 25 characters, and cannot contain numbers";
+            event.preventDefault();
         } else {
             document.getElementById("stateError").innerText = "";
         }
 
         if (country === '') {
             document.getElementById("countryError").innerText = "Country name is required";
+            event.preventDefault();
+        } else if (country.length < 4 || /\d/.test(country) || country.length > 25) {
+            document.getElementById("countryError").innerText = " must have  4 letters, not be more than 25 characters, and cannot contain numbers";
             event.preventDefault();
         } else {
             document.getElementById("countryError").innerText = "";
@@ -760,7 +811,6 @@
         }
     }
 
-    // Call the function to show the SweetAlert when the page loads
     window.onload = function() {
         showSuccessAlert();
     };
@@ -793,6 +843,10 @@
     window.onload = function() {
         showSuccessAlertUp();
     };
+
+
+
 </script>
+
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 </html>

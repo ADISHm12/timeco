@@ -545,12 +545,16 @@
   $(document).ready(function () {
     $('#exampleInputName1').on('input', function () {
       const name = $(this).val().trim();
-      const containsNonNumeric = /\D/.test(name); // Check if the name contains non-numeric characters
+      const containsNonNumeric = /[a-zA-Z]/.test(name);
 
       if (name.length === 0) {
         $('#nameError').text('Name is required').show();
-      } else if (name.length < 4 || !containsNonNumeric) {
-        $('#nameError').text('Name should have at least 4 non-numeric characters').show();
+      } else if (name.length > 24) {
+        $('#nameError').text('Name should not have more than 24 characters').show();
+      } else if (!/^[a-zA-Z]+$/.test(name)) {
+        $('#nameError').text('Name should contain only alphabetic characters').show();
+      } else if (!containsNonNumeric || name.length < 4) {
+        $('#nameError').text('Name should have at least 4 alphabetic characters').show();
       } else {
         $('#nameError').hide();
       }
@@ -573,7 +577,10 @@
         $('#priceError').text('Price is required').show();
       } else if (price < 1) {
         $('#priceError').text('Price must be greater than 0').show();
-      } else {
+      }else if (price > 1000000) {
+        $('#priceError').text('Price should not be more than 1000000').show();
+
+      }  else {
         $('#priceError').hide();
       }
     });
@@ -600,6 +607,8 @@
       const description = $(this).val().trim();
       if (description.length === 0) {
         $('#desError').text('Description is required').show();
+      } else if (description.length < 40) {
+        $('#desError').text('Description should have at least 40 characters').show();
       } else {
         $('#desError').hide();
       }
@@ -617,18 +626,18 @@
     $('#file-input2').on('change', function () {
       const fileInput2 = $(this).prop('files')[0];
       if (!fileInput2) {
-        $('#image2Error').text('Select an image').show();
+        $('#image1Error2').text('Select an image').show();
       } else {
-        $('#image2Error').hide();
+        $('#image1Error2').hide();
       }
     });
 
     $('#file-input3').on('change', function () {
       const fileInput3 = $(this).prop('files')[0];
       if (!fileInput3) {
-        $('#image3Error').text('Select an image').show();
+        $('#image1Error3').text('Select an image').show();
       } else {
-        $('#image3Error').hide();
+        $('#image1Error3').hide();
       }
     });
 
@@ -640,9 +649,19 @@
         if (name.length === 0) {
           $('#nameError').text('Name is required').show();
           isValid = false;
+        } else if (name.length > 24) {
+          $('#nameError').text('Name should not have more than 24 characters').show();
+          isValid = false;
+        } else if (!/^[a-zA-Z]+$/.test(name)) {
+          $('#nameError').text('Name should contain only alphabetic characters').show();
+          isValid = false;
+        }  else if (!/^[a-zA-Z]{4,}$/.test(name)) {
+          $('#nameError').text('Name should have at least 4 alphabetic characters').show();
+          isValid = false;
         } else {
           $('#nameError').hide();
         }
+
 
         const quantity = $('#exampleInputQuantity').val().trim();
         if (parseInt(quantity) < 0 || quantity === '') {
@@ -655,6 +674,9 @@
         const price = $('#exampleInputPrice').val().trim();
         if (price.length === 0 || price < 1) {
           $('#priceError').text('Price is required and must be greater than 0').show();
+          isValid = false;
+        }else if (price > 1000000) {
+          $('#priceError').text('Price should not be more than 1000000').show();
           isValid = false;
         } else {
           $('#priceError').hide();
@@ -680,6 +702,9 @@
         if (description.length === 0) {
           $('#desError').text('Description is required').show();
           isValid = false;
+        } else if (description.length < 40) {
+          $('#desError').text('Description should have at least 40 characters').show();
+          isValid = false;
         } else {
           $('#desError').hide();
         }
@@ -691,7 +716,20 @@
         } else {
           $('#image1Error').hide();
         }
-
+        const fileInput2 = $('#file-input2').prop('files')[0];
+        if (!fileInput2) {
+          $('#image1Error2').text('Select an image').show();
+          isValid = false;
+        } else {
+          $('#image1Error2').hide();
+        }
+        const fileInput3 = $('#file-input3').prop('files')[0];
+        if (!fileInput3) {
+          $('#image1Error3').text('Select an image').show();
+          isValid = false;
+        } else {
+          $('#image1Error3').hide();
+        }
 
         if (!isValid) {
           event.preventDefault();

@@ -46,6 +46,14 @@
                 border-radius: 2px;
                 color: #fff;
             }
+            .tooltip {
+
+                display: inline-block;
+                max-width: 100px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+
+            }
 
         </style>
     </head>
@@ -200,7 +208,7 @@
                                 <div class="row justify-content-end">
                                     <div class="col-md-12 col-lg-12 col-xl-12 d-flex">
                                         <div class="form-group">
-                                            <input style="max-width: 300px;" id="searchTerm" type="text" name="searchTerm" required class="form-control form-control-dark text-bg-dark" placeholder="Enter Product name here">
+                                            <input style="max-width: 300px;" id="searchTerm" type="text" name="searchTerm" required class="form-control form-control-dark text-bg-dark" placeholder="Search">
                                         </div>
                                         <button type="submit" class="btn btn-primary">Search</button>
                                     </div>
@@ -290,8 +298,11 @@
                                             <tbody>
 
                                             <tr th:each="product, rowStat : ${product}">
-                                                <td th:text="${rowStat.index + 1}" class="py-1"></td> <!-- Display row number -->
-                                                <td th:text="${product.productName}" class="py-1"></td>
+                                                <td th:text="${rowStat.index + 1}" class="py-1"></td>
+                                                <td class="py-1" th:text="${product.productName}">
+
+                                                </td>
+
                                                 <td th:text="${product.category.name}"></td>
                                                 <td  style="text-align: center;"><p><span th:utext="${product.getCurrent_state()}"></span></p></td>
                                                 <!--                                <td th:text="${product.current_state}"></td>-->
@@ -372,7 +383,7 @@
         </div>
         <!-- page-body-wrapper ends -->
     </div>
-    <!-- container-scroller -->/
+    <!-- container-scroller -->
     <!-- plugins:js -->
     <script src="/assets/adminjs/vendors/js/vendor.bundle.base.js"></script>
     <!-- endinject -->

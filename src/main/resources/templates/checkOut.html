@@ -514,7 +514,6 @@
 <script>
 
     function removeCoupon() {
-        // Show a confirmation dialog using Swal.fire
         Swal.fire({
             title: "Are you sure?",
             text: "You won't be able to revert this!",
@@ -540,14 +539,13 @@
                 // Hide the "Remove Coupon" button (if you want to)
                 document.getElementById("removeCouponButton").style.display = "none";
 
-                $(".totalAmount1").text(""); // Clear the displayed coupon amount
+                $(".totalAmount1").text("");
                 $(".totalAmountInput1").val("0");
-                // Make an AJAX request to inform the server to mark the coupon as not used
                 $.ajax({
-                    url: "/removeCoupon", // Replace with the actual endpoint on your server
+                    url: "/removeCoupon",
                     method: "POST",
                     data: {
-                        couponCode: couponCode, // You might need to fetch the couponCode from somewhere
+                        couponCode: couponCode,
                     },
                     success: function(response) {
                         // Show a success toast

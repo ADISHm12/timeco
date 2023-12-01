@@ -594,16 +594,20 @@
     $(document).ready(function () {
         $('#exampleInputName1').on('input', function () {
             const name = $(this).val().trim();
-            const containsNonNumeric = /\D/.test(name); // Check if the name contains non-numeric characters
+            const containsNonNumeric = /[a-zA-Z]/.test(name); // Check if the name contains non-numeric characters
 
             if (name.length === 0) {
                 $('#nameError').text('Name is required').show();
-            } else if (name.length < 4 || !containsNonNumeric) {
-                $('#nameError').text('Name should have at least 4 non-numeric characters').show();
+            } else if (name.length > 24) {
+                $('#nameError').text('Name should not have more than 24 characters').show();
+            } else if (!/^[a-zA-Z]+$/.test(name)) {
+                $('#nameError').text('Name should contain only alphabetic characters').show();
+            } else if (!containsNonNumeric || name.length < 4) {
+                $('#nameError').text('Name should have at least 4 alphabetic characters').show();
             } else {
                 $('#nameError').hide();
             }
-        });
+    });
 
         $('#exampleInputQuantity').on('input', function () {
             const quantity = $(this).val().trim();
@@ -622,7 +626,9 @@
                 $('#priceError').text('Price is required').show();
             } else if (price < 1) {
                 $('#priceError').text('Price must be greater than 0').show();
-            } else {
+            } else if (price > 100000) {
+                $('#priceError').text('Price should not be more than 100000').show();
+            }else {
                 $('#priceError').hide();
             }
         });
@@ -649,7 +655,10 @@
             const description = $(this).val().trim();
             if (description.length === 0) {
                 $('#desError').text('Description is required').show();
-            } else {
+            }
+            else if (description.length < 40) {
+                $('#desError').text('Description should have at least 40 characters').show();
+            }else {
                 $('#desError').hide();
             }
         });
@@ -663,7 +672,17 @@
                 if (name.length === 0) {
                     $('#nameError').text('Name is required').show();
                     isValid = false;
-                } else {
+                } else if (name.length > 24) {
+                    $('#nameError').text('Name should not have more than 24 characters').show();
+                    isValid = false;
+                } else if (!/^[a-zA-Z]+$/.test(name)) {
+                    $('#nameError').text('Name should contain only alphabetic characters').show();
+                    isValid = false;
+                } else if (!/^[a-zA-Z]{4,}$/.test(name)) {
+                    $('#nameError').text('Name should have at least 4 alphabetic characters').show();
+                    isValid = false;
+                }
+                else {
                     $('#nameError').hide();
                 }
 
@@ -678,6 +697,9 @@
                 const price = $('#exampleInputPrice').val().trim();
                 if (price.length === 0 || price < 1) {
                     $('#priceError').text('Price is required and must be greater than 0').show();
+                    isValid = false;
+                }else if (price > 100000) {
+                    $('#priceError').text('Price should not be more than 100000').show();
                     isValid = false;
                 } else {
                     $('#priceError').hide();
@@ -702,6 +724,9 @@
                 const description = $('#exampleTextarea1').val().trim();
                 if (description.length === 0) {
                     $('#desError').text('Description is required').show();
+                    isValid = false;
+                } else if (description.length < 40) {
+                    $('#desError').text('Description should have at least 40 characters').show();
                     isValid = false;
                 } else {
                     $('#desError').hide();

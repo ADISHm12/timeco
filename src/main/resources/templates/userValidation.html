@@ -15,6 +15,20 @@
       height: 100vh;
       margin: 0;
     }
+    .footer {
+      background-color: white;
+      color: #fff;
+      text-align: center;
+      padding: 20px 0;
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+    }
+
+    .footer p {
+      margin: 0;
+      font-size: 14px;
+    }
 
     .otp-container {
       background-color: #fff; /* White background */
@@ -128,42 +142,43 @@
 <div class="main-div" style="display: flex;flex-direction: column;">
 
 
-<div class="otp-container ">
-  <div style="padding-top: 40px;padding-bottom: 30px">
-    <img src="/assets/img/logo/logo.png" width="150" height="35">
+    <div class="otp-container ">
+      <div style="padding-top: 40px;padding-bottom: 30px">
+        <img src="/assets/img/logo/logo.png" width="150" height="35">
 
-  </div>
-  <h2>Just one more step</h2>
-  <p>Please enter the 6-digit code sent to your Email.</p>
+      </div>
+      <h2>Just one more step</h2>
+      <p>Please enter the 6-digit code sent to your Email.</p>
 
-  <form id="otpForm">
-    <div th:if="${error}" class="alert alert-danger">
-      <p th:text="${error}" class="alert alert-danger"></p>
+      <form id="otpForm">
+        <div th:if="${error}" class="alert alert-danger">
+          <p th:text="${error}" class="alert alert-danger"></p>
+        </div>
+        <div class="otp-field form-outline form-white mb-4">
+          <input type="text" maxlength="6" class="form-control custom-input" name="otp" placeholder="Enter your otp" required/>
+        </div>
+        <button class="submit-btn" type="submit">
+          Confirm
+        </button>
+      </form>
+      <br>
+      <form th:action="@{/registration/resendOTP}" id="resend" method="get" style="display: none;">
+        <button class="submit-btn" id="resendBtn">
+          Resend OTP
+        </button>
+      </form>
+      <div class="timer"><span id="countdown"></span>
+      </div>
     </div>
-    <div class="otp-field form-outline form-white mb-4">
-      <input type="text" maxlength="6" class="form-control custom-input" name="otp" placeholder="Enter your otp" required/>
-    </div>
-    <button class="submit-btn" type="submit">
-      Confirm
-    </button>
-  </form>
-  <br>
-  <form th:action="@{/registration/resendOTP}" id="resend" method="get" style="display: none;">
-    <button class="submit-btn" id="resendBtn">
-      Resend OTP
-    </button>
-  </form>
-  <div class="timer"><span id="countdown"></span>
+  <div class="login-container  " style="color:#000000">
+    <h5>
+      Have an account?<a th:href="@{/main/login}">Log in</a>
+    </h5>
   </div>
 </div>
-<div class="login-container  " style="color:#000000">
-  <h5>
-    Have an account?<a th:href="@{/main/login}">Log in</a>
-  </h5>
+<div class="footer">
+  <p>Copyright &copy; 2023 Timezone. All rights reserved.</p>
 </div>
-</div>
-
-
 <script>
   let timerInterval; // Declare a variable to hold the timer interval
 

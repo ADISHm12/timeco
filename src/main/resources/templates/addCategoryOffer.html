@@ -396,6 +396,10 @@
                 $('#offerCodeError').text('Offer code cannot be empty.');
             } else if (offerCode.length < 4) {
                 $('#offerCodeError').text('Offer code should have at least 4 characters.');
+            }else if (offerCode.length > 8) {
+                $('#offerCodeError').text('Offer code should not be more than 8 characters.');
+            }else if (!/^[a-zA-Z0-9]*$/.test(offerCode)) {
+                $('#offerCodeError').text('Offer code should only contain letters and numbers.');
             } else {
                 $('#offerCodeError').text('');
             }
@@ -450,10 +454,16 @@
             if (!offerCode) {
                 $('#offerCodeError').text('Offer code cannot be empty.');
                 isValid = false;
+            }else if (offerCode.length > 8) {
+                $('#offerCodeError').text('Offer code should not be more than 8 characters.');
+                isValid = false
             } else if (offerCode.length < 4) {
                 $('#offerCodeError').text('Offer code should have at least 4 characters.');
                 isValid = false;
-            } else {
+            }else if (!/^[a-zA-Z0-9]*$/.test(offerCode)) {
+                $('#offerCodeError').text('Offer code should only contain letters and numbers.');
+                isValid = false;
+            }  else {
                 $('#offerCodeError').text('');
             }
 

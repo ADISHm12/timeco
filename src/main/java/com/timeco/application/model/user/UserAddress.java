@@ -28,7 +28,7 @@ public class UserAddress {
     @Column(name = "country",nullable=false)
     private String country;
 
-    @Column(name = "pinCode",nullable=false,unique = true)
+    @Column(name = "pinCode",nullable=false)
     private Integer pinCode;
 
     @Column(name = "mobile",nullable=false)

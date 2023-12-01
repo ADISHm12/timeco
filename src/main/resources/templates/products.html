@@ -32,7 +32,6 @@
             padding: 0;
             margin: 0;
         }
-
         .block-27 ul li {
             margin: 0 5px; /* Add spacing between pagination items */
         }
@@ -50,7 +49,6 @@
             border-radius: 2px;
             color: #fff;
         }
-
         .custom-slider {
             position: relative;
             overflow: hidden;
@@ -128,8 +126,6 @@
                                 </li>
                                 <li><a th:href="@{/user/viewCart}">Cart</a></li>
                                 <li><a th:href="@{/user/wishlist}">Wishlist</a></li>
-
-                                <!--                                <li><a href="contact.html">Contact</a></li>-->
                             </ul>
                         </nav>
                     </div>
@@ -156,13 +152,8 @@
             </div>
         </div>
     </div>
-    <!-- Header End -->
 </header>
 <main>
-    <!-- Hero Area Start-->
-    <!-- Hero Area End-->
-    <!-- Latest Products Start -->
-
     <section class="popular-items mt-5">
         <div class="container">
             <div style="margin-bottom: 40px">
@@ -172,7 +163,7 @@
             </div>
             <div class="row product-btn justify-content-between mb-40">
                 <div class="properties__button">
-                    <form th:action="@{/user/filterProducts}" method="get" style="display: flex;flex-direction: row">
+                    <form id="filterForm" th:action="@{/user/filterProducts}" method="get" style="display: flex;flex-direction: row">
                         <label for="category"></label>
                         <select id="category" name="category">
                             <option value="">All Categories</option>
@@ -184,7 +175,7 @@
                             <option value="0-500">0 - 500</option>
                             <option value="501-1000">501 - 1000</option>
                             <option value="1001-1500">1001-1500</option>
-                            <option value="1501-2000">1501 - 2000</option>
+                            <option value="1501-2000"> 1501 - 2000</option>
                             <!-- You can add more price range options based on your requirements -->
                         </select>
                         <button type="submit" style="border-radius: 5px" class="btn-primary">Filter Products</button>
@@ -193,7 +184,6 @@
                 <!-- Grid and List view -->
                 <div class="grid-list-view">
                 </div>
-                <!-- Select items -->
 
             </div>
             <!-- Nav Card -->
@@ -206,26 +196,14 @@
                         <div th:if="${products.isEmpty()}" class="col-12 pt-5 pr-5 pb-5" >
                             <h3>No products available!.</h3>
                         </div>
-
                         <div class="col-xl-4 col-lg-4 col-md-6 col-sm-6" th:each="product : ${products}" th:unless="${product.blocked}">
                             <!-- Check if the quantity is zero and add the 'out-of-stock' class accordingly -->
                             <div class="single-popular-items mb-50 text-center" th:classappend="${product.quantity == 0} ? 'out-of-stock' : ''">
                                 <div class="popular-img" style="position: relative">
 
-<!--                                    <a th:href="@{'/user/productDetails/' + ${product.id}}">-->
-<!--                                        <img th:src="@{'/assets' + ${product.productImages[0].imageName}}" alt="Product Image" />-->
-<!--                                    </a>-->
                                     <a th:if="${product.productImages.size() > 0}" th:href="@{'/user/productDetails/' + ${product.id}}">
                                         <img th:src="@{'/assets' + ${product.productImages[0].imageName}}" alt="Product Image" />
                                     </a>
-
-<!--                                    <div class="img-cap" data-product-id="${product.id}" onclick="handleAddToCart()">-->
-<!--                                        <span>Add to cart</span>-->
-<!--                                    </div>-->
-<!--                                    <div class="favorit-items">-->
-<!--                                        <span class="flaticon-heart"></span>-->
-<!--                                    </div>-->
-                                    <!-- Show the sticker only if the quantity is zero -->
                                     <div th:if="${product.quantity == 0}" class="sticker">Out of Stock</div>
                                     <div th:if="${product.category.categoryOffer != null && product.category.categoryOffer.startDate.isBefore(T(java.time.LocalDate).now()) && product.category.categoryOffer.endDate.isAfter(T(java.time.LocalDate).now()) and not product.category.categoryOffer.isActive() && !(product.quantity == 0)}" class="offer-tag" style="position: absolute; top: 10px; left: 10px; background-color: #f44336; color: white; padding: 5px;">
                                         <span th:text="${product.category.categoryOffer.percentage + '% off'}"></span>
@@ -239,11 +217,8 @@
                                 <div class="popular-caption" th:if="${product.category.categoryOffer == null || product.category.categoryOffer.isActive()}">
                                     <h3><a th:href="@{'/product/' + ${product.id}}" th:text="${product.productName}"></a></h3>
                                     <span  th:text="${' $ ' + product.price}"></span>
-                                </div>
-<!--                                <button type="button" class="img-cap1 btn_3" th:attr="data-id=${product.id}"  id="addToCart">-->
-<!--                                    <span>Add to cart</span>-->
-<!--                                </button>-->
-<!--                                <p th:text="${product.id}"></p>-->
+                                </div>aaaaa
+
                             </div>
                         </div>
                     </div>
@@ -282,9 +257,6 @@
 
     <div>
 
-    <!-- Latest Products End -->
-
-    <!--? Shop Method Start-->
     <div class="shop-method-area">
         <div class="container">
             <div class="method-wrapper">
@@ -566,6 +538,18 @@
                 }
             });
         }
+</script>
+<script>
+    document.getElementById("filterForm").addEventListener("submit", function(event) {
+        var category = document.getElementById("category").value;
+        var price = document.getElementById("price").value;
+
+        if (category === "" && price === "") {
+            event.preventDefault(); // Prevent form submission
+            Swal.fire("select any option!");
+
+        }
+    });
 </script>
 <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="/assets/js/checkBlocked.js"></script>

@@ -48,6 +48,9 @@ public interface ProductService {
 
     Page<Product> searchProductsAsPage(String searchTerm, int page, int pageSize);
 
+    List<Product> searchProduct(String searchTerm);
+
+
     Page<Product> findAllProducts(int page, int pageSize);
 
     Page<Product> findByProductNameContaining(String searchTerm, int page, int pageSize);

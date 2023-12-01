@@ -254,10 +254,7 @@ public String updateProduct(
 
         if (productImage != null) {
             try {
-                // Delete the image file from the storage (if applicable)
-                // ...
 
-                // Remove the image association from the product
                 productImage.getProduct().getProductImages().remove(productImage);
                 productImage.setProduct(null);
 
@@ -279,9 +276,8 @@ public String updateProduct(
 
 
     @GetMapping("/searchProduct")
-    public String searchProducts(@RequestParam("searchTerm") String searchTerm, Model model,@RequestParam(defaultValue = "0") int page,
-                                 @RequestParam(defaultValue = "6")  int pageSize){
-        Page<Product> products = productService.searchProductsAsPage(searchTerm,page,pageSize);
+    public String searchProducts(@RequestParam("searchTerm") String searchTerm, Model model){
+        List<Product> products = productService.searchProduct(searchTerm);
         model.addAttribute("product", products);
         return "productList";
     }
