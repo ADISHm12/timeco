@@ -37,7 +37,7 @@
       animation: fadeIn 0.5s ease-in-out;
       border-radius: 10px;
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-      height: 430px;
+      height: 500px;
       margin-bottom: 10px;
       margin-top: 10px;
     }
@@ -198,7 +198,8 @@
         timer = duration;
         display.textContent = "00:00"; // Display 00:00 when the timer expires
         clearInterval(timerInterval); // Stop the timer
-        resend.style.display = "block"; // Show the resend button
+        displayExpiredOTPErr();
+        resend.style.display = "block";
       }
     }, 1000);
   }
@@ -247,6 +248,18 @@
 
     xhr.send(formData); // Send the form data via AJAX
   });
+
+
+
+  function displayExpiredOTPErr() {
+    const errorDiv = document.createElement('div');
+    errorDiv.className = 'alert alert-danger';
+    errorDiv.textContent = 'Your OTP has expired.click Resend OTP.';
+
+    const otpForm = document.getElementById('otpForm');
+    otpForm.insertBefore(errorDiv, otpForm.firstChild);
+  }
+
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

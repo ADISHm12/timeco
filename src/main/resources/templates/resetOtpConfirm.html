@@ -14,7 +14,7 @@
             animation: fadeIn 0.5s ease-in-out;
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            height: 480px;
+            height: 580px;
             margin-bottom: 10px;
             margin-top: 10px;
         }
@@ -203,17 +203,15 @@
 
             if (--timer < 0) {
                 timer = duration;
-                display.textContent = "00:00"; // Display 00:00 when the timer expires
-                clearInterval(timerInterval); // Stop the timer
-                resend.style.display = "block"; // Show the resend button
+                display.textContent = "00:00";
+                clearInterval(timerInterval);
+                displayExpiredOTPErr();
+                resend.style.display = "block";
             }
         }, 1000);
     }
 
-    // Set the timer duration (in seconds)
     const timerDuration = 60;
-
-    // Start the timer when the page loads
     window.onload = function () {
         const display = document.querySelector("#countdown");
         startTimer(timerDuration, display);
@@ -231,11 +229,9 @@
         xhr.onreadystatechange = function () {
             if (xhr.readyState === XMLHttpRequest.DONE) {
                 if (xhr.status === 200) {
-                    // Handle successful response
-                    // For instance, display a success message or redirect the user
+
                     let response = JSON.parse(xhr.responseText);
                     if (response.message === "success") {
-                        // Display success message or redirect the user
                         window.location.href = "/main/resetPassword";
                     }
                 } else {
@@ -244,14 +240,24 @@
 
                         let errorDiv = document.querySelector(".alert-danger");
                         errorDiv.textContent = response.message;
+
                         errorDiv.style.display = "block";
                     }
                 }
             }
         };
 
-        xhr.send(formData); // Send the form data via AJAX
+        xhr.send(formData);
     });
+    function displayExpiredOTPErr() {
+        const errorDiv = document.createElement('div');
+        errorDiv.className = 'alert alert-danger';
+        errorDiv.textContent = 'Your OTP has expired.  click Resend OTP.';
+
+        const otpForm = document.getElementById('otpForm');
+        otpForm.insertBefore(errorDiv, otpForm.firstChild);
+    }
+
 </script>
 </body>
 </html>
