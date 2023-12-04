@@ -60,7 +60,8 @@ public class AdminProductController {
     private SubCategoryService subCategoryService;
     @Autowired
     private ProductImageRepository  productImageRepository;
-    public static final String UPLOAD_DIR = "C:\\Users\\hp\\OneDrive\\Desktop\\PROJECT\\application\\src\\main\\resources\\static\\assets\\productImages";
+//    public static final String UPLOAD_DIR = "C:\\Users\\hp\\OneDrive\\Desktop\\PROJECT\\application\\src\\main\\resources\\static\\assets\\productImages";
+      public static final String UPLOAD_DIR = "/home/ubuntu/timeco/src/main/resources/static/assets/productImages";
 
 
     @GetMapping("/listProducts")
