@@ -94,7 +94,8 @@ public class Coupon {
     }
 
 
-
+//    nohup java -jar application-0.0.1-SNAPSHOT.jar &
+//uksjd
 
 
     public String getMinimumAmount() {
