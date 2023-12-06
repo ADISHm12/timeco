@@ -22,4 +22,7 @@ public interface CouponService {
     boolean isExpired(Coupon coupon);
 
     boolean hasUsedCoupon(User user, Coupon coupon);
+
+   void setAvailableCouponsCount() ;
+
 }

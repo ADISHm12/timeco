@@ -8,21 +8,21 @@ function setupValidation(inputId, feedbackId) {
         if (inputElem.validity.patternMismatch) {
             feedbackElem.textContent = inputElem.title;
         } else {
-            const trimmedValue = inputElem.value.trim(); // Trim leading/trailing spaces
+            const trimmedValue = inputElem.value.trim();
             if (trimmedValue === "") {
                 feedbackElem.textContent = "This field cannot be empty or contain only spaces.";
             } else if (trimmedValue[0] === " ") {
                 feedbackElem.textContent = "First character cannot be a space.";
-            } else if (inputId === 'phoneNumber' && trimmedValue.length < 10) {
-                feedbackElem.textContent = "Phone number must be at least 10 digits.";
+            } else if (inputId === 'phoneNumber' && trimmedValue.length != 10) {
+                feedbackElem.textContent = "Phone number must be  10 digits.";
             } else {
-                feedbackElem.textContent = ''; // Clear the error message if input is valid
+                feedbackElem.textContent = '';
             }
         }
     });
 }
 
-// Set up validation for each input
+
 setupValidation('firstName', 'usernameFeedback');
 setupValidation('lastName', 'lastnameFeedback');
 setupValidation('email', 'emailFeedback');
@@ -53,13 +53,15 @@ function validateForm() {
             phoneNumber.value.trim() !== "" &&
             password.value.trim() !== ""
         ) {
-            return true; // Allow form submission if all fields are valid and not empty
+            formError.style.display = 'none';
+            return true;
         } else {
-            formError.style.display = 'block'; // Show the global error message if any field is empty
-            return false; // Prevent form submission
+            formError.style.display = 'block';
+            return false;
         }
     } else {
-        formError.style.display = 'block'; // Show the global error message if any field is invalid
-        return false; // Prevent form submission
+        formError.style.display = 'block';
+        return false;
     }
 }
+

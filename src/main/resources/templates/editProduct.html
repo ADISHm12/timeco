@@ -511,7 +511,6 @@
 
     document.body.addEventListener('change', function (e) {
         if (e.target.id === 'file-input' + currentIndex) {
-            alert(currentIndex)
             // start file reader
             const reader = new FileReader();
             reader.onload = (e)=> {
@@ -592,22 +591,26 @@
 </script>
 <script>
     $(document).ready(function () {
+
         $('#exampleInputName1').on('input', function () {
             const name = $(this).val().trim();
-            const containsNonNumeric = /[a-zA-Z]/.test(name); // Check if the name contains non-numeric characters
+            const containsNonNumeric = /[a-zA-Z]/.test(name);
 
             if (name.length === 0) {
                 $('#nameError').text('Name is required').show();
             } else if (name.length > 24) {
                 $('#nameError').text('Name should not have more than 24 characters').show();
-            } else if (!/^[a-zA-Z]+$/.test(name)) {
-                $('#nameError').text('Name should contain only alphabetic characters').show();
-            } else if (!containsNonNumeric || name.length < 4) {
+            } else if (!/^[a-zA-Z\s]+$/.test(name)) {
+                $('#nameError').text('Name should contain only alphabetic characters and spaces').show();
+            } else if (name.startsWith(' ')) {
+                $('#nameError').text('Name should not start with a space').show();
+            } else if (!/[a-zA-Z]{4,}/.test(name.replace(/\s/g, ''))) {
                 $('#nameError').text('Name should have at least 4 alphabetic characters').show();
             } else {
                 $('#nameError').hide();
             }
-    });
+        });
+
 
         $('#exampleInputQuantity').on('input', function () {
             const quantity = $(this).val().trim();
@@ -668,6 +671,23 @@
             $('#productForm').on('submit', function (event) {
                 let isValid = true;
 
+                // const name = $('#exampleInputName1').val().trim();
+                // if (name.length === 0) {
+                //     $('#nameError').text('Name is required').show();
+                //     isValid = false;
+                // } else if (name.length > 24) {
+                //     $('#nameError').text('Name should not have more than 24 characters').show();
+                //     isValid = false;
+                // } else if (!/^[a-zA-Z]+$/.test(name)) {
+                //     $('#nameError').text('Name should contain only alphabetic characters').show();
+                //     isValid = false;
+                // } else if (!/^[a-zA-Z]{4,}$/.test(name)) {
+                //     $('#nameError').text('Name should have at least 4 alphabetic characters').show();
+                //     isValid = false;
+                // }
+                // else {
+                //     $('#nameError').hide();
+                // }
                 const name = $('#exampleInputName1').val().trim();
                 if (name.length === 0) {
                     $('#nameError').text('Name is required').show();
@@ -675,14 +695,16 @@
                 } else if (name.length > 24) {
                     $('#nameError').text('Name should not have more than 24 characters').show();
                     isValid = false;
-                } else if (!/^[a-zA-Z]+$/.test(name)) {
-                    $('#nameError').text('Name should contain only alphabetic characters').show();
+                } else if (!/^[a-zA-Z\s]+$/.test(name)) {
+                    $('#nameError').text('Name should contain only alphabetic characters and spaces').show();
                     isValid = false;
-                } else if (!/^[a-zA-Z]{4,}$/.test(name)) {
+                } else if (name.startsWith(' ')) {
+                    $('#nameError').text('Name should not start with a space').show();
+                    isValid = false;
+                } else if (!/[a-zA-Z]{4,}/.test(name.replace(/\s/g, ''))) {
                     $('#nameError').text('Name should have at least 4 alphabetic characters').show();
                     isValid = false;
-                }
-                else {
+                } else {
                     $('#nameError').hide();
                 }
 

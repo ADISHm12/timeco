@@ -155,11 +155,8 @@ public class UserController {
 @PostMapping("/addProductToCart")
 public ResponseEntity<String> addToCart(@RequestBody ProductDto productDTO, Principal principal) {
 
-
     try {
-        // Check if the product is already in the cart
         boolean isProductInCart = cartService.isProductInCart(productDTO, principal);
-            // Product is not in the cart, so you can add it
             cartService.addProductToCart(productDTO, principal);
             return ok("Product added to cart.");
 
@@ -174,19 +171,17 @@ public ResponseEntity<Boolean> checkProductInCart(@RequestParam Long id,Principa
     String username = principal.getName();
     User user = userRepository.findByEmail(username);
 
-    // Assuming you have some way to identify the current user's cart
     Cart  userCart = cartRepository.findById(user.getId()).orElse(null);// Implement this method
 
     if (userCart != null) {
         List<CartItems> cartItems = cartItemsRepository.findByCart(userCart);
 
-        // Replace 'id' with the ID of the product you want to check
         Optional<Product> optionalProduct = productRepository.findById(id);
 
         if (optionalProduct.isPresent()) {
             Product product = optionalProduct.get();
 
-            // Check if the product is in the cart items
+
             exists = cartItems.stream()
                     .anyMatch(cartItem -> cartItem.getProduct().equals(product));
         }
@@ -274,9 +269,8 @@ public ResponseEntity<Boolean> checkProductInCart(@RequestParam Long id,Principa
             @RequestParam Long id,
             @RequestParam Integer quantity
     ) {
-
         try {
-            // Call the service to update the cart product
+            System.out.println(id+" "+quantity);
             cartItemsService.updateProductQuantity(id, quantity);
             return new ResponseEntity<>("Cart updated successfully", HttpStatus.OK);
         } catch (Exception e) {
@@ -300,7 +294,6 @@ public ResponseEntity<Boolean> checkProductInCart(@RequestParam Long id,Principa
         model.addAttribute("orderItem",orderItem);
         model.addAttribute("address",address);
 
-
         return "orderShow";
     }
 
@@ -315,18 +308,16 @@ public ResponseEntity<Boolean> checkProductInCart(@RequestParam Long id,Principa
                 int orderedQuantity = orderItem.getOrderItemCount();
                 int currentQuantity = product.getQuantity();
 
-                // Increase the available quantity of the product
                 product.setQuantity(currentQuantity + orderedQuantity);
 
-                // Set the order status to "cancelled"
                 orderItem.setOrderStatus("cancelled");
 
-                // Refund the payment to the user's wallet if it's an online payment
+
                 PaymentMethod  paymentMethod = orderItem.getOrder().getPaymentMethod();
                 if (paymentMethod != null && paymentMethod.getPaymentMethodName().equals("ONLINE PAYMENT")) {
                     User user = orderItem.getOrder().getUser();
 
-                    // Check if the user already has a wallet
+
                     Wallet userWallet = user.getWallet();
                     if (userWallet == null) {
                         // Create a new wallet for the user
@@ -336,18 +327,17 @@ public ResponseEntity<Boolean> checkProductInCart(@RequestParam Long id,Principa
                     }
 
 
-                    double refundAmount = orderItem.getOrderItemCount() * orderItem.getProduct().getPrice(); // Assuming the refund is the total order amount
+                    double refundAmount = orderItem.getOrderItemCount() * orderItem.getProduct().getPrice();
 
-                    // Perform the wallet refund
+
                     userWallet.deposit(refundAmount);
                     userWallet.recordTransaction(refundAmount, "Refund");
-                    // Save the user and wallet entities
+
 
                     walletRepository.save(userWallet);
                     userRepository.save(user);
                 }
 
-                // Update the product and order item
                 productRepository.save(product);
                 orderItemRepository.save(orderItem);
             }

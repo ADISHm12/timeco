@@ -22,6 +22,16 @@
     <link rel="stylesheet" href="/assets/css/style.css">
 
 <style>
+    .warning {
+        color: #FFA500; /* Set text color to orange */
+        /* Add any other styles for the 'warning' class */
+    }
+
+    /* Define the styles for the 'success' class */
+    .success {
+        color: #008000; /* Set text color to green */
+        /* Add any other styles for the 'success' class */
+    }
     .block-27 ul {
         display: flex;
         flex-wrap: wrap; /* Allow items to wrap if they exceed the container width */
@@ -140,12 +150,19 @@
                                     <td th:if="${orderItem.getOrderedPrice()}" th:text="${orderItem.getOrderedPrice() * orderItem.orderItemCount}"
                                         class="large-text"></td>
                                     <td th:unless="${orderItem.getOrderedPrice()}" th:text="${orderItem.product.getPrice() * orderItem.orderItemCount}"></td>
-                                    <td th:text="${orderItem.order.paymentStatus}" class="large-text"></td>
+<!--                                    <td th:text="${orderItem.order.paymentStatus}" class="large-text"></td>-->
+                                    <td th:text="${orderItem.order.paymentStatus}"
+                                        th:class="${orderItem.order.paymentStatus == 'pending'} ? 'warning' : (${orderItem.order.paymentStatus == 'success'} ? 'success' : '')"
+                                        class="large-text">
+                                    </td>
+
+
                                     <td th:text="${orderItem.order.paymentMethod.PaymentMethodName}"
                                         class="large-text"></td>
                                     <td class="large-text" th:text="${orderItem.orderStatus}"
-                                        th:style="${orderItem.orderStatus == 'cancelled' ? 'color: red;' : ''}">
+                                        th:style="${orderItem.orderStatus == 'cancelled' ? 'color: red;' : (orderItem.orderStatus == 'delivered' ? 'color: green;' : '')}">
                                     </td>
+
                                     <td><a th:href="@{'/user/orderShow/' + ${orderItem.orderItemId}}"
                                            class="btn_3">Details</a></td>
                                 </tr>
@@ -186,7 +203,6 @@
         </div>
 </main>
 </section>
-
 <!-- Footer End-->
 <footer>
     <!-- Footer Start-->

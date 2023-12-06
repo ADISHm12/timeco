@@ -45,6 +45,7 @@ public class CouponServiceImpl implements CouponService {
         coupon.setUserLimit(couponDto.getUserLimit());
         couponRepository.save(coupon);
 
+        setAvailableCouponsCount();
     }
 
     @Override
@@ -74,5 +75,16 @@ public class CouponServiceImpl implements CouponService {
         Set<Coupon> userCoupons = user.getCoupons();
         return userCoupons.contains(coupon);
     }
+
+    @Override
+    public void setAvailableCouponsCount() {
+        int availableCouponsCount = couponRepository.countByIsActive(true);
+        Coupon coupon = new Coupon();
+        coupon.setAvailableCouponsCount(availableCouponsCount);
+    }
+
+
+
+
 
 }

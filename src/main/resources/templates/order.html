@@ -161,16 +161,7 @@
                                             id="step4">Delivered</li>
                                     </ul>
                                 </div>
-                                <!--                                <div class="progress-track" th:if="${orderItem.orderStatus == 'cancelled'}" id="orderStatusContainer">-->
-                                <!--                                  <h2 class="text-center text-danger">Order Cancelled</h2>-->
-                                <!--                                  <ul id="progressbarCancel">-->
-                                <!--                                    <li style="font-size: 12px;" class="step0 active text-danger" id="step1" >Order placed-->
-                                <!--                                    </li>-->
-                                <!--                                    <li style="font-size: 12px;"-->
-                                <!--                                        class="step2 active text-danger text-right"-->
-                                <!--                                        id="step4">Cancelled</li>-->
-                                <!--                                  </ul>-->
-                                <!--                                </div>-->
+
                                 <div id="orderStatusContainer" class="progress-track" th:if="${orderItem.orderStatus == 'cancelled'}">
                                     <h2 class="text-center text-danger">Order Cancelled</h2>
                                     <ul id="progressbarCancel">

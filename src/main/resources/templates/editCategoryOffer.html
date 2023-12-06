@@ -342,10 +342,10 @@
 
 <script>
     function validateDate() {
-        let selectedDate = new Date(document.getElementById('startDate').value);
-        let currentDate = new Date();
+        const selectedDate = new Date(document.getElementById('startDate').value);
+        const currentDate = new Date();
 
-        if (selectedDate < currentDate) {
+        if (selectedDate < currentDate.setHours(0, 0, 0, 0)) {
             const Toast = Swal.mixin({
                 toast: true,
                 position: "top-end",
@@ -359,7 +359,7 @@
             });
             Toast.fire({
                 icon: "error",
-                title: "cannot select date before current date"
+                title: "Cannot select date before current date"
             });
             document.getElementById('startDate').value = '';
         }

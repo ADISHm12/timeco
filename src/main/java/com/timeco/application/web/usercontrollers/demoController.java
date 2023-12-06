@@ -320,12 +320,10 @@ public String userOrderList(Model model, Principal principal, @RequestParam(defa
         try {
             OrderItem order = orderItemRepository.findById(orderItemId).orElse(null);
             UserAddress address = addressRepository.findById(addressId).orElse(null);
-            // Get the current date and format it
             LocalDate currentDate = LocalDate.now();
             DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
             String formattedDate = currentDate.format(dateFormatter);
 
-            // Load the Thymeleaf template
             Context  context = new Context();
             context.setVariable("formattedDate", formattedDate);
             context.setVariable("order", order);

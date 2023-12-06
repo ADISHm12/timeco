@@ -8,7 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="manifest" href="site.webmanifest">
     <link rel="shortcut icon" type="image/x-icon" href="../assets/img/favicon.ico">
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <!-- CSS here -->
     <link rel="stylesheet" href="/assets/css/bootstrap.min.css">
     <link rel="stylesheet" href="/assets/css/owl.carousel.min.css">
@@ -23,10 +23,19 @@
     <link rel="stylesheet" href="/assets/css/style.css">
     <title>Your Page Title</title>
     <style>
-            /* Override the vertical layout */
+        .btn-container {
+            display: flex;
+            justify-content: space-between; /* Evenly distribute items */
+        }
+
+        .btn {
+            flex-grow: 1;
+
+        }
+
         .block-27 ul {
             display: flex;
-            flex-wrap: wrap; /* Allow items to wrap if they exceed the container width */
+            flex-wrap: wrap;
             justify-content: center; /* Center the items horizontally */
             list-style: none; /* Remove default list styles */
             padding: 0;
@@ -176,7 +185,6 @@
                             <option value="501-1000">501 - 1000</option>
                             <option value="1001-1500">1001-1500</option>
                             <option value="1501-2000"> 1501 - 2000</option>
-                            <!-- You can add more price range options based on your requirements -->
                         </select>
                         <button type="submit" style="border-radius: 5px" class="btn-primary">Filter Products</button>
                     </form>
@@ -186,18 +194,15 @@
                 </div>
 
             </div>
-            <!-- Nav Card -->
             <div class="tab-content" id="nav-tabContent">
 
 
                 <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
                     <div class="row">
-                        <!-- Add 'row' here to create a horizontal layout -->
-                        <div th:if="${products.isEmpty()}" class="col-12 pt-5 pr-5 pb-5" >
+                        <div th:if="${products.isEmpty()}"  class="col-12 pt-5 pr-5 pb-5" >
                             <h3>No products available!.</h3>
                         </div>
                         <div class="col-xl-4 col-lg-4 col-md-6 col-sm-6" th:each="product : ${products}" th:unless="${product.blocked}">
-                            <!-- Check if the quantity is zero and add the 'out-of-stock' class accordingly -->
                             <div class="single-popular-items mb-50 text-center" th:classappend="${product.quantity == 0} ? 'out-of-stock' : ''">
                                 <div class="popular-img" style="position: relative">
 
@@ -205,20 +210,35 @@
                                         <img th:src="@{'/assets' + ${product.productImages[0].imageName}}" alt="Product Image" />
                                     </a>
                                     <div th:if="${product.quantity == 0}" class="sticker">Out of Stock</div>
-                                    <div th:if="${product.category.categoryOffer != null && product.category.categoryOffer.startDate.isBefore(T(java.time.LocalDate).now()) && product.category.categoryOffer.endDate.isAfter(T(java.time.LocalDate).now()) and not product.category.categoryOffer.isActive() && !(product.quantity == 0)}" class="offer-tag" style="position: absolute; top: 10px; left: 10px; background-color: #f44336; color: white; padding: 5px;">
+                                    <div th:if="${product.category.categoryOffer != null  && product.category.categoryOffer.endDate.isAfter(T(java.time.LocalDate).now()) and not product.category.categoryOffer.isActive() && !(product.quantity == 0)}" class="offer-tag" style="position: absolute; top: 10px; left: 10px; background-color: #f44336; color: white; padding: 5px;">
                                         <span th:text="${product.category.categoryOffer.percentage + '% off'}"></span>
                                     </div>
-                                </div>
-                                <div class="popular-caption" th:if="${product.category.categoryOffer != null && product.category.categoryOffer.startDate.isBefore(T(java.time.LocalDate).now()) && product.category.categoryOffer.endDate.isAfter(T(java.time.LocalDate).now()) and not product.category.categoryOffer.isActive()}">
-                                    <h3><a th:href="@{'/product/' + ${product.id}}" th:text="${product.productName}"></a></h3>
-                                    <s th:text="${'$ ' + product.price}"></s>
-                                    <span  th:text="${' $ ' + product.discountedAmount}"></span>
-                                </div>
-                                <div class="popular-caption" th:if="${product.category.categoryOffer == null || product.category.categoryOffer.isActive()}">
-                                    <h3><a th:href="@{'/product/' + ${product.id}}" th:text="${product.productName}"></a></h3>
-                                    <span  th:text="${' $ ' + product.price}"></span>
-                                </div>aaaaa
+                                    <div class="btn-container">
+                                        <a class="btn_2 btn-danger" id="addToCart" th:if="${#authorization.expression('isAuthenticated()')}" th:attr="data-id=${product.id}">
+                                            <i class="fas fa-shopping-cart"></i>
+                                        </a>
+                                        <a class="btn_2 btn-danger"  th:unless="${#authorization.expression('isAuthenticated()')}" th:href="@{/main/login}">
+                                            <i class="fas fa-shopping-cart"></i>
+                                        </a>
 
+                                        <a class="btn_2 btn-danger addToWishListButton" th:if="${#authorization.expression('isAuthenticated()')}"  th:attr="data-id=${product.id}"><i class="far fa-heart"></i></a>
+                                        <a class="btn_2 btn-danger " th:unless="${#authorization.expression('isAuthenticated()')}"><i class="far fa-heart"></i></a>
+
+                                    </div>
+                                </div>
+                                    <div class="popular-caption" th:if="${product.category.categoryOffer != null && product.category.categoryOffer.endDate.isAfter(T(java.time.LocalDate).now()) and !product.category.categoryOffer.isActive()}" >
+                                        <h3><a th:href="@{'/product/' + ${product.id}}" th:text="${product.productName}"></a></h3>
+                                        <div style="display: flex;flex-direction: row;justify-content: center">
+                                            <s th:text="${'$ ' + product.price}" class="mr-2"></s>
+
+                                            <span  th:text="${' $ ' + product.discountedAmount}"></span>
+                                        </div>
+
+                                    </div>
+                                    <div class="popular-caption" th:if="${product.category.categoryOffer == null || product.category.categoryOffer.isActive() || product.category.categoryOffer.endDate.isBefore(T(java.time.LocalDate).now()) }">
+                                        <h3><a th:href="@{'/product/' + ${product.id}}" th:text="${product.productName}"></a></h3>
+                                        <span  th:text="${' $ ' + product.price}"></span>
+                                    </div>
                             </div>
                         </div>
                     </div>
@@ -438,8 +458,9 @@
 <script>
 
     $(document).ready(function() {
-        $("#addToCart").click(function(event) {
+        $(document).on('click', '#addToCart', function(event) {
             event.preventDefault();
+
             var productId = $(this).data("id");
             var quantity = 1;
 
@@ -452,19 +473,21 @@
                 showConfirmButton: false
             });
 
-            // Use 'productId' instead of 'id' in the URL
+
             $.ajax({
                 type: "GET",
-                url: "/user/checkProductInCart?id=" + productId, // Use 'productId' here
+                url: "/user/checkProductInCart?id=" + productId,
+
                 success: function(data) {
                     var response = JSON.parse(data);
 
                     if (response) {
-                        updateCartQuantity(productId, quantity); // Use 'productId' here as well
+                        updateCartQuantity(productId, quantity);
                     } else {
-                        addToCart(productId, quantity); // Use 'productId' here as well
+                        addToCart(productId, quantity);
                     }
                 },
+
                 error: function() {
                     Swal.fire({
                         position: 'top-end',
@@ -475,19 +498,17 @@
                     });
                 }
             });
-        }); // <-- Ensure this is the closing parenthesis for $("#addToCart").click(function(event)
-    }); // <-- Ensure this is the closing parenthesis for $(document).ready(function()
+        });
+    });
 
 
 
     function addToCart(id, quantity) {
-            // Make an AJAX request to get the current quantity of the product from the database
             $.ajax({
                 type: "GET",
-                url: "/user/getProductQuantity?id=" + id, // Replace with the actual endpoint to get product quantity
+                url: "/user/getProductQuantity?id=" + id,
                 success: function (productQuantity) {
                     if (productQuantity > 0) {
-                        // The product has a quantity greater than zero in the database, so it can be added to the cart
                         $.ajax({
                             type: "POST",
                             url: "/user/addProductToCart",
@@ -502,8 +523,6 @@
                                     showConfirmButton: false,
                                     timer: 1500
                                 });
-
-                                // Implement code to update the cart UI as needed
                             },
                             error: function () {
                                 Swal.fire({
@@ -516,7 +535,6 @@
                             }
                         });
                     } else {
-                        // The product quantity in the database is zero; do not add it to the cart
                         Swal.fire({
                             position: 'top-end',
                             icon: 'error',
@@ -527,7 +545,6 @@
                     }
                 },
                 error: function () {
-                    // Handle the error when fetching product quantity from the database
                     Swal.fire({
                         position: 'top-end',
                         icon: 'error',
@@ -538,6 +555,39 @@
                 }
             });
         }
+
+    function updateCartQuantity(productId, quantity) {
+        console.log(productId)
+        Swal.fire({
+            position: 'top-end',
+            icon: 'info',
+            title: 'Updating cart...',
+            showConfirmButton: false
+        });
+
+        $.ajax({
+            type: "PUT",
+            url: "/user/updateCartProduct?id=" + productId + "&quantity=" + quantity,
+            success: function(data) {
+                Swal.fire({
+                    position: 'top-end',
+                    icon: 'success',
+                    title: 'Cart updated successfully',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+            },
+            error: function() {
+                Swal.fire({
+                    position: 'top-end',
+                    icon: 'error',
+                    title: 'Failed to update the cart',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+            }
+        });
+    }
 </script>
 <script>
     document.getElementById("filterForm").addEventListener("submit", function(event) {
@@ -551,6 +601,72 @@
         }
     });
 </script>
+<script>
+    $(document).ready(function() {
+        $(document).on('click', '.addToWishListButton', function(event) {
+            event.preventDefault();
+
+            var productId = $(this).data("id");
+            checkProductInWishlist(productId);
+        });
+
+        function checkProductInWishlist(productId) {
+            $.ajax({
+                type: "GET",
+                url: "/user/checkProductInWishlist?productId=" + productId,
+                success: function(data) {
+                    if (data.exists) {
+                        Swal.fire({
+                            position: 'top-end',
+                            icon: 'info',
+                            title: 'Product is already in the wishlist.',
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                    } else {
+                        addToWishlist(productId);
+                    }
+                },
+                error: function() {
+                    Swal.fire({
+                        position: 'top-end',
+                        icon: 'error',
+                        title: 'Failed to check the product.',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                }
+            });
+        }
+
+        function addToWishlist(productId) {
+            $.ajax({
+                type: "POST", // You may use POST or another suitable HTTP method
+                url: "/user/addToWishlist?productId=" + productId,
+                success: function(data) {
+                    // Product was successfully added to the wishlist
+                    Swal.fire({
+                        position: 'top-end',
+                        icon: 'success',
+                        title: 'Added to wishlist!',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                },
+                error: function() {
+                    Swal.fire({
+                        position: 'top-end',
+                        icon: 'error',
+                        title: 'Failed to add to wishlist',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                }
+            });
+        }
+    });
+</script>
+
 <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="/assets/js/checkBlocked.js"></script>
 

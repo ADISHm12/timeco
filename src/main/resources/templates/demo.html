@@ -610,7 +610,8 @@
 
         // Function to validate phone number
         function isValidPhoneNumber(phoneNumber) {
-            var phoneNumberPattern = /^[0-9]{10}$/;
+            var phoneNumberPattern = /^[1-9][0-9]{9}$/;
+
             return phoneNumberPattern.test(phoneNumber);
         }
 

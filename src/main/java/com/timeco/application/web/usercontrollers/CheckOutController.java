@@ -97,12 +97,11 @@ public String checkOutPage(Model model, Principal principal, RedirectAttributes 
     List<UserAddress> address = addressService.findByUserId(user.getId());
     List<CartItems> cartItems = cartItemsService.findCartItems(user);
     List<Coupon> listOfCoupon = couponRepository.findAll();
-    // Check if any product quantity exceeds available stock
     boolean hasQuantityExceededStock = cartItems.stream().anyMatch(cartItem -> cartItem.getQuantity() > cartItem.getProduct().getQuantity());
 
     if (hasQuantityExceededStock) {
         redirectAttributes.addFlashAttribute("error", "Quantity exceeds available stock");
-        return "redirect:/user/viewCart"; // Redirect to the cart page or an appropriate page
+        return "redirect:/user/viewCart";
     }
 
     double totalPrice = cartItemsService.totalPrice(username);
@@ -125,9 +124,6 @@ public String checkOutPage(Model model, Principal principal, RedirectAttributes 
                                                @RequestParam(value = "couponCode", required = false) String couponCode,
                                               Principal principal) throws RazorpayException {
 
-
-
-
         Map<String, Object> response = new HashMap<>();
         String username=principal.getName();
         User user = userRepository.findByEmail(username);
@@ -138,19 +134,16 @@ public String checkOutPage(Model model, Principal principal, RedirectAttributes 
                 coupon.incrementUsageCount();
                 coupon.getUsers().add(user);
                 user.getCoupons().add(coupon);
-                // Save the updated entities to the database
                 couponRepository.save(coupon);
                 userRepository.save(user);
             }
         }
 
         List<CartItems> cartItems = cartItemsService.findCartItems(user);
-        // Convert cart items to order items
         List<OrderItem> orderItems =orderItemService.convertCartItemsToOrderItems(cartItems);
 
         PurchaseOrder purchaseOrder = new PurchaseOrder();
 
-        // Retrieve the UserAddress and PaymentMethod based on the selected IDs
         UserAddress selectedAddress = addressRepository.findById(selectedAddressId).orElse(null);
         PaymentMethod selectedPaymentMethod = paymentMethodRepository.findById(selectedPaymentMethodId).orElse(null);
         assert selectedPaymentMethod != null;
@@ -187,7 +180,7 @@ public String checkOutPage(Model model, Principal principal, RedirectAttributes 
             int currentQuantity = product.getQuantity();
             if (currentQuantity >= OrderedQuantity) {
                 product.setQuantity(currentQuantity - OrderedQuantity);
-                productRepository.save(product); // Update the product in the database
+                productRepository.save(product);
             } else {
             }
         }
@@ -206,7 +199,7 @@ public String checkOutPage(Model model, Principal principal, RedirectAttributes 
 
             Order order = razorpay.orders.create(orderRequest);
             response.put("isValid", false);
-            response.put("orderId", order.get("id")); // Get orderId from Razorpay Order object
+            response.put("orderId", order.get("id"));
             response.put("amount", order.get("amount"));
             response.put("purchaseId", purchaseOrder.getOrderId());
             response.put("email", username);
@@ -221,7 +214,8 @@ public String checkOutPage(Model model, Principal principal, RedirectAttributes 
 
                 if (walletBalance >= orderAmount) {
                     userWallet.withdraw(orderAmount);
-
+                    purchaseOrder.setPaymentStatus("success");
+                    purchaseOrderRepository.save(purchaseOrder);
                     WalletTransaction walletTransaction = new WalletTransaction();
                     walletTransaction.setWallet(userWallet);
                     walletTransaction.setAmount(orderAmount);
@@ -240,6 +234,7 @@ public String checkOutPage(Model model, Principal principal, RedirectAttributes 
                 } else {
                     response.put("isValid", true);
                     response.put("error", "Insufficient funds in the wallet");
+                    purchaseOrderRepository.delete(purchaseOrder);
                 }
             } else {
                 response.put("isValid", true);
@@ -314,6 +309,21 @@ public String checkOutPage(Model model, Principal principal, RedirectAttributes 
 
         return ResponseEntity.ok(status);
 }
+    @PostMapping("/deletePayment")
+    @ResponseBody
+    public ResponseEntity<String> deletePayment(@RequestParam("purchaseId") Long purchaseId) {
+        try {
+            PurchaseOrder purchaseOrder = purchaseOrderRepository.findById(purchaseId).orElse(null);
+            if (purchaseOrder != null) {
+                purchaseOrderRepository.delete(purchaseOrder);
+                return ResponseEntity.ok("Payment deleted successfully");
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Payment not found");
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error deleting payment: " + e.getMessage());
+        }
+    }
 
     @GetMapping("/orderPlaced")
     public String orderPlaced(){

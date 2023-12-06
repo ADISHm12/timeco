@@ -585,7 +585,7 @@
 </script>
 <script>
     function validateForm(event) {
-        // Get form input values
+
         var userName = document.getElementById("userName").value.trim();
         var mobile = document.getElementById("mobile").value.trim();
         var city = document.getElementById("city").value.trim();
@@ -594,9 +594,8 @@
         var country = document.getElementById("country").value.trim();
         var pinCode = document.getElementById("pinCode").value.trim();
 
-        // Regular expression patterns for validation
-        var phonePattern = /^\d{10}$/; // Matches a 10-digit phone number
-        var pinCodePattern = /^\d{6}$/; // Matches a 6-digit pin code
+        var phonePattern =  /^[1-9][0-9]{9}$/;
+        var pinCodePattern = /^\d{6}$/;
 
 
         // Validate UserName
@@ -698,7 +697,7 @@
         var country = document.getElementById("country1").value.trim();
         var pinCode = document.getElementById("pinCode1").value.trim();
 
-        var phonePattern = /^\d{10}$/;
+        var phonePattern =  /^[1-9][0-9]{9}$/;
         var pinCodePattern = /^\d{6}$/;
 
         if (userName === '') {
@@ -839,7 +838,6 @@
         }
     }
 
-    // Call the function to show the SweetAlert when the page loads
     window.onload = function() {
         showSuccessAlertUp();
     };

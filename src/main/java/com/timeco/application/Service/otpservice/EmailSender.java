@@ -68,7 +68,7 @@ public class EmailSender {
 
     public String generateReferralLink(User referrer) {
         String referralCode = referrer.getReferralCode();
-        return "http://localhost:8080/registration/RegForm?referralCode=" + referralCode;
+        return "https://timezone.tech/registration/RegForm?referralCode=" + referralCode;
     }
 
 

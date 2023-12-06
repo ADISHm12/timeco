@@ -1,6 +1,7 @@
 
 
 
+let rzpWindowOpen = false;
 
     // Add a click event listener to the "Proceed" button
     document.getElementById("proceedButton").addEventListener("click", function (e) {
@@ -30,6 +31,14 @@
             var responseData = JSON.parse(response);
             console.log(responseData.isValid);
             if (responseData.isValid === true) {
+                if (responseData.error && responseData.error === "Insufficient funds in the wallet") {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Insufficient Funds',
+                        text: 'Your wallet does not have enough balance.'
+                    });
+                    return;
+                }
                 let timerInterval;
                 Swal.fire({
                     title: "Please wait!",
@@ -54,6 +63,7 @@
                         window.location.href = "/orderPlaced";
                     }
                 });
+                return;
             }
             if (responseData.orderId) {
                 console.log(responseData.orderId);
@@ -80,21 +90,27 @@
                         "color": "#fc1808"
                     }
                 };
+
                 var rzp1 = new Razorpay(options);
-                rzp1.on('payment.failed', function (response) {
-                    // Handle payment failure
+
+                rzp1.on('payment.window.open', function () {
+                    rzpWindowOpen = true;
                 });
+
+
+                rzp1.on('payment.failed', function (response) {
+                });
+
                 rzp1.open();
             }
         }
     });
-}
+    }
 
     function verifyPayment(data, purchaseId) {
     let orderId = data.razorpay_order_id;
     let signature = data.razorpay_signature;
     let paymentId = data.razorpay_payment_id;
-    alert("function called..");
     $.ajax({
     url: "/verifyPayment",
     method: "post",
@@ -107,4 +123,23 @@
 }
 });
 }
+
+setInterval(function () {
+    if (rzpWindowOpen) {
+        return;
+    }
+    $.ajax({
+        url: "/deletePayment",
+        method: "post",
+        data: {
+            purchaseId: responseData.purchaseId
+        },
+        success: function (deletionResponse) {
+            console.log('Payment deleted:', deletionResponse);
+        },
+        error: function (error) {
+            console.error('Error deleting payment:', error);
+        }
+    });
+}, 5000);
 

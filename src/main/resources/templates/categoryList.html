@@ -318,8 +318,12 @@
                                                         </div>
                                                         <form th:action="@{/admin/updateCategory/{id}(id=${category.id})}" method="post" onsubmit="return validateForm1('update_category_${category.id}', 'nameError_${category.id}')">
                                                             <div class="modal-body">
+<!--                                                                <input type="text" class="form-control" name="name" th:value="${category.name}" id="update_category_${category.id}" />-->
+<!--                                                                <div id="nameError_${category.id}" style="display: none; color: red;"></div>-->
                                                                 <input type="text" class="form-control" name="name" th:value="${category.name}" id="update_category_${category.id}" />
                                                                 <div id="nameError_${category.id}" style="display: none; color: red;"></div>
+
+
                                                             </div>
                                                             <div class="modal-footer">
                                                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -449,6 +453,7 @@
             return true;
         }
     }
+
 </script>
 <script>
     window.onload = function() {
@@ -512,11 +517,11 @@
             formId = 'blockForm';
         }
 
-        // Configuring alertify settings for longer duration
+
         alertify.confirm(message, function (confirmed) {
             if (confirmed) {
                 alertify.success('OK');
-                // Manually trigger form submission after confirming the alert
+
                 document.getElementById(formId).submit();
             } else {
                 alertify.error('Cancelled');
@@ -538,16 +543,16 @@
             if (result) {
                 performAction(action, button);
             } else {
-                // Do something if canceled
+
             }
         }).set('labels', {ok:'Yes', cancel:'No'});
     }
 
     function performAction(action, button) {
-        const form = button.closest('form'); // Get the parent form of the clicked button
+        const form = button.closest('form');
 
         if (form) {
-            form.submit(); // Submit the form after the user confirms
+            form.submit();
         }
     }
 </script>

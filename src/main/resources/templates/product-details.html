@@ -228,19 +228,19 @@ $(document).ready(function() {
     </script>
     <script>
         $(document).ready(function() {
-            $("#addToWishListButton").click(function(event) {
+            $(".addToWishListButton").click(function(event) {
                 event.preventDefault();
 
                 var productId = $(this).data("id"); // Replace with the actual product ID
 
-                // Check if the product is already in the wishlist
+
                 checkProductInWishlist(productId);
             });
 
             // Function to check if the product is in the wishlist
             function checkProductInWishlist(productId) {
                 $.ajax({
-                    type: "GET", // Use a suitable HTTP method to check the product
+                    type: "GET",
                     url: "/user/checkProductInWishlist?productId=" + productId,
                     success: function(data) {
                         if (data.exists) {
@@ -416,16 +416,16 @@ $(document).ready(function() {
 <body>
 
 <header>
-<!--    <div id="preloader-active">-->
-<!--        <div class="preloader d-flex align-items-center justify-content-center">-->
-<!--            <div class="preloader-inner position-relative">-->
-<!--                <div class="preloader-circle"></div>-->
-<!--                <div class="preloader-img pere-text">-->
-<!--                    <img src="/assets/img/logo/logo.png" alt="">-->
-<!--                </div>-->
-<!--            </div>-->
-<!--        </div>-->
-<!--    </div>-->
+    <div id="preloader-active">
+        <div class="preloader d-flex align-items-center justify-content-center">
+            <div class="preloader-inner position-relative">
+                <div class="preloader-circle"></div>
+                <div class="preloader-img pere-text">
+                    <img src="/assets/img/logo/logo.png" alt="">
+                </div>
+            </div>
+        </div>
+    </div>
     <!-- Header Start -->
     <div class="header-area">
         <div class="main-header header-sticky">
@@ -433,7 +433,7 @@ $(document).ready(function() {
                 <div class="menu-wrapper">
                     <!-- Logo -->
                     <div class="logo">
-                        <a href="index.html"><img src="/assets/img/logo/logo.png" alt=""></a>
+                        <a th:href="@{/}"><img src="/assets/img/logo/logo.png" alt=""></a>
                     </div>
                     <!-- Main-menu -->
 
@@ -516,9 +516,9 @@ $(document).ready(function() {
 
                         <h4>
                             Price:
-                            <span th:if="${product.category.categoryOffer == null || product.category.categoryOffer.isActive()}" th:text="'$ ' + ${product.price}" ></span>
-                            <s th:if="${product.category.categoryOffer != null && product.category.categoryOffer.startDate.isBefore(T(java.time.LocalDate).now()) && product.category.categoryOffer.endDate.isAfter(T(java.time.LocalDate).now()) and not product.category.categoryOffer.isActive()}" th:text="'$ ' + ${product.price}" ></s>
-                            <span th:if="${product.category.categoryOffer != null && product.category.categoryOffer.startDate.isBefore(T(java.time.LocalDate).now()) && product.category.categoryOffer.endDate.isAfter(T(java.time.LocalDate).now()) and not product.category.categoryOffer.isActive()}" class="discounted-price" th:text="'$ ' + ${product.discountedAmount}"></span>
+                            <span th:if="${product.category.categoryOffer == null || product.category.categoryOffer.isActive() || product.category.categoryOffer.endDate.isBefore(T(java.time.LocalDate).now()) }" th:text="'$ ' + ${product.price}" ></span>
+                            <s th:if="${product.category.categoryOffer != null &&  product.category.categoryOffer.endDate.isAfter(T(java.time.LocalDate).now()) and not product.category.categoryOffer.isActive()}" th:text="'$ ' + ${product.price}" ></s>
+                            <span th:if="${product.category.categoryOffer != null && product.category.categoryOffer.endDate.isAfter(T(java.time.LocalDate).now()) and not product.category.categoryOffer.isActive()}" class="discounted-price" th:text="'$ ' + ${product.discountedAmount}"></span>
                         </h4>
                         <hr class="divider">
                         <h4>
@@ -544,7 +544,9 @@ $(document).ready(function() {
                             <a href="#" class="btn_3" id="addToCartButton" th:if="${#authorization.expression('isAuthenticated()')}" th:attr="data-id=${product.id}">Add to Cart</a>
 
                             <a href="#" class="btn_3" th:unless="${#authorization.expression('isAuthenticated()')}" th:href="@{/main/login}">Add to Cart</a>
-                                <a href="#" id="addToWishListButton" class="btn_3" th:attr="data-id=${product.id}">Add to Wishlist</a>
+                            <a href="#"  class="btn_3 " th:unless="${#authorization.expression('isAuthenticated()')}" th:href="@{/main/login}" th:attr="data-id=${product.id}">Add to Wishlist</a>
+
+                            <a href="#"  class="btn_3 addToWishListButton" th:if="${#authorization.expression('isAuthenticated()')}" th:attr="data-id=${product.id}">Add to Wishlist</a>
                         </div>
                     </div>
                 </div>

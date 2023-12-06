@@ -190,8 +190,6 @@
                            </div>
 
                            <div th:if="${#lists.isEmpty(address)}">
-                               <!-- Display the form for adding a new address when the address list is empty -->
-<!--                               <a th:href="@{user/addAddress}" class="btn_3">Add address</a>-->
                                <a th:href="@{/pro/addressList(source='checkout')}" class="btn_3">Add Address</a>
 
                            </div>

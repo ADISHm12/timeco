@@ -35,6 +35,10 @@ public class Coupon {
 
     private boolean isActive;
 
+    @Transient
+    private long availableCouponsCount;
+
+
     @OneToMany (mappedBy="coupon")
     private List <PurchaseOrder> ordersList;
 
@@ -49,6 +53,13 @@ public class Coupon {
         this.usageCount++;
     }
 
+    public long getAvailableCouponsCount() {
+        return availableCouponsCount;
+    }
+
+    public void setAvailableCouponsCount(long availableCouponsCount) {
+        this.availableCouponsCount = availableCouponsCount;
+    }
 
     public Integer getCouponId() {
         return couponId;

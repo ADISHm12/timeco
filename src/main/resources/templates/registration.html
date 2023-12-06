@@ -96,7 +96,7 @@
                                     <div th:if="${session.registrationError}" th:text="${session.registrationError}"></div>
                                 </span>
                             </div>
-                            <form class="row contact_form" th:action="@{/registration/Register}" method="post" th:object="${user}" novalidate="novalidate" onsubmit="return validateForm()">
+                            <form class="row contact_form" th:action="@{/registration/Register}" method="post" th:object="${user}" novalidate="novalidate" onchange="return validateForm()">
                                 <input type="hidden"  id="referralCodeInput" name="referralCode" th:value="${param.referralCode}" >
 
                                 <div class="col-md-12 form-group p_star">
